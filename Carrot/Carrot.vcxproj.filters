@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\components">
+      <UniqueIdentifier>{28c6fa62-81f8-41ef-90bd-6c8c49f27b7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\systems">
+      <UniqueIdentifier>{03a26320-9324-4af8-9bfc-e3edadb2c614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\systems">
+      <UniqueIdentifier>{ae4e2767-5f41-4a9b-8001-addb0ccbf72e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Mngrs">
+      <UniqueIdentifier>{02532a3f-d1ac-4fd5-b720-552ab16c0a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Mngrs">
+      <UniqueIdentifier>{ddcce1e8-9977-4e50-8d06-faf81fd4bce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ignore...">
+      <UniqueIdentifier>{c84d932c-1d99-4144-85f2-c17c9fe8c613}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="systems\CollisionSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="systems\DialogueSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="systems\PlayerMovementSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="systems\RenderSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\LevelMngr.cpp">
+      <Filter>Source Files\Mngrs</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\TransitionMngr.cpp">
+      <Filter>Source Files\Mngrs</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\DecisionMngr.cpp">
+      <Filter>Source Files\Mngrs</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\MinigameMngr.cpp">
+      <Filter>Source Files\Mngrs</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\InnerDialogueMngr.cpp">
+      <Filter>Source Files\Mngrs</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\ScreenMngr.cpp">
+      <Filter>Source Files\Mngrs</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\AudioMngr.cpp">
+      <Filter>Source Files\Mngrs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="systems\CollisionSystem.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="systems\DialogueSystem.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="systems\PlayerMovementSystem.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="systems\RenderSystem.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\LevelMngr.h">
+      <Filter>Header Files\Mngrs</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\TransitionMngr.h">
+      <Filter>Header Files\Mngrs</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Background.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Collidble.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Player.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Render.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="components\Transform.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="dialogue.h">
+      <Filter>Header Files\ignore...</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\DecisionMngr.h">
+      <Filter>Header Files\Mngrs</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\MinigameMngr.h">
+      <Filter>Header Files\Mngrs</Filter>
+    </ClInclude>
+    <ClInclude Include="notes.h">
+      <Filter>Header Files\ignore...</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\InnerDialogueMngr.h">
+      <Filter>Header Files\Mngrs</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\ScreenMngr.h">
+      <Filter>Header Files\Mngrs</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\AudioMngr.h">
+      <Filter>Header Files\Mngrs</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
