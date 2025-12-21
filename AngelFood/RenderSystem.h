@@ -1,15 +1,13 @@
 #pragma once
-#include "System.hpp"
 #include "raylib.h"
+#include "System.hpp"
 
 #include <vector>
-#include <cstdint>
 
 class RenderSystem : public System
 {
 public:
     void init();
-    void update();
     void draw();
     void ReorganizeObjects();
 
