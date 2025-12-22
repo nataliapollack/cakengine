@@ -33,14 +33,14 @@ void RenderSystem::draw()
             auto const& rend = gCoordinator.GetComponent<render>(draw_order[i]);
 
             Rectangle box = { transform.pos.x, transform.pos.y, rend.size.x, rend.size.y };
-            //if (rend.image.id != 0)
-            //{
-            //    Rectangle source = { 0, 0, rend.image.width, rend.image.height };
-            //    Rectangle dest = { transform.position.x, transform.position.y, rend.width, rend.height };
-            //    Vector2 origin = { 0, 0 };
-            //    DrawTexturePro(rend.image, source, dest, origin, 0.0f, WHITE);
-            //}
-          //  else
+            if (rend.txt.id != 0)
+            {
+                Rectangle source = { 0, 0, rend.txt.width, rend.txt.height };
+                Rectangle dest = { transform.pos.x, transform.pos.y, 244 * 0.5, 269 * 0.5};
+                Vector2 origin = { 0, 0 };
+                DrawTexturePro(rend.txt, source, dest, origin, 0.0f, WHITE);
+            }
+            else
             {
                 DrawRectangleRec(box, ColorAlpha(rend.color, 1.0));
             }

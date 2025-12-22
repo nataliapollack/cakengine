@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "Game.h"
 
 struct transform2D
 {
@@ -11,11 +12,18 @@ struct render
 {
     Vector2 size;
     Color color;
+    Texture txt;
 };
 
 struct collidble
 {
     Rectangle box;
+};
+
+struct physics
+{
+    float vx;
+    float vy;
 };
 
 struct status
@@ -26,4 +34,6 @@ struct status
     bool dirty;
     // this is mainly for render / updating, we dont need to reorganzie the objs every frame unless one of them has changed
     // if a change gets applied to an entity, mark it as dirty
+
+    OBJECT_TYPE type;
 };

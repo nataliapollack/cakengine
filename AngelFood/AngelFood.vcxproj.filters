@@ -19,7 +19,7 @@
     <Filter Include="Header Files\systems">
       <UniqueIdentifier>{955ecac8-824f-4df6-85d4-3957ea1ec002}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\components">
+    <Filter Include="Header Files\components">
       <UniqueIdentifier>{8938179f-93d6-485d-b196-fd1a949416bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -30,16 +30,31 @@
     <ClCompile Include="RenderSystem.cpp">
       <Filter>Source Files\systems</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerMovementSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderSystem.h">
       <Filter>Header Files\systems</Filter>
     </ClInclude>
     <ClInclude Include="Core.h">
-      <Filter>Resource Files\components</Filter>
+      <Filter>Header Files\components</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Resource Files\components</Filter>
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMovementSystem.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSystem.h">
+      <Filter>Header Files\systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
