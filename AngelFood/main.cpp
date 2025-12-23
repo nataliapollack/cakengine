@@ -6,6 +6,7 @@
 #include "PlayerSystem.h"
 #include "CameraSystem.h"
 #include "ItemSystem.h"
+#include "CollisionSystem.h"
 
 // components
 #include "Core.h"
@@ -50,6 +51,10 @@ void set_system_signatures()
     sig.set(gCoordinator.GetComponentType<collectable>());
     sig.set(gCoordinator.GetComponentType<collecting>());
     gCoordinator.SetSystemSignature<ItemSystem>(sig);
+
+    sig.reset();
+    sig.set(gCoordinator.GetComponentType<collidble>());
+    gCoordinator.SetSystemSignature<CollisionSystem>(sig);
 
 }
 
@@ -114,6 +119,8 @@ int main()
     auto render_sys = gCoordinator.RegisterSystem<RenderSystem>();
     auto player_movement_sys = gCoordinator.RegisterSystem<PlayerSystem>();
     auto camera_sys = gCoordinator.RegisterSystem<CameraSystem>();
+    auto item_sys = gCoordinator.RegisterSystem<ItemSystem>();
+    auto collision_sys = gCoordinator.RegisterSystem<CollisionSystem>();
 
 
     set_system_signatures();
@@ -131,6 +138,7 @@ int main()
 
         // UPDATE
         {
+            collision_sys->CheckCollisions();
             player_movement_sys->update(deltaTime);
             camera_sys->update();
         }
