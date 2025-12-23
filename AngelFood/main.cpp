@@ -3,11 +3,14 @@
 
 // systems
 #include "RenderSystem.h"
-#include "PlayerMovementSystem.h"
+#include "PlayerSystem.h"
+#include "CameraSystem.h"
+#include "ItemSystem.h"
 
 // components
 #include "Core.h"
 #include "Player.h"
+#include "Progression.h"
 
 Coordinator gCoordinator;
 
@@ -19,23 +22,34 @@ void register_components()
     gCoordinator.RegisterComponent<collidble>();
 
     gCoordinator.RegisterComponent<player>();
+
+    gCoordinator.RegisterComponent<collectable>();
+    gCoordinator.RegisterComponent<collecting>();
 }
 
 void set_system_signatures()
 {
-    // ALL of them should have status...
     Signature sig;
-    sig.set(gCoordinator.GetComponentType<status>());
     sig.set(gCoordinator.GetComponentType<render>());
     sig.set(gCoordinator.GetComponentType<transform2D>());
     gCoordinator.SetSystemSignature<RenderSystem>(sig);
 
     sig.reset();
-    sig.set(gCoordinator.GetComponentType<status>());
 
     sig.set(gCoordinator.GetComponentType<player>());
     sig.set(gCoordinator.GetComponentType<transform2D>());
-    gCoordinator.SetSystemSignature<PlayerMovementSystem>(sig);
+    gCoordinator.SetSystemSignature<PlayerSystem>(sig);
+
+    sig.reset();
+
+    sig.set(gCoordinator.GetComponentType<player>());
+    gCoordinator.SetSystemSignature<CameraSystem>(sig);
+
+    sig.reset();
+
+    sig.set(gCoordinator.GetComponentType<collectable>());
+    sig.set(gCoordinator.GetComponentType<collecting>());
+    gCoordinator.SetSystemSignature<ItemSystem>(sig);
 
 }
 
@@ -55,7 +69,7 @@ void place_temp_testing_objs()
             transform2D{ Vector2 {200.0f, 300.0f} });
         gCoordinator.AddComponent(
             ec,
-            player{true, 100.0f, 100.0f });
+            player{true, NONE, 100.0f, 100.0f });
         gCoordinator.AddComponent(
             ec,
             collidble{ Rectangle{200, 400, 100, 100 } });
@@ -98,7 +112,9 @@ int main()
 
     /*** Systems Creation ******************************************************************/
     auto render_sys = gCoordinator.RegisterSystem<RenderSystem>();
-    auto player_movement_sys = gCoordinator.RegisterSystem<PlayerMovementSystem>();
+    auto player_movement_sys = gCoordinator.RegisterSystem<PlayerSystem>();
+    auto camera_sys = gCoordinator.RegisterSystem<CameraSystem>();
+
 
     set_system_signatures();
 
@@ -106,6 +122,7 @@ int main()
 
     render_sys->init();
     player_movement_sys->init();
+    camera_sys->init();
 
     // IN-GAME
     while (!WindowShouldClose())
@@ -115,19 +132,28 @@ int main()
         // UPDATE
         {
             player_movement_sys->update(deltaTime);
+            camera_sys->update();
         }
 
 
         // DRAW
         {
-            ClearBackground(SKYBLUE);
             BeginDrawing();
 
+            ClearBackground(SKYBLUE);
+
+            camera_sys->BeginCameraMode();
+
             render_sys->draw();
+
+            camera_sys->EndCameraMode();
 
             EndDrawing();
         }
     }
 
     // DE-INITIALIZATION
+
+    CloseAudioDevice();
+    CloseWindow();
 }

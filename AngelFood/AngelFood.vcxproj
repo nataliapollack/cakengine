@@ -131,17 +131,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
+    <ClCompile Include="ItemSystem.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PlayerMovementSystem.cpp" />
+    <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="ItemSystem.h" />
+    <ClInclude Include="Progression.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerMovementSystem.h" />
+    <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="RenderSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

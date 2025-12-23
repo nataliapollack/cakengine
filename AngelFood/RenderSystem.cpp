@@ -40,9 +40,9 @@ void RenderSystem::draw()
                 Vector2 origin = { 0, 0 };
                 DrawTexturePro(rend.txt, source, dest, origin, 0.0f, WHITE);
             }
-            else
+           // else
             {
-                DrawRectangleRec(box, ColorAlpha(rend.color, 1.0));
+                DrawRectangleRec(box, ColorAlpha(rend.color, 0.5));
             }
         }
     }

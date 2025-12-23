@@ -1,19 +1,19 @@
 #include "Coordinator.hpp"
 #include "raylib.h"
 
-#include "PlayerMovementSystem.h"
+#include "PlayerSystem.h"
 
 #include "Player.h"
 #include "Core.h"
 
 extern Coordinator gCoordinator;
 
-void PlayerMovementSystem::init()
+void PlayerSystem::init()
 {
     jump_height = 100.0f;
 }
 
-void PlayerMovementSystem::update(float dt)
+void PlayerSystem::update(float dt)
 {
     // there should only ever be one in here lol
     for (auto& entity : entities_list)

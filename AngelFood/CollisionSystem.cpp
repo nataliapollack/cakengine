@@ -38,6 +38,15 @@ void CollisionSystem::CheckCollisions()
                 if (CheckCollisionRecs(collision_i.box, collision_j.box))
                 {
                     // idk whatever here
+
+                    // this is for items handling, you can ignore how i did this if you wanna do something quirky
+                    if (stats_j.type == ITEM)
+                    {
+                        Event item(Events::Item::PICKED_UP);
+                        item.SetParam(Events::Item::OBJ_TYPE, j);
+
+                        gCoordinator.SendEvent(item);
+                    }
                 }
             }
         }

@@ -1,7 +1,7 @@
 #pragma once
 #include "System.hpp"
 
-class PlayerMovementSystem : public System
+class PlayerSystem : public System
 {
 public:
     void init();
