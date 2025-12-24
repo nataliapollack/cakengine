@@ -22,8 +22,8 @@ struct collidble
 
 struct physics
 {
-    float vx;
-    float vy;
+    Vector2 vel;
+    Vector2 f;
 };
 
 struct status

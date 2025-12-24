@@ -8,6 +8,7 @@
 #include "Core.h"
 
 #include <iostream>
+#include <limits>
 
 extern Coordinator gCoordinator;
 
@@ -32,7 +33,6 @@ void CollisionSystem::CheckCollisions()
                 if (!stats_j.active)
                     continue;
 
-
                 auto& collision_i = gCoordinator.GetComponent<collidble>(i);
                 auto& collision_j = gCoordinator.GetComponent<collidble>(j);
 
@@ -51,14 +51,13 @@ void CollisionSystem::CheckCollisions()
 
                     if (stats_j.type == WALL)
                     {
+                        Rectangle collision_box = GetCollisionRec(
+                            collision_i.box, collision_j.box);
+
                         Event wall(Events::Collision::HIT_WALL);
 
-                        Vector2 impulse_force = Vector2Normalize(
-                            Vector2Subtract(transform_j.pos, transform_i.pos)
-                        );
-
-                        wall.SetParam(Events::Collision::IMPULSE_FORCE, 
-                            impulse_force);
+                        wall.SetParam(Events::Collision::COLLISION_DATA, 
+                            collision_box);
 
                         gCoordinator.SendEvent(wall);
                     }
