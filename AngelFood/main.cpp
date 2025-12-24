@@ -72,7 +72,6 @@ void set_system_signatures()
 
 }
 
-
 int main()
 {
     /*** Window Initialization *************************************************************/
@@ -117,6 +116,10 @@ int main()
             gCoordinator.AddComponent(
                 ec,
                 status{ true, true, PLAYER });
+            gCoordinator.AddComponent(
+                ec,
+                physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
+            );
         }
 
         // floor...
