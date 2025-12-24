@@ -1,4 +1,5 @@
 #pragma once
+#include "Game.h"
 
 struct collectable
 {
@@ -8,7 +9,7 @@ struct collectable
 struct collecting
 {
     bool complete;
-    int item_id;
+    OBJECT_TYPE item_id;
 };
 
 struct trapped_critter

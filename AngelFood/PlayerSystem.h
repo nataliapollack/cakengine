@@ -8,6 +8,7 @@ public:
     void update(float dt);
 
     void HitWall(Event& event);
+    void PickedUpItem(Event& event);
 
 private:
     void AccumulateForces();

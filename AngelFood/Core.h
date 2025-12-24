@@ -10,9 +10,19 @@ struct transform2D
 // we'll add txtures here and eventually animation component
 struct render
 {
-    Vector2 size;
+    float size;
+    ASSETS txt;
+};
+
+struct box_render
+{
+    Vector2 dimensions;
     Color color;
-    Texture txt;
+};
+
+struct animate
+{
+    Vector2 size_dest;
 };
 
 struct collidble

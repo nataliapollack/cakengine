@@ -27,9 +27,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderSystem.cpp">
-      <Filter>Source Files\systems</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerSystem.cpp">
       <Filter>Source Files\systems</Filter>
     </ClCompile>
@@ -40,6 +37,12 @@
       <Filter>Source Files\systems</Filter>
     </ClCompile>
     <ClCompile Include="ItemSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem.cpp">
       <Filter>Source Files\systems</Filter>
     </ClCompile>
   </ItemGroup>
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="ItemSystem.h">
       <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

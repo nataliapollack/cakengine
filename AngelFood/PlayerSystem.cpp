@@ -17,12 +17,15 @@ void PlayerSystem::init()
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Item::PICKEDUP, PlayerSystem::HitWall));
 }
 
 void PlayerSystem::update(float dt)
 {
     AccumulateForces();
-    std::cout << forces.y << "\n";
+   // std::cout << forces.y << "\n";
     // there should only ever be one in here lol
     for (auto& entity : entities_list)
     {
@@ -95,4 +98,12 @@ void PlayerSystem::HitWall(Event& event)
 void PlayerSystem::AccumulateForces()
 {
     forces.y += gravity;
+}
+
+void PlayerSystem::PickedUpItem(Event& event)
+{
+    auto& playuh = gCoordinator.GetComponent<player>(0);
+
+    int id=  event.GetParam<int>(Events::Item::PICKEDUP);
+
 }

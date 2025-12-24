@@ -66,13 +66,27 @@ void CollisionSystem::CheckCollisions()
                     // this is for items handling, you can ignore how i did this if you wanna do something quirky
                     if (stats_j.type == ITEM)
                     {
-                        Event item(Events::Item::PICKED_UP);
-                        item.SetParam(Events::Item::OBJ_TYPE, j);
+                        Event item(Events::Item::PICKEDUP);
+                        item.SetParam(Events::Item::PickedUp::ITEMID, j);
 
                         gCoordinator.SendEvent(item);
                     }
                 }
             }
+        }
+    }
+}
+
+void CollisionSystem::debug_draw_collisions()
+{
+    for (auto i : entities_list)
+    {
+        auto& stats = gCoordinator.GetComponent<status>(i);
+
+        if (stats.active)
+        {
+            auto& collision = gCoordinator.GetComponent<collidble>(i);
+            DrawRectangleRec(collision.box, ColorAlpha(RED, 0.3));
         }
     }
 }

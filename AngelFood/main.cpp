@@ -8,17 +8,23 @@
 #include "ItemSystem.h"
 #include "CollisionSystem.h"
 
+
 // components
 #include "Core.h"
 #include "Player.h"
 #include "Progression.h"
 
+// msc
+#include "AssetManager.h"
+
 Coordinator gCoordinator;
+AssetManager gAssetMngr;
 
 void register_components()
 {
     gCoordinator.RegisterComponent<transform2D>();
     gCoordinator.RegisterComponent<render>();
+    gCoordinator.RegisterComponent<box_render>();
     gCoordinator.RegisterComponent<status>();
     gCoordinator.RegisterComponent<collidble>();
 
@@ -37,6 +43,12 @@ void set_system_signatures()
 
     sig.reset();
 
+    sig.set(gCoordinator.GetComponentType<box_render>());
+    sig.set(gCoordinator.GetComponentType<transform2D>());
+    gCoordinator.SetSystemSignature<BoxRenderSystem>(sig);
+
+    sig.reset();
+
     sig.set(gCoordinator.GetComponentType<player>());
     sig.set(gCoordinator.GetComponentType<transform2D>());
     gCoordinator.SetSystemSignature<PlayerSystem>(sig);
@@ -49,7 +61,7 @@ void set_system_signatures()
     sig.reset();
 
     sig.set(gCoordinator.GetComponentType<collectable>());
-    sig.set(gCoordinator.GetComponentType<collecting>());
+ //   sig.set(gCoordinator.GetComponentType<collecting>());
     gCoordinator.SetSystemSignature<ItemSystem>(sig);
 
     sig.reset();
@@ -58,50 +70,6 @@ void set_system_signatures()
 
 }
 
-
-void place_temp_testing_objs()
-{
-    //TEMPORARY DONT DO THIS
-    Texture2D temp = LoadTexture("art/0.png");
-    // player
-    int ec = gCoordinator.CreateEntity();
-    {
-        gCoordinator.AddComponent(
-            ec,
-            render{ Vector2{100, 100}, WHITE, temp });
-        gCoordinator.AddComponent(
-            ec,
-            transform2D{ Vector2 {200.0f, 300.0f} });
-        gCoordinator.AddComponent(
-            ec,
-            player{true, NONE, 100.0f, 100.0f });
-        gCoordinator.AddComponent(
-            ec,
-            collidble{ Rectangle{200, 400, 100, 100 } });
-        gCoordinator.AddComponent(
-            ec,
-            status{ true, true, PLAYER });
-    }
-
-    // floor...
-    ec = gCoordinator.CreateEntity();
-    {
-        float w = GetScreenWidth();
-        float y = GetScreenHeight();
-        gCoordinator.AddComponent(
-            ec,
-            render{ Vector2{w, 100}, BLACK });
-        gCoordinator.AddComponent(
-            ec,
-            transform2D{ Vector2 {0, y  - 100} });
-        gCoordinator.AddComponent(
-            ec,
-            collidble{ Rectangle{0, y - 100, w, 100 } });
-        gCoordinator.AddComponent(
-            ec,
-            status{ true, true, WALL });
-    }
-}
 
 int main()
 {
@@ -112,6 +80,7 @@ int main()
     InitAudioDevice();
 
     gCoordinator.init();
+    gAssetMngr.load_assets();
 
     register_components();
 
@@ -121,15 +90,78 @@ int main()
     auto camera_sys = gCoordinator.RegisterSystem<CameraSystem>();
     auto item_sys = gCoordinator.RegisterSystem<ItemSystem>();
     auto collision_sys = gCoordinator.RegisterSystem<CollisionSystem>();
+    auto box_render_sys = gCoordinator.RegisterSystem<BoxRenderSystem>();
 
 
     set_system_signatures();
 
-    place_temp_testing_objs();
+    // object placer heree until i rlly like add some way to do player state mngr...
+    {
+        // player
+        int ec = gCoordinator.CreateEntity();
+        {
+            gCoordinator.AddComponent(
+                ec,
+                render{ 0.5f, PLAYER_IDLE});
+            gCoordinator.AddComponent(
+                ec,
+                transform2D{ Vector2 {200.0f, 100.0f} });
+            gCoordinator.AddComponent(
+                ec,
+                player{ true, NONE, 100.0f, 100.0f });
+            gCoordinator.AddComponent(
+                ec,
+                collidble{ Rectangle{200, 300, 100, 100 } });
+            gCoordinator.AddComponent(
+                ec,
+                status{ true, true, PLAYER });
+        }
+
+        // floor...
+        ec = gCoordinator.CreateEntity();
+        {
+            float w = GetScreenWidth();
+            float y = GetScreenHeight();
+            gCoordinator.AddComponent(
+                ec,
+                box_render{ w, 100, BLACK });
+            gCoordinator.AddComponent(
+                ec,
+                transform2D{ Vector2 {0, 500} });
+            gCoordinator.AddComponent(
+                ec,
+                collidble{ Rectangle{0, y - 100, w, 100 } });
+            gCoordinator.AddComponent(
+                ec,
+                status{ true, true, WALL });
+        }
+
+        // item
+        ec = gCoordinator.CreateEntity();
+        {
+            gCoordinator.AddComponent(
+                ec,
+                render{ 1.0f, TEMP_ITEM});
+            gCoordinator.AddComponent(
+                ec,
+                transform2D{ Vector2 {500.0f, 300.0f} });
+            gCoordinator.AddComponent(
+                ec,
+                collectable{ false });
+            gCoordinator.AddComponent(
+                ec,
+                collidble{Rectangle{200, 400, 100, 100 } });
+            gCoordinator.AddComponent(
+                ec,
+                status{ true, true, ITEM });
+        }
+    }
 
     render_sys->init();
+    box_render_sys->init();
     player_movement_sys->init();
     camera_sys->init();
+    item_sys->init();
 
     // IN-GAME
     while (!WindowShouldClose())
@@ -148,11 +180,14 @@ int main()
         {
             BeginDrawing();
 
-            ClearBackground(SKYBLUE);
-
             camera_sys->BeginCameraMode();
-
+            ClearBackground(SKYBLUE);
+            
             render_sys->draw();
+
+            box_render_sys->draw();
+
+            collision_sys->debug_draw_collisions();
 
             camera_sys->EndCameraMode();
 
@@ -161,6 +196,8 @@ int main()
     }
 
     // DE-INITIALIZATION
+
+    gAssetMngr.unload();
 
     CloseAudioDevice();
     CloseWindow();
