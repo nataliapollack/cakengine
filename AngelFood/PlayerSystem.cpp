@@ -139,10 +139,14 @@ void PlayerSystem::AccumulateForces()
     {
         auto& phy = gCoordinator.GetComponent<physics>(entity);
         auto& forces = phy.f;
+        auto& vel = phy.vel;
 
         auto& playuh = gCoordinator.GetComponent<player>(entity);
 
-        forces.y += gravity;
+        if (!playuh.on_ground && IsKeyDown(KEY_SPACE) && vel.y == 0.0f)
+            forces.y += gravity / 2.0f;
+        else
+            forces.y += gravity;
     }
 }
 
