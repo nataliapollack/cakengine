@@ -19,7 +19,7 @@ void PlayerSystem::init()
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
 
     gCoordinator.AddEventListener(
-        METHOD_LISTENER(Events::Item::PICKEDUP, PlayerSystem::HitWall));
+        METHOD_LISTENER(Events::Item::PICKEDUP, PlayerSystem::PickedUpItem));
 }
 
 void PlayerSystem::update(float dt)
@@ -104,6 +104,8 @@ void PlayerSystem::PickedUpItem(Event& event)
 {
     auto& playuh = gCoordinator.GetComponent<player>(0);
 
-    int id=  event.GetParam<int>(Events::Item::PICKEDUP);
+    OBJECT_TYPE id=  event.GetParam<OBJECT_TYPE>(Events::Item::PickedUp::OBJTYPE);
+
+    playuh.holding = TEMP;
 
 }

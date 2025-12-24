@@ -14,8 +14,7 @@ enum ASSETS
     PLAYER_IDLE,
     PLAYER_FALL,
     TEMP_ITEM,
-    COUNT,
-    EMPTY
+    COUNT
 };
 
 namespace Events::Item {
@@ -25,7 +24,8 @@ namespace Events::Item {
 
 namespace Events::Item::PickedUp
 {
-    const ParamId ITEMID = "Events::Item::PickedUp::ITEM_ID"_hash;
+    const ParamId ITEMID = "Events::Item::PickedUp::ITEMID"_hash;
+    const ParamId OBJTYPE = "Events::Item::PickedUp::OBJTYPE"_hash;
 }
 
 namespace Events::Collision {

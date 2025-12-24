@@ -67,6 +67,8 @@ void CollisionSystem::CheckCollisions()
                     {
                         Event item(Events::Item::PICKEDUP);
                         item.SetParam(Events::Item::PickedUp::ITEMID, j);
+                        // tmep until we get a list of all items ig
+                        item.SetParam(Events::Item::PickedUp::OBJTYPE, stats_j.type);
 
                         gCoordinator.SendEvent(item);
                     }

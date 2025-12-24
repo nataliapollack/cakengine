@@ -23,5 +23,5 @@ public:
     void draw();
     void ReorganizeObjects();
 private:
-    std::vector<std::uint32_t> draw_order;
+    std::vector<Entity> draw_order;
 };

@@ -172,8 +172,8 @@ int main()
 
         // UPDATE
         {
-            collision_sys->CheckCollisions();
             player_movement_sys->update(deltaTime);
+            collision_sys->CheckCollisions();
             camera_sys->update();
         }
 
@@ -185,11 +185,12 @@ int main()
             camera_sys->BeginCameraMode();
             ClearBackground(SKYBLUE);
             
-            render_sys->draw();
-
             box_render_sys->draw();
 
-            collision_sys->debug_draw_collisions();
+            render_sys->draw();
+
+
+            //collision_sys->debug_draw_collisions();
 
             camera_sys->EndCameraMode();
 
