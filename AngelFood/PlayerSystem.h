@@ -8,18 +8,24 @@ public:
     void update(float dt);
 
     void HitWall(Event& event);
+    void PickedUpItem(Event& event);
 
 private:
     void AccumulateForces();
 
+    float jump_height;
+
     float time_walking = 0.f;
 
-    float time_to_accel;
-    float time_to_decel;
-    float max_speed;
-    float min_speed;
+    const float time_to_accel = 2.5f;
+    const float time_to_decel = 0.25f;
+    const float max_speed = 500.f;
+    const float min_speed = 100.f;
 
-    float jump_impulse;
+    Vector2 forces;
+    Vector2 v;
 
-    float gravity;
+    float jump_impulse = 10.0f;
+
+    float gravity = 980.f;
 };

@@ -17,15 +17,12 @@ void PlayerSystem::init()
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
-
-    gCoordinator.AddEventListener(
-        METHOD_LISTENER(Events::Item::PICKEDUP, PlayerSystem::HitWall));
 }
 
 void PlayerSystem::update(float dt)
 {
     AccumulateForces();
-   // std::cout << forces.y << "\n";
+    std::cout << forces.y << "\n";
     // there should only ever be one in here lol
     for (auto& entity : entities_list)
     {
@@ -35,8 +32,14 @@ void PlayerSystem::update(float dt)
         float direction = 0.0f;
         static float last_direction = 0.0f;
 
-        auto& forces = phy.f;
-        //std::cout << forces.y << "\n";
+        if (FloatEquals(forces.y, 0.0f))
+        {
+            playuh.on_ground = true;
+        }
+        else
+        {
+            playuh.on_ground = false;
+        }
 
         if (IsKeyDown(KEY_LEFT))
         {
@@ -46,11 +49,6 @@ void PlayerSystem::update(float dt)
         {
             direction += 1.0f;
         }
-
-        auto& vel = phy.vel;
-
-        if (playuh.on_ground && vel.y > 0.0f)
-            playuh.on_ground = false;
 
         if (IsKeyPressed(KEY_SPACE) && playuh.on_ground)
         {
@@ -96,21 +94,5 @@ void PlayerSystem::HitWall(Event& event)
 
 void PlayerSystem::AccumulateForces()
 {
-    for (auto& entity : entities_list)
-    {
-        auto& phy = gCoordinator.GetComponent<physics>(entity);
-        auto& forces = phy.f;
-
-        auto& playuh = gCoordinator.GetComponent<player>(entity);
-
-        forces.y += gravity;
-    }
-}
-
-void PlayerSystem::PickedUpItem(Event& event)
-{
-    auto& playuh = gCoordinator.GetComponent<player>(0);
-
-    int id=  event.GetParam<int>(Events::Item::PICKEDUP);
-
+    forces.y += gravity;
 }

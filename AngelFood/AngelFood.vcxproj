@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="ItemSystem.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="RenderSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetManager.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Core.h" />

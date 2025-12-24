@@ -4,48 +4,28 @@
 #include "Core.h"
 #include "Progression.h"
 
+#include <iostream>
+
 extern Coordinator gCoordinator;
 
 void ItemSystem::init()
 {
-    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::PICKED_UP, ItemSystem::TriggerItemPickedUp));
+    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::PICKEDUP, ItemSystem::TriggerItemPickedUp));
 }
 
 void ItemSystem::TriggerItemPickedUp(Event& event)
 {
-    int item_id = event.GetParam<int>(Events::Item::OBJ_TYPE);
-
+    Entity item_id = event.GetParam<Entity>(Events::Item::PickedUp::ITEMID);
+  //  std::cout << item_id << "\n";
     for (auto& entity : entities_list)
     {
         if (item_id == entity)
         {
             auto& stats = gCoordinator.GetComponent<status>(entity);
             stats.active = false;
+            gCoordinator.RemoveComponent<render>(entity);
             return;
-        }
-    }
-}
-
-void ItemSystem::TriggerQuestComplete(Event& event)
-{
-    int item_id = event.GetParam<int>(Events::Item::OBJ_TYPE);
-
-    for (auto& entity : entities_list)
-    {
-        auto& stats = gCoordinator.GetComponent<status>(entity);
-
-        if (item_id == entity)
-        {
-            gCoordinator.DestroyEntity(entity);
-        }
-
-        if (stats.type == DROPOFF)
-        {
-            auto& drop_off = gCoordinator.GetComponent<collecting>(entity);
-            if (drop_off.item_id == item_id)
-            {
-                gCoordinator.DestroyEntity(entity);
-            }
+           // gCoordinator.DestroyEntity(entity);
         }
     }
 }

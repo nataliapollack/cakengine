@@ -13,7 +13,14 @@ extern Coordinator gCoordinator;
 
 void PlayerSystem::init()
 {
-    jump_height = 100.0f;
+    time_walking = 0.0f;
+    time_to_accel = 2.5f;
+    time_to_decel = 0.25f;
+    max_speed = 300.0f;
+    min_speed = 100.0f;
+
+    jump_impulse = 10.0f;
+    gravity = 980.f;
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
@@ -25,18 +32,23 @@ void PlayerSystem::init()
 void PlayerSystem::update(float dt)
 {
     AccumulateForces();
+<<<<<<< HEAD
    // std::cout << forces.y << "\n";
+=======
+
+>>>>>>> b2b9b3085ecdf2c2849773c62dfdf9be7da4d33e
     // there should only ever be one in here lol
     for (auto& entity : entities_list)
     {
         auto& transf = gCoordinator.GetComponent<transform2D>(entity);
         auto& playuh = gCoordinator.GetComponent<player>(entity);
+        auto& phy = gCoordinator.GetComponent<physics>(entity);
 
         float direction = 0.0f;
         static float last_direction = 0.0f;
 
         auto& forces = phy.f;
-        //std::cout << forces.y << "\n";
+        std::cout << forces.y << "\n";
 
         if (IsKeyDown(KEY_LEFT))
         {
@@ -49,12 +61,10 @@ void PlayerSystem::update(float dt)
 
         auto& vel = phy.vel;
 
-        if (playuh.on_ground && vel.y > 0.0f)
-            playuh.on_ground = false;
-
         if (IsKeyPressed(KEY_SPACE) && playuh.on_ground)
         {
-            v.y = -jump_impulse;
+            vel.y = -jump_impulse;
+            playuh.on_ground = false;
         }
 
         if (!FloatEquals(direction, 0.0f)) {
@@ -71,27 +81,61 @@ void PlayerSystem::update(float dt)
         if (FloatEquals(speed, min_speed))
             last_direction = 0.0f;
 
-        v.x = last_direction *
+        vel.x = last_direction *
             Lerp(min_speed, max_speed, time_walking) * dt;
 
-        v.y += forces.y * dt * dt;
+        vel.y += forces.y * dt * dt;
 
         forces = Vector2Zero();
 
-        transf.pos = Vector2Add(transf.pos, v);
+        transf.pos = Vector2Add(transf.pos, vel);
     }
 }
 
 void PlayerSystem::HitWall(Event& event)
 {
-    //Vector2 impulse = 
-    //    event.GetParam<Vector2>(Events::Collision::IMPULSE_FORCE);
+    for (auto& entity : entities_list)
+    {
+        Rectangle overlap = 
+            event.GetParam<Rectangle>(Events::Collision::COLLISION_DATA);
 
-    //forces = Vector2Add(forces, impulse);
-    forces.y += -gravity;
-    v.y = 0.0f;
+        auto& phy = gCoordinator.GetComponent<physics>(entity);
+        auto& forces = phy.f;
+        auto& vel = phy.vel;
 
-    //std::cout << "Here\n";
+        auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+
+        auto& playuh = gCoordinator.GetComponent<player>(entity);
+
+        if (overlap.height < overlap.width)
+        {
+            if (vel.y > 0)
+            {
+                transf.pos.y -= overlap.height;
+                vel.y = 0.0f;
+
+                playuh.on_ground = true;
+            }
+            else if (vel.y < 0)
+            {
+                transf.pos.y += overlap.height;
+                vel.y = 0.0f;
+            }
+        }
+        else
+        {
+            if (vel.x > 0)
+            {
+                transf.pos.x -= overlap.width;
+                vel.x = 0.0f;
+            }
+            else if (vel.x < 0)
+            {
+                transf.pos.x += overlap.width;
+                vel.x = 0.0f;
+            }
+        }
+    }
 }
 
 void PlayerSystem::AccumulateForces()
@@ -103,7 +147,8 @@ void PlayerSystem::AccumulateForces()
 
         auto& playuh = gCoordinator.GetComponent<player>(entity);
 
-        forces.y += gravity;
+        if (!playuh.on_ground)
+            forces.y += gravity;
     }
 }
 

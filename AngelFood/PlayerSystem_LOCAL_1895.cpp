@@ -35,8 +35,14 @@ void PlayerSystem::update(float dt)
         float direction = 0.0f;
         static float last_direction = 0.0f;
 
-        auto& forces = phy.f;
-        //std::cout << forces.y << "\n";
+        if (FloatEquals(forces.y, 0.0f))
+        {
+            playuh.on_ground = true;
+        }
+        else
+        {
+            playuh.on_ground = false;
+        }
 
         if (IsKeyDown(KEY_LEFT))
         {
@@ -46,11 +52,6 @@ void PlayerSystem::update(float dt)
         {
             direction += 1.0f;
         }
-
-        auto& vel = phy.vel;
-
-        if (playuh.on_ground && vel.y > 0.0f)
-            playuh.on_ground = false;
 
         if (IsKeyPressed(KEY_SPACE) && playuh.on_ground)
         {
@@ -96,15 +97,7 @@ void PlayerSystem::HitWall(Event& event)
 
 void PlayerSystem::AccumulateForces()
 {
-    for (auto& entity : entities_list)
-    {
-        auto& phy = gCoordinator.GetComponent<physics>(entity);
-        auto& forces = phy.f;
-
-        auto& playuh = gCoordinator.GetComponent<player>(entity);
-
-        forces.y += gravity;
-    }
+    forces.y += gravity;
 }
 
 void PlayerSystem::PickedUpItem(Event& event)

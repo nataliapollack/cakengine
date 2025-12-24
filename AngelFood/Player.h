@@ -12,7 +12,7 @@ enum PLAYER_STATES
 enum HOLDABLE_ITEMS
 {
     NONE,
-    CREATURE
+    TEMP
 };
 
 struct player

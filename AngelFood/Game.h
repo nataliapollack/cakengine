@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Events.hpp"
 
 const enum OBJECT_TYPE
 {
@@ -9,11 +9,23 @@ const enum OBJECT_TYPE
     DROPOFF
 };
 
+enum ASSETS
+{
+    PLAYER_IDLE,
+    PLAYER_FALL,
+    TEMP_ITEM,
+    COUNT,
+    EMPTY
+};
 
 namespace Events::Item {
-    const EventId PICKED_UP = "Events::Item::PICKED_UP"_hash;
-    const EventId DROPPED_OFF = "Events::Item::DROPPED_OFF"_hash;
-    const ParamId OBJ_TYPE = "Events::Item::OBJ_TYPE"_hash;
+    const EventId PICKEDUP = "Events::Item::PICKEDUP"_hash;
+    const EventId DROPPEDOFF = "Events::Item::DROPPEDOFF"_hash;
+}
+
+namespace Events::Item::PickedUp
+{
+    const ParamId ITEMID = "Events::Item::PickedUp::ITEM_ID"_hash;
 }
 
 namespace Events::Collision {
