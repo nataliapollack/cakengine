@@ -142,7 +142,7 @@ void place_temp_testing_objs()
             render{ Vector2{width, height}, BLACK });
         gCoordinator.AddComponent(
             ec,
-            transform2D{ Vector2 {w + 300, y - 200} });
+            transform2D{ Vector2 {w + 300, y - 600} });
         gCoordinator.AddComponent(
             ec,
             collidble{ Rectangle{0, y - 100, width, height } });
