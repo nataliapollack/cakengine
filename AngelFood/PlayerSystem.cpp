@@ -24,6 +24,9 @@ void PlayerSystem::init()
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Item::PICKEDUP, PlayerSystem::PickedUpItem));
 }
 
 void PlayerSystem::update(float dt)
