@@ -30,5 +30,5 @@ namespace Events::Item::PickedUp
 
 namespace Events::Collision {
     const EventId HIT_WALL = "Events::Collision::COLLIDED"_hash;
-    const ParamId IMPULSE_FORCE = "Events::Item::IMPULSE_FORCE"_hash;
+    const ParamId COLLISION_DATA = "Events::Item::IMPULSE_FORCE"_hash;
 }

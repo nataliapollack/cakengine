@@ -19,7 +19,4 @@ struct player
 {
     bool on_ground;
     HOLDABLE_ITEMS holding;
-
-    float vx;
-    float vy;
 };

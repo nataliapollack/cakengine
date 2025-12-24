@@ -32,6 +32,8 @@ void register_components()
 
     gCoordinator.RegisterComponent<collectable>();
     gCoordinator.RegisterComponent<collecting>();
+
+    gCoordinator.RegisterComponent<physics>();
 }
 
 void set_system_signatures()
@@ -108,7 +110,7 @@ int main()
                 transform2D{ Vector2 {200.0f, 100.0f} });
             gCoordinator.AddComponent(
                 ec,
-                player{ true, NONE, 100.0f, 100.0f });
+                player{ true, NONE });
             gCoordinator.AddComponent(
                 ec,
                 collidble{ Rectangle{200, 300, 100, 100 } });
