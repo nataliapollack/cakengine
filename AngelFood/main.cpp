@@ -72,98 +72,6 @@ void set_system_signatures()
 
 }
 
-
-void place_temp_testing_objs()
-{
-    //TEMPORARY DONT DO THIS
-    Texture2D temp = LoadTexture("art/0.png");
-    // player
-    int ec = gCoordinator.CreateEntity();
-    {
-        gCoordinator.AddComponent(
-            ec,
-            render{ Vector2{100, 100}, WHITE, temp });
-        gCoordinator.AddComponent(
-            ec,
-            transform2D{ Vector2 {200.0f, 300.0f} });
-        gCoordinator.AddComponent(
-            ec,
-            player{false, NONE });
-        gCoordinator.AddComponent(
-            ec,
-            collidble{ Rectangle{200, 400, 100, 100 } });
-        gCoordinator.AddComponent(
-            ec,
-            status{ true, true, PLAYER });
-        gCoordinator.AddComponent(
-            ec,
-            physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
-        );
-    }
-
-    // floor...
-    ec = gCoordinator.CreateEntity();
-    {
-        float w = GetScreenWidth();
-        float y = GetScreenHeight();
-        gCoordinator.AddComponent(
-            ec,
-            render{ Vector2{w, 100}, BLACK });
-        gCoordinator.AddComponent(
-            ec,
-            transform2D{ Vector2 {0, y  - 100} });
-        gCoordinator.AddComponent(
-            ec,
-            collidble{ Rectangle{0, y - 100, w, 100 } });
-        gCoordinator.AddComponent(
-            ec,
-            status{ true, true, WALL });
-    }
-    ec = gCoordinator.CreateEntity();
-    {
-        float w = GetScreenWidth();
-        float y = GetScreenHeight();
-
-        float height = 100;
-        float width = 400;
-
-        gCoordinator.AddComponent(
-            ec,
-            render{ Vector2{width, height}, BLACK });
-        gCoordinator.AddComponent(
-            ec,
-            transform2D{ Vector2 {w + 100, y - 100} });
-        gCoordinator.AddComponent(
-            ec,
-            collidble{ Rectangle{0, y - 100, width, height } });
-        gCoordinator.AddComponent(
-            ec,
-            status{ true, true, WALL });
-    }
-
-    ec = gCoordinator.CreateEntity();
-    {
-        float w = GetScreenWidth();
-        float y = GetScreenHeight();
-
-        float height = 600;
-        float width = 200;
-
-        gCoordinator.AddComponent(
-            ec,
-            render{ Vector2{width, height}, BLACK });
-        gCoordinator.AddComponent(
-            ec,
-            transform2D{ Vector2 {w + 300, y - 600} });
-        gCoordinator.AddComponent(
-            ec,
-            collidble{ Rectangle{0, y - 100, width, height } });
-        gCoordinator.AddComponent(
-            ec,
-            status{ true, true, WALL });
-    }
-}
-
 int main()
 {
     /*** Window Initialization *************************************************************/
@@ -208,6 +116,10 @@ int main()
             gCoordinator.AddComponent(
                 ec,
                 status{ true, true, PLAYER });
+            gCoordinator.AddComponent(
+                ec,
+                physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
+            );
         }
 
         // floor...
