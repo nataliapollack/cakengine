@@ -13,10 +13,12 @@ extern Coordinator gCoordinator;
 
 void PlayerSystem::init()
 {
+    coyote_time = Timer(0.35f);
+
     time_walking = 0.0f;
-    time_to_accel = 2.5f;
+    time_to_accel = 1.0f;
     time_to_decel = 0.25f;
-    max_speed = 300.0f;
+    max_speed = 400.0f;
     min_speed = 100.0f;
 
     jump_impulse = 10.0f;
@@ -57,8 +59,15 @@ void PlayerSystem::update(float dt)
 
         auto& vel = phy.vel;
 
-        if (playuh.on_ground && vel.y > 0.0f)
+        if (playuh.on_ground && vel.y > 0.0f && !coyote_time.is_running())
+        {
+            coyote_time.start();
+        }
+
+        if (coyote_time.update(dt))
+        {
             playuh.on_ground = false;
+        }
 
         if (IsKeyPressed(KEY_SPACE) && playuh.on_ground)
         {
@@ -157,7 +166,8 @@ void PlayerSystem::PickedUpItem(Event& event)
 {
     auto& playuh = gCoordinator.GetComponent<player>(0);
 
-    OBJECT_TYPE id=  event.GetParam<OBJECT_TYPE>(Events::Item::PickedUp::OBJTYPE);
+    OBJECT_TYPE id =  event.GetParam<OBJECT_TYPE>(
+        Events::Item::PickedUp::OBJTYPE);
 
     playuh.holding = TEMP;
 

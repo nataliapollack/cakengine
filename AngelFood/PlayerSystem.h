@@ -1,5 +1,6 @@
 #pragma once
 #include "System.hpp"
+#include "Timer.hpp"
 
 class PlayerSystem : public System
 {
@@ -13,7 +14,9 @@ public:
 private:
     void AccumulateForces();
 
-    float time_walking = 0.f;
+    Timer coyote_time;
+
+    float time_walking;
 
     float time_to_accel;
     float time_to_decel;
