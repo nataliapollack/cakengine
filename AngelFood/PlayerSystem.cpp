@@ -25,9 +25,12 @@ void PlayerSystem::init()
     jump_impulse = 10.0f;
     gravity = 980.f;
 
+    max_glide_fall = 1.0f;
+
     jump_charges = 2;
 
     should_jump = false;
+    is_gliding = false;
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
@@ -74,6 +77,10 @@ void PlayerSystem::update(float dt)
             playuh.on_ground = false;
         }
 
+        // Gliding
+        is_gliding = IsKeyDown(KEY_LEFT_SHIFT) && !playuh.on_ground && 
+            vel.y > 0.0f;
+
         // Jumping
         if (IsKeyPressed(KEY_SPACE))
         {
@@ -107,10 +114,16 @@ void PlayerSystem::update(float dt)
         if (FloatEquals(speed, min_speed))
             last_direction = 0.0f;
 
-        vel.x = last_direction *
+        float speed_modifier = (is_gliding) ? 1.5f : 1.0f;
+
+        vel.x = last_direction * speed_modifier *
             Lerp(min_speed, max_speed, time_walking) * dt;
 
         vel.y += forces.y * dt * dt;
+        if (is_gliding)
+        {
+            vel.y = Clamp(vel.y, 0.0f, max_glide_fall);
+        }
 
         forces = Vector2Zero();
 
@@ -178,6 +191,10 @@ void PlayerSystem::AccumulateForces()
             vel.y < 0.0f && vel.y > -1.0f)
         {
             forces.y += gravity / 2.0f;
+        }
+        else if (is_gliding)
+        {
+            forces.y += gravity / 4.0f;
         }
         else
         {

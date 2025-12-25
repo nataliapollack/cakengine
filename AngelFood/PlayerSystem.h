@@ -28,8 +28,11 @@ private:
 
     float gravity;
 
+    float max_glide_fall;
+
     size_t jump_charges;
     size_t jump_counter;
 
     bool should_jump;
+    bool is_gliding;
 };
