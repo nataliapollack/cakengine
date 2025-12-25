@@ -25,6 +25,8 @@ void PlayerSystem::init()
     jump_impulse = 10.0f;
     gravity = 980.f;
 
+    jump_charges = 2;
+
     should_jump = false;
 
     gCoordinator.AddEventListener(
@@ -78,9 +80,12 @@ void PlayerSystem::update(float dt)
             should_jump = true;
             jump_buffering.start();
         }
-        if (should_jump && playuh.on_ground)
+        if (should_jump && 
+            (playuh.on_ground || jump_counter == (jump_charges - 1 )))
         {
             should_jump = false;
+
+            jump_counter -= 1;
 
             vel.y = -jump_impulse;
             playuh.on_ground = false;
@@ -135,6 +140,7 @@ void PlayerSystem::HitWall(Event& event)
                 vel.y = 0.0f;
 
                 playuh.on_ground = true;
+                jump_counter = jump_charges;
             }
             else if (vel.y < 0)
             {

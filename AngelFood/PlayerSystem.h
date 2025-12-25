@@ -28,5 +28,8 @@ private:
 
     float gravity;
 
+    size_t jump_charges;
+    size_t jump_counter;
+
     bool should_jump;
 };
