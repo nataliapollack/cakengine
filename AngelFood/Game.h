@@ -9,8 +9,15 @@ const enum OBJECT_TYPE
     DROPOFF
 };
 
+enum HOLDABLE_ITEMS
+{
+    NONE,
+    TEMP = 3
+};
+
 enum ASSETS
 {
+    HALO,
     PLAYER_IDLE,
     PLAYER_FALL,
     TEMP_ITEM,
@@ -26,6 +33,11 @@ namespace Events::Item::PickedUp
 {
     const ParamId ITEMID = "Events::Item::PickedUp::ITEMID"_hash;
     const ParamId OBJTYPE = "Events::Item::PickedUp::OBJTYPE"_hash;
+}
+
+namespace Events::Item::DroppedOff
+{
+    const ParamId ITEMID = "Events::Item::DroppedOff::ITEMID"_hash;
 }
 
 namespace Events::Collision {

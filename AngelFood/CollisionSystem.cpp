@@ -72,6 +72,16 @@ void CollisionSystem::CheckCollisions()
 
                         gCoordinator.SendEvent(item);
                     }
+
+                    // this is for items handling, you can ignore how i did this if you wanna do something quirky
+                    if (stats_j.type == DROPOFF)
+                    {
+                        auto& playuh = gCoordinator.GetComponent<player>(i);
+                        Event item(Events::Item::DROPPEDOFF);
+                        item.SetParam(Events::Item::DroppedOff::ITEMID, playuh.holding);
+
+                        gCoordinator.SendEvent(item);
+                    }
                 }
             }
         }

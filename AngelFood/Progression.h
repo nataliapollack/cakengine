@@ -8,8 +8,7 @@ struct collectable
 
 struct collecting
 {
-    bool complete;
-    OBJECT_TYPE item_id;
+    HOLDABLE_ITEMS item;
 };
 
 struct trapped_critter

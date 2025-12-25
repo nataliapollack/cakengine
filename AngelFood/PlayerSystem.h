@@ -10,6 +10,7 @@ public:
 
     void HitWall(Event& event);
     void PickedUpItem(Event& event);
+    void DroppedItem(Event& event);
 
 private:
     void AccumulateForces();

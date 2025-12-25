@@ -2,9 +2,11 @@
 
 void AssetManager::load_assets()
 {
-    textures[0] = LoadTexture("art/0.png");
-    textures[1] = LoadTexture("art/1.png");
-    textures[2] = LoadTexture("art/temp.png");
+    // playerr
+    textures[HALO] = LoadTexture("art/player/HALO.png");
+    textures[PLAYER_IDLE] = LoadTexture("art/player/PLAYER_IDLE.png");
+    textures[PLAYER_FALL] = LoadTexture("art/player/PLAYER_FALL.png");
+    textures[TEMP_ITEM] = LoadTexture("art/TEMP_ITEM.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)

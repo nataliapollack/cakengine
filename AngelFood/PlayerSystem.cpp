@@ -37,6 +37,8 @@ void PlayerSystem::init()
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Item::PICKEDUP, PlayerSystem::PickedUpItem));
+
+    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::DROPPEDOFF, PlayerSystem::DroppedItem));
 }
 
 void PlayerSystem::update(float dt)
@@ -212,4 +214,13 @@ void PlayerSystem::PickedUpItem(Event& event)
 
     playuh.holding = TEMP;
 
+}
+
+void PlayerSystem::DroppedItem(Event& event)
+{
+
+    auto& playuh = gCoordinator.GetComponent<player>(0);
+
+
+    playuh.holding = NONE;
 }

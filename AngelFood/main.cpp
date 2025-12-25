@@ -70,6 +70,10 @@ void set_system_signatures()
     sig.set(gCoordinator.GetComponentType<collidble>());
     gCoordinator.SetSystemSignature<CollisionSystem>(sig);
 
+    sig.reset();
+    sig.set(gCoordinator.GetComponentType<collecting>());
+    gCoordinator.SetSystemSignature<CollectingSystem>(sig);
+
 }
 
 int main()
@@ -92,7 +96,7 @@ int main()
     auto item_sys = gCoordinator.RegisterSystem<ItemSystem>();
     auto collision_sys = gCoordinator.RegisterSystem<CollisionSystem>();
     auto box_render_sys = gCoordinator.RegisterSystem<BoxRenderSystem>();
-
+    auto dropoff_sys = gCoordinator.RegisterSystem<CollectingSystem>();
 
     set_system_signatures();
 
@@ -142,23 +146,43 @@ int main()
         }
 
         // item
+        Entity item = gCoordinator.CreateEntity();
+        {
+            gCoordinator.AddComponent(
+                item,
+                render{ 1.0f, TEMP_ITEM});
+            gCoordinator.AddComponent(
+                item,
+                transform2D{ Vector2 {500.0f, 300.0f} });
+            gCoordinator.AddComponent(
+                item,
+                collectable{ false });
+            gCoordinator.AddComponent(
+                item,
+                collidble{Rectangle{200, 400, 100, 100 } });
+            gCoordinator.AddComponent(
+                item,
+                status{ true, true, ITEM });
+        }
+
+        // item colelctor
         ec = gCoordinator.CreateEntity();
         {
             gCoordinator.AddComponent(
                 ec,
-                render{ 1.0f, TEMP_ITEM});
+                box_render{  });
             gCoordinator.AddComponent(
                 ec,
-                transform2D{ Vector2 {500.0f, 300.0f} });
+                transform2D{ Vector2 {600.0f, 300.0f} });
             gCoordinator.AddComponent(
                 ec,
-                collectable{ false });
+                collecting{ TEMP });
             gCoordinator.AddComponent(
                 ec,
-                collidble{Rectangle{200, 400, 100, 100 } });
+                collidble{ Rectangle{200, 400, 100, 100 } });
             gCoordinator.AddComponent(
                 ec,
-                status{ true, true, ITEM });
+                status{ true, true, DROPOFF });
         }
     }
 
@@ -167,6 +191,7 @@ int main()
     player_movement_sys->init();
     camera_sys->init();
     item_sys->init();
+    dropoff_sys->init();
 
     // IN-GAME
     while (!WindowShouldClose())
@@ -192,8 +217,7 @@ int main()
 
             render_sys->draw();
 
-
-            //collision_sys->debug_draw_collisions();
+            collision_sys->debug_draw_collisions();
 
             camera_sys->EndCameraMode();
 

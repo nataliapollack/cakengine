@@ -1,4 +1,5 @@
 #pragma once
+#include "Game.h"
 
 enum PLAYER_STATES
 {
@@ -7,12 +8,6 @@ enum PLAYER_STATES
     JUMP,
     FALL, 
     FELL
-};
-
-enum HOLDABLE_ITEMS
-{
-    NONE,
-    TEMP = 2
 };
 
 struct player
