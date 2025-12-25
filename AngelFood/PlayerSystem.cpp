@@ -14,6 +14,7 @@ extern Coordinator gCoordinator;
 void PlayerSystem::init()
 {
     coyote_time = Timer(0.35f);
+    jump_buffering = Timer(0.1f);
 
     time_walking = 0.0f;
     time_to_accel = 1.0f;
@@ -23,6 +24,8 @@ void PlayerSystem::init()
 
     jump_impulse = 10.0f;
     gravity = 980.f;
+
+    should_jump = false;
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
@@ -69,11 +72,21 @@ void PlayerSystem::update(float dt)
             playuh.on_ground = false;
         }
 
-        if (IsKeyPressed(KEY_SPACE) && playuh.on_ground)
+        // Jumping
+        if (IsKeyPressed(KEY_SPACE))
         {
+            should_jump = true;
+            jump_buffering.start();
+        }
+        if (should_jump && playuh.on_ground)
+        {
+            should_jump = false;
+
             vel.y = -jump_impulse;
             playuh.on_ground = false;
         }
+        if (jump_buffering.update(dt))
+            should_jump = false;
 
         if (!FloatEquals(direction, 0.0f)) {
             time_walking = Clamp(time_walking + dt, 0.0f, time_to_accel);
@@ -155,10 +168,15 @@ void PlayerSystem::AccumulateForces()
 
         auto& playuh = gCoordinator.GetComponent<player>(entity);
 
-        if (!playuh.on_ground && IsKeyDown(KEY_SPACE) && vel.y == 0.0f)
+        if (!playuh.on_ground && IsKeyDown(KEY_SPACE) &&
+            vel.y < 0.0f && vel.y > -1.0f)
+        {
             forces.y += gravity / 2.0f;
+        }
         else
+        {
             forces.y += gravity;
+        }
     }
 }
 

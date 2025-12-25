@@ -15,6 +15,7 @@ private:
     void AccumulateForces();
 
     Timer coyote_time;
+    Timer jump_buffering;
 
     float time_walking;
 
@@ -26,4 +27,6 @@ private:
     float jump_impulse;
 
     float gravity;
+
+    bool should_jump;
 };
