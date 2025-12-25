@@ -150,6 +150,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="RenderSystem.h" />
+    <ClInclude Include="Timer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
