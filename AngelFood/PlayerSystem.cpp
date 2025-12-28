@@ -11,6 +11,8 @@
 
 extern Coordinator gCoordinator;
 
+constexpr float JUMP_SCALE = 0.03f;
+
 void PlayerSystem::init()
 {
     spawn_pos = Vector2{ 210, 270 };
@@ -24,14 +26,23 @@ void PlayerSystem::init()
     max_speed = 400.0f;
     min_speed = 100.0f;
 
-    jump_impulse = 7.0f;
-    gravity = 980.f;
+    gravity = 3000.f;
+
+    //jump_impulse = 01.0f;
+    jump_height = { 2.5f, 1.5f };
+    jump_time = 0.4f;
+
+    for (size_t i = 0; i < jump_height.size(); ++i)
+    {
+        jump_impulse[i] = sqrtf(2.0f * gravity * JUMP_SCALE * jump_height[i]);
+    }
 
     max_glide_fall = 1.0f;
 
     jump_charges = 2;
 
     should_jump = false;
+    is_jumping = false;
     is_gliding = false;
 
     gCoordinator.AddEventListener(
@@ -46,19 +57,20 @@ void PlayerSystem::init()
 void PlayerSystem::update(float dt)
 {
     AccumulateForces();
-   // std::cout << forces.y << "\n";
+
     // there should only ever be one in here lol
     for (auto& entity : entities_list)
     {
         auto& transf = gCoordinator.GetComponent<transform2D>(entity);
         auto& playuh = gCoordinator.GetComponent<player>(entity);
         auto& phy = gCoordinator.GetComponent<physics>(entity);
+        auto& BADDDDD = gCoordinator.GetComponent<render>(entity);
+        auto& BADDDDD2 = gCoordinator.GetComponent<collidble>(entity);
 
         float direction = 0.0f;
         static float last_direction = 0.0f;
 
         auto& forces = phy.f;
-        //std::cout << forces.y << "\n";
 
         if (IsKeyDown(KEY_LEFT))
         {
@@ -86,23 +98,7 @@ void PlayerSystem::update(float dt)
             vel.y > 0.0f;
 
         // Jumping
-        if (IsKeyPressed(KEY_SPACE))
-        {
-            should_jump = true;
-            jump_buffering.start();
-        }
-        if (should_jump && 
-            (playuh.on_ground || jump_counter == (jump_charges - 1 )))
-        {
-            should_jump = false;
-
-            jump_counter -= 1;
-
-            vel.y = -jump_impulse;
-            playuh.on_ground = false;
-        }
-        if (jump_buffering.update(dt))
-            should_jump = false;
+        ProcessJump(entity, dt);
 
         if (!FloatEquals(direction, 0.0f)) {
             time_walking = Clamp(time_walking + dt, 0.0f, time_to_accel);
@@ -135,6 +131,46 @@ void PlayerSystem::update(float dt)
     }
 }
 
+void PlayerSystem::ProcessJump(Entity entity, float dt)
+{
+    auto& playuh = gCoordinator.GetComponent<player>(entity);
+    auto& phy = gCoordinator.GetComponent<physics>(entity);
+
+    auto& vel = phy.vel;
+
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        should_jump = true;
+        jump_buffering.start();
+    }
+
+    if (should_jump &&
+        (playuh.on_ground || jump_counter == (jump_charges - 1)))
+    {
+        should_jump = false;
+
+        vel.y = -jump_impulse.at( jump_charges - jump_counter );
+        jump_counter -= 1;
+
+        playuh.on_ground = false;
+
+        is_jumping = true;
+        jump_timer = 0.0f;
+    }
+
+    if (is_jumping) jump_timer += dt;
+    if (IsKeyReleased(KEY_SPACE))
+    {
+        if (jump_timer < jump_time)
+        {
+            vel.y /= 2.0f;
+        }
+    }
+
+    if (jump_buffering.update(dt))
+        should_jump = false;
+}
+
 void PlayerSystem::HitWall(Event& event)
 {
     for (auto& entity : entities_list)
@@ -158,6 +194,8 @@ void PlayerSystem::HitWall(Event& event)
 
                 playuh.on_ground = true;
                 jump_counter = jump_charges;
+
+                is_jumping = false;
             }
             else if (vel.y < 0)
             {

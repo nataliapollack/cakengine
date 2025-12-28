@@ -8,13 +8,14 @@ public:
     void init();
     void update(float dt);
 
-    void HitWall(Event& event);
     void PickedUpItem(Event& event);
     void DroppedItem(Event& event);
 
     void ResetPlayerPos();
 
 private:
+    void ProcessJump(Entity entity, float dt);
+    void HitWall(Event& event);
     void AccumulateForces();
 
     Timer coyote_time;
@@ -27,7 +28,11 @@ private:
     float max_speed;
     float min_speed;
 
-    float jump_impulse;
+    std::array<float, 2> jump_impulse;
+    std::array<float, 2> jump_height;
+    float jump_time;
+
+    float jump_timer;
 
     float gravity;
 
@@ -37,6 +42,7 @@ private:
     size_t jump_counter;
 
     bool should_jump;
+    bool is_jumping;
     bool is_gliding;
 
     Vector2 spawn_pos;
