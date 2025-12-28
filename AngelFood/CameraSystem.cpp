@@ -10,7 +10,7 @@ void CameraSystem::init()
 {
     gCamera = { 0 };
     gCamera.rotation = 0.0f;
-    gCamera.zoom = 1.0f;
+    gCamera.zoom = 0.670320094f;
     state = FOLLOW_PLAYER;
 
     for (auto& entity : entities_list)
@@ -37,22 +37,22 @@ void CameraSystem::update()
             if (IsKeyPressed(KEY_A))
             {
                 state = FREEROAM;
-                gCamera.target.x -= 2;
+                gCamera.target.x -= 5;
             }
             if (IsKeyPressed(KEY_D))
             {
                 state = FREEROAM;
-                gCamera.target.x += 2;
+                gCamera.target.x += 5;
             }
             if (IsKeyPressed(KEY_W))
             {
                 state = FREEROAM;
-                gCamera.target.y -= 2;
+                gCamera.target.y -= 5;
             }
             if (IsKeyPressed(KEY_S))
             {
                 state = FREEROAM;
-                gCamera.target.y += 2;
+                gCamera.target.y += 5;
             }
 
         }
@@ -61,19 +61,19 @@ void CameraSystem::update()
         {
             if (IsKeyDown(KEY_A))
             {
-                gCamera.target.x -= 2;
+                gCamera.target.x -= 5;
             }
             if (IsKeyDown(KEY_D))
             {
-                gCamera.target.x += 2;
+                gCamera.target.x += 5;
             }
             if (IsKeyDown(KEY_W))
             {
-                gCamera.target.y -= 2;
+                gCamera.target.y -= 5;
             }
             if (IsKeyDown(KEY_S))
             {
-                gCamera.target.y += 2;
+                gCamera.target.y += 5;
             }
         }
 

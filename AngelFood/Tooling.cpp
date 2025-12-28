@@ -256,42 +256,45 @@ void Tooling::update()
 
     if (tooling_on)
     {
-        for (auto& entity : entities_list)
+        if (!mouseMoveRect && !mouseScaleMode)
         {
-            if (!gCoordinator.HasComponent<box_render>(entity))
-                continue;
-
-            Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
-
+            for (auto& entity : entities_list)
             {
-                auto& collision = gCoordinator.GetComponent<collidble>(entity);
-                Rectangle rec = collision.box;
-                Rectangle rec2 =  { rec.x + rec.width - MOUSE_SCALE_MARK_SIZE, rec.y + rec.height - MOUSE_SCALE_MARK_SIZE, MOUSE_SCALE_MARK_SIZE, MOUSE_SCALE_MARK_SIZE};
+                if (!gCoordinator.HasComponent<box_render>(entity))
+                    continue;
 
-                
-                if (CheckCollisionPointRec(mouse_pos, rec2))
+                Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
                 {
-                    current_rec = rec;
-                    mouseScaleReady = true;
-                    current_en = entity;
-                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                    auto& collision = gCoordinator.GetComponent<collidble>(entity);
+                    Rectangle rec = collision.box;
+                    Rectangle rec2 = { rec.x + rec.width - MOUSE_SCALE_MARK_SIZE, rec.y + rec.height - MOUSE_SCALE_MARK_SIZE, MOUSE_SCALE_MARK_SIZE, MOUSE_SCALE_MARK_SIZE };
+
+
+                    if (CheckCollisionPointRec(mouse_pos, rec2))
                     {
-                        mouseScaleMode = true;
-                        continue;
+                        current_rec = rec;
+                        mouseScaleReady = true;
+                        current_en = entity;
+                        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                        {
+                            mouseScaleMode = true;
+                            continue;
+                        }
                     }
-                }
-                else mouseScaleReady = false;
+                    else mouseScaleReady = false;
 
-                if (CheckCollisionPointRec(mouse_pos, rec))
-                {
-                    current_rec = rec;
-                    current_en = entity;
-                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                    if (CheckCollisionPointRec(mouse_pos, rec))
                     {
-                        mouseMoveRect = true;
+                        current_rec = rec;
+                        current_en = entity;
+                        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                        {
+                            mouseMoveRect = true;
 
-                        mOffset = Vector2Subtract(Vector2{rec.x, rec.y}, mouse_pos);
-                        continue;
+                            mOffset = Vector2Subtract(Vector2{ rec.x, rec.y }, mouse_pos);
+                            continue;
+                        }
                     }
                 }
             }
