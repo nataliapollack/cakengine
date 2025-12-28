@@ -29,7 +29,7 @@ void PlayerSystem::init()
     gravity = 3000.f;
 
     //jump_impulse = 01.0f;
-    jump_height = { 2.5f, 1.5f };
+    jump_height = { 3.0f, 1.5f };
     jump_time = 0.4f;
 
     for (size_t i = 0; i < jump_height.size(); ++i)
@@ -163,7 +163,7 @@ void PlayerSystem::ProcessJump(Entity entity, float dt)
     {
         if (jump_timer < jump_time)
         {
-            vel.y /= 2.0f;
+            vel.y /= 1.5f;
         }
     }
 
