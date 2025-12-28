@@ -20,6 +20,7 @@ private:
 
     Timer coyote_time;
     Timer jump_buffering;
+    Timer glide_time;
 
     float time_walking;
 
@@ -48,6 +49,7 @@ private:
     bool should_jump;
     bool is_jumping;
     bool is_gliding;
+    bool can_glide;
 
     Vector2 spawn_pos;
 };

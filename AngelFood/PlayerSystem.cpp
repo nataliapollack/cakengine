@@ -19,6 +19,7 @@ void PlayerSystem::init()
 
     coyote_time = Timer(0.35f);
     jump_buffering = Timer(0.1f);
+    glide_time = Timer(3.0f);
 
     time_walking = 0.0f;
     time_to_accel = 1.0f;
@@ -94,8 +95,21 @@ void PlayerSystem::update(float dt)
         }
 
         // Gliding
-        is_gliding = IsKeyDown(KEY_LEFT_SHIFT) && !playuh.on_ground && 
-            vel.y > 0.0f;
+        if (IsKeyPressed(KEY_LEFT_SHIFT) && !glide_time.is_running())
+        {
+            glide_time.start();
+            can_glide = true;
+        }
+        if (IsKeyReleased(KEY_LEFT_SHIFT) && glide_time.is_running())
+        {
+            glide_time.stop();
+        }
+
+        if (glide_time.update(dt))
+            can_glide = false;
+
+        is_gliding = IsKeyDown(KEY_LEFT_SHIFT) && !playuh.on_ground &&
+            vel.y > 0.0f && can_glide;
 
         // Jumping
         ProcessJump(entity, dt);
@@ -130,8 +144,9 @@ void PlayerSystem::update(float dt)
 
         transf.pos = Vector2Add(transf.pos, vel);
 
-        //float last_x = transf.pos.x;
-
+        float last_x = transf.pos.x;
+        transf.pos.x = Lerp(transf.pos.x, transf.pos.x + x_correction, 0.5f);
+        x_correction = Lerp(x_correction, 0.0f, 0.5f);
     }
 }
 
@@ -191,9 +206,9 @@ void PlayerSystem::HitWall(Event& event)
 
         auto& coll = gCoordinator.GetComponent<collidble>(entity);
 
-        if (overlap.height < overlap.width)
+        if (overlap.height <= overlap.width)
         {
-            if (vel.y > 0) // floor
+            if (vel.y > 0 && overlap.y > transf.pos.y) // floor
             {
                 transf.pos.y -= overlap.height;
                 vel.y = 0.0f;
@@ -209,11 +224,11 @@ void PlayerSystem::HitWall(Event& event)
                 if (overlap.width < coll.box.width * collision_forgiveness)
                 {
                     if (overlap.x > transf.pos.x)
-                        //x_correction = -overlap.width;
-                        transf.pos.x -= overlap.width;
+                        x_correction = -overlap.width;
+                        //transf.pos.x -= overlap.width;
                     else
-                        //x_correction = overlap.width;
-                        transf.pos.x += overlap.width;
+                        x_correction = overlap.width;
+                        //transf.pos.x += overlap.width;
                 }
                 else // or not
                 {
