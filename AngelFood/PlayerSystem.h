@@ -38,6 +38,10 @@ private:
 
     float max_glide_fall;
 
+    float collision_forgiveness = 0.4f;
+
+    float x_correction = 0.0f;
+
     size_t jump_charges;
     size_t jump_counter;
 

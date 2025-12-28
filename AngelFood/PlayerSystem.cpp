@@ -100,6 +100,7 @@ void PlayerSystem::update(float dt)
         // Jumping
         ProcessJump(entity, dt);
 
+        // Walking
         if (!FloatEquals(direction, 0.0f)) {
             time_walking = Clamp(time_walking + dt, 0.0f, time_to_accel);
 
@@ -114,7 +115,7 @@ void PlayerSystem::update(float dt)
         if (FloatEquals(speed, min_speed))
             last_direction = 0.0f;
 
-        float speed_modifier = (is_gliding) ? 1.5f : 1.0f;
+        float speed_modifier = (!playuh.on_ground) ? 1.5f : 1.0f;
 
         vel.x = last_direction * speed_modifier *
             Lerp(min_speed, max_speed, time_walking) * dt;
@@ -128,6 +129,9 @@ void PlayerSystem::update(float dt)
         forces = Vector2Zero();
 
         transf.pos = Vector2Add(transf.pos, vel);
+
+        //float last_x = transf.pos.x;
+
     }
 }
 
@@ -185,9 +189,11 @@ void PlayerSystem::HitWall(Event& event)
         auto& transf = gCoordinator.GetComponent<transform2D>(entity);
         auto& playuh = gCoordinator.GetComponent<player>(entity);
 
+        auto& coll = gCoordinator.GetComponent<collidble>(entity);
+
         if (overlap.height < overlap.width)
         {
-            if (vel.y > 0)
+            if (vel.y > 0) // floor
             {
                 transf.pos.y -= overlap.height;
                 vel.y = 0.0f;
@@ -197,10 +203,23 @@ void PlayerSystem::HitWall(Event& event)
 
                 is_jumping = false;
             }
-            else if (vel.y < 0)
+            else if (vel.y < 0) // roof
             {
-                transf.pos.y += overlap.height;
-                vel.y = 0.0f;
+                // collision forgiveness
+                if (overlap.width < coll.box.width * collision_forgiveness)
+                {
+                    if (overlap.x > transf.pos.x)
+                        //x_correction = -overlap.width;
+                        transf.pos.x -= overlap.width;
+                    else
+                        //x_correction = overlap.width;
+                        transf.pos.x += overlap.width;
+                }
+                else // or not
+                {
+                    transf.pos.y += overlap.height;
+                    vel.y = 0.0f;
+                }
             }
         }
         else
