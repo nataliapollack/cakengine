@@ -11,40 +11,68 @@
 
 extern Coordinator gCoordinator;
 
-constexpr float JUMP_SCALE = 0.03f;
+constexpr float JUMP_SCALE = 0.045f;
 
 void PlayerSystem::init()
 {
     spawn_pos = Vector2{ 210, 270 };
 
-    coyote_time = Timer(0.35f);
-    jump_buffering = Timer(0.1f);
-    glide_time = Timer(3.0f);
+    m_walk =
+    {
+        1.0f,
+        0.25f,
+        500.0f,
+        300.0f,
+        0.0f
+    };
 
-    time_walking = 0.0f;
-    time_to_accel = 1.0f;
-    time_to_decel = 0.25f;
-    max_speed = 400.0f;
-    min_speed = 100.0f;
+    m_jump =
+    {
+        Timer(0.35f),
+        Timer(0.1f),
+        {},
+        { 3.0f, 1.5f },
+        0.4f,
+        0.0f,
+        false,
+        false
+    };
+
+    m_glide =
+    {
+        Timer(3.0f),
+        1.0f,
+        false,
+        false
+    };
 
     gravity = 3000.f;
 
-    //jump_impulse = 01.0f;
-    jump_height = { 3.0f, 1.5f };
-    jump_time = 0.4f;
+    //coyote_time = Timer(0.35f);
+    //jump_buffering = Timer(0.1f);
+    //glide_time = Timer(3.0f);
 
-    for (size_t i = 0; i < jump_height.size(); ++i)
+    //time_walking = 0.0f;
+    //time_to_accel = 1.0f;
+    //time_to_decel = 0.25f;
+    //max_speed = 400.0f;
+    //min_speed = 200.0f;
+
+    //jump_height = { 3.0f, 1.5f };
+    //jump_time = 0.4f;
+    //jump_charges = 2;
+
+    //should_jump = false;
+    //is_jumping = false;
+
+    for (size_t i = 0; i < m_jump.jump_height.size(); ++i)
     {
-        jump_impulse[i] = sqrtf(2.0f * gravity * JUMP_SCALE * jump_height[i]);
+        m_jump.jump_impulse[i] =
+            sqrtf(2.0f * gravity * JUMP_SCALE * m_jump.jump_height[i]);
     }
 
-    max_glide_fall = 1.0f;
-
-    jump_charges = 2;
-
-    should_jump = false;
-    is_jumping = false;
-    is_gliding = false;
+    //max_glide_fall = 1.0f;
+    //is_gliding = false;
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
@@ -52,10 +80,30 @@ void PlayerSystem::init()
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Item::PICKEDUP, PlayerSystem::PickedUpItem));
 
-    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::DROPPEDOFF, PlayerSystem::DroppedItem));
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Item::DROPPEDOFF, PlayerSystem::DroppedItem));
+
+    m_time = std::make_unique<TimeManager>();
 }
 
 void PlayerSystem::update(float dt)
+{
+    m_time->increment();
+
+    for (auto& entity : entities_list)
+    {
+        WalkInput();
+        JumpInput(entity);
+        GlideInput(entity);
+    }
+
+    while (m_time->needsFixedUpdate())
+    {
+        fixedUpdate();
+    }
+}
+
+void PlayerSystem::fixedUpdate()
 {
     AccumulateForces();
 
@@ -65,79 +113,66 @@ void PlayerSystem::update(float dt)
         auto& transf = gCoordinator.GetComponent<transform2D>(entity);
         auto& playuh = gCoordinator.GetComponent<player>(entity);
         auto& phy = gCoordinator.GetComponent<physics>(entity);
-        auto& BADDDDD = gCoordinator.GetComponent<render>(entity);
-        auto& BADDDDD2 = gCoordinator.GetComponent<collidble>(entity);
 
-        float direction = 0.0f;
         static float last_direction = 0.0f;
 
         auto& forces = phy.f;
 
-        if (IsKeyDown(KEY_LEFT))
-        {
-            direction -= 1.0f;
-        }
-        if (IsKeyDown(KEY_RIGHT))
-        {
-            direction += 1.0f;
-        }
-
         auto& vel = phy.vel;
 
-        if (playuh.on_ground && vel.y > 0.0f && !coyote_time.is_running())
+        if (playuh.on_ground && vel.y > 0.0f
+            && !m_jump.coyote_time.is_running())
         {
-            coyote_time.start();
+            m_jump.coyote_time.start();
         }
 
-        if (coyote_time.update(dt))
+        if (m_jump.coyote_time.update(m_time->getFixedDt()))
         {
             playuh.on_ground = false;
         }
 
         // Gliding
-        if (IsKeyPressed(KEY_LEFT_SHIFT) && !glide_time.is_running())
+        if (IsKeyPressed(KEY_LEFT_SHIFT) && !m_glide.glide_time.is_running())
         {
-            glide_time.start();
-            can_glide = true;
+            m_glide.glide_time.start();
+            m_glide.can_glide = true;
         }
-        if (IsKeyReleased(KEY_LEFT_SHIFT) && glide_time.is_running())
+        if (IsKeyReleased(KEY_LEFT_SHIFT) && m_glide.glide_time.is_running())
         {
-            glide_time.stop();
+            m_glide.glide_time.stop();
         }
 
-        if (glide_time.update(dt))
-            can_glide = false;
-
-        is_gliding = IsKeyDown(KEY_LEFT_SHIFT) && !playuh.on_ground &&
-            vel.y > 0.0f && can_glide;
-
-        // Jumping
-        ProcessJump(entity, dt);
+        if (m_glide.glide_time.update(m_time->getFixedDt()))
+            m_glide.can_glide = false;
 
         // Walking
-        if (!FloatEquals(direction, 0.0f)) {
-            time_walking = Clamp(time_walking + dt, 0.0f, time_to_accel);
+        if (!FloatEquals(m_walk.direction, 0.0f)) {
+            m_walk.time_walking = Clamp(
+                m_walk.time_walking + m_time->getFixedDt(), 
+                0.0f, m_walk.time_to_accel);
 
-            last_direction = direction;
+            last_direction = m_walk.direction;
         }
         else {
-            time_walking = Clamp(time_walking - dt, 0.0f, time_to_decel);
+            m_walk.time_walking = 
+                Clamp(m_walk.time_walking - m_time->getFixedDt(), 
+                0.0f, m_walk.time_to_decel);
         }
 
-        float speed = Lerp(min_speed, max_speed, time_walking);
+        float speed = 
+            Lerp(m_walk.min_speed, m_walk.max_speed, m_walk.time_walking);
 
-        if (FloatEquals(speed, min_speed))
+        if (FloatEquals(speed, m_walk.min_speed) && !m_glide.is_gliding)
             last_direction = 0.0f;
 
         float speed_modifier = (!playuh.on_ground) ? 1.5f : 1.0f;
 
-        vel.x = last_direction * speed_modifier *
-            Lerp(min_speed, max_speed, time_walking) * dt;
+        vel.x = last_direction * speed_modifier * speed * m_time->getFixedDt();
 
-        vel.y += forces.y * dt * dt;
-        if (is_gliding)
+        vel.y += forces.y * m_time->getFixedDt() * m_time->getFixedDt();
+        if (m_glide.is_gliding)
         {
-            vel.y = Clamp(vel.y, 0.0f, max_glide_fall);
+            vel.y = Clamp(vel.y, 0.0f, m_glide.max_glide_fall);
         }
 
         forces = Vector2Zero();
@@ -150,7 +185,20 @@ void PlayerSystem::update(float dt)
     }
 }
 
-void PlayerSystem::ProcessJump(Entity entity, float dt)
+void PlayerSystem::WalkInput()
+{
+    m_walk.direction = 0.0f;
+    if (IsKeyDown(KEY_LEFT))
+    {
+        m_walk.direction -= 1.0f;
+    }
+    if (IsKeyDown(KEY_RIGHT))
+    {
+        m_walk.direction += 1.0f;
+    }
+}
+
+void PlayerSystem::JumpInput(Entity entity)
 {
     auto& playuh = gCoordinator.GetComponent<player>(entity);
     auto& phy = gCoordinator.GetComponent<physics>(entity);
@@ -159,35 +207,47 @@ void PlayerSystem::ProcessJump(Entity entity, float dt)
 
     if (IsKeyPressed(KEY_SPACE))
     {
-        should_jump = true;
-        jump_buffering.start();
+        m_jump.should_jump = true;
+        m_jump.jump_buffering.start();
     }
 
-    if (should_jump &&
-        (playuh.on_ground || jump_counter == (jump_charges - 1)))
+    if (m_jump.should_jump &&
+        (playuh.on_ground || m_jump.jump_counter == (m_jump.jump_charges - 1)))
     {
-        should_jump = false;
+        m_jump.should_jump = false;
 
-        vel.y = -jump_impulse.at( jump_charges - jump_counter );
-        jump_counter -= 1;
+        vel.y = -m_jump.jump_impulse.at(
+            m_jump.jump_charges - m_jump.jump_counter );
+        m_jump.jump_counter -= 1;
 
         playuh.on_ground = false;
 
-        is_jumping = true;
-        jump_timer = 0.0f;
+        m_jump.is_jumping = true;
+        m_jump.jump_timer = 0.0f;
     }
 
-    if (is_jumping) jump_timer += dt;
+    if (m_jump.is_jumping) m_jump.jump_timer += m_time->getFixedDt();
     if (IsKeyReleased(KEY_SPACE))
     {
-        if (jump_timer < jump_time)
+        if (m_jump.jump_timer < m_jump.jump_time)
         {
             vel.y /= 1.5f;
         }
     }
 
-    if (jump_buffering.update(dt))
-        should_jump = false;
+    if (m_jump.jump_buffering.update(m_time->getFixedDt()))
+        m_jump.should_jump = false;
+}
+
+void PlayerSystem::GlideInput(Entity entity)
+{
+    auto& playuh = gCoordinator.GetComponent<player>(entity);
+    auto& phy = gCoordinator.GetComponent<physics>(entity);
+
+    auto& vel = phy.vel;
+
+    m_glide.is_gliding = IsKeyDown(KEY_LEFT_SHIFT) && !playuh.on_ground &&
+        vel.y > 0.0f && m_glide.can_glide;
 }
 
 void PlayerSystem::HitWall(Event& event)
@@ -214,9 +274,9 @@ void PlayerSystem::HitWall(Event& event)
                 vel.y = 0.0f;
 
                 playuh.on_ground = true;
-                jump_counter = jump_charges;
+                m_jump.jump_counter = m_jump.jump_charges;
 
-                is_jumping = false;
+                m_jump.is_jumping = false;
             }
             else if (vel.y < 0) // roof
             {
@@ -268,7 +328,7 @@ void PlayerSystem::AccumulateForces()
         {
             forces.y += gravity / 2.0f;
         }
-        else if (is_gliding)
+        else if (m_glide.is_gliding)
         {
             forces.y += gravity / 4.0f;
         }
@@ -311,3 +371,40 @@ void PlayerSystem::ResetPlayerPos()
         transf.pos = spawn_pos;
     }
 }
+
+// Time Manager  -------------------------------------------------------------
+
+using namespace std::chrono;
+
+TimeManager::TimeManager()
+    : m_lastTime(steady_clock::now()), m_currTime(steady_clock::now()),
+      m_timeTaken(), m_accumulator(0.0f), m_time(0.0f), m_deltaTime(0.0f) {}
+
+void TimeManager::increment()
+{
+    m_currTime = steady_clock::now();
+    m_timeTaken = m_currTime - m_lastTime;
+    m_deltaTime = static_cast<float>(m_timeTaken.count()) *
+        steady_clock::period::num / steady_clock::period::den;
+    m_lastTime = m_currTime;
+    m_accumulator += m_deltaTime;
+}
+
+bool TimeManager::needsFixedUpdate() {
+    const bool result = m_accumulator >= m_fixedDt;
+
+    if (result) {
+        m_accumulator -= m_fixedDt;
+        m_time += m_fixedDt;
+    }
+
+    return result;
+}
+
+void TimeManager::resetLastTime() { m_lastTime = steady_clock::now(); }
+
+const float TimeManager::getFixedDt() const { return m_fixedDt; }
+
+const float TimeManager::getDeltaTime() const { return m_deltaTime; }
+
+const float TimeManager::getTotalTime() const { return m_time; }
