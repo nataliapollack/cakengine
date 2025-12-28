@@ -56,6 +56,17 @@ public:
         system_manager->EntitySignatureChanged(en, signature);
     }
     template<typename T>
+    bool HasComponent(Entity en)
+    {
+        auto signature = entity_manager->GetSignature(en);
+
+        if (signature[component_manager->GetComponentType<T>()])
+        {
+            return true;
+        }
+        return false;
+    }
+    template<typename T>
     T& GetComponent(Entity en)
     {
         return component_manager->GetComponent<T>(en);

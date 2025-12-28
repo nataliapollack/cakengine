@@ -18,6 +18,6 @@ public:
     void EndCameraMode();
 
 private:
-    Camera2D camera;
+   // Camera2D camera;
     CAMERA_STATES state;
 };

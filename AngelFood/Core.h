@@ -17,7 +17,6 @@ struct render
 struct box_render
 {
     Vector2 dimensions;
-    Color color;
 };
 
 struct animate

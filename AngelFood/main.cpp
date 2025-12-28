@@ -1,5 +1,7 @@
 #include "Coordinator.hpp"
 #include "raylib.h"
+#include "rlgl.h"
+#include "raymath.h"
 
 // systems
 #include "RenderSystem.h"
@@ -7,6 +9,7 @@
 #include "CameraSystem.h"
 #include "ItemSystem.h"
 #include "CollisionSystem.h"
+#include "Tooling.h"
 
 
 // components
@@ -19,6 +22,9 @@
 
 Coordinator gCoordinator;
 AssetManager gAssetMngr;
+
+//TEMP SORRY
+Camera2D gCamera;
 
 void register_components()
 {
@@ -63,17 +69,22 @@ void set_system_signatures()
     sig.reset();
 
     sig.set(gCoordinator.GetComponentType<collectable>());
- //   sig.set(gCoordinator.GetComponentType<collecting>());
     gCoordinator.SetSystemSignature<ItemSystem>(sig);
 
     sig.reset();
+
     sig.set(gCoordinator.GetComponentType<collidble>());
     gCoordinator.SetSystemSignature<CollisionSystem>(sig);
 
     sig.reset();
+
     sig.set(gCoordinator.GetComponentType<collecting>());
     gCoordinator.SetSystemSignature<CollectingSystem>(sig);
 
+    sig.reset();
+
+    sig.set(gCoordinator.GetComponentType<status>());
+    gCoordinator.SetSystemSignature<Tooling>(sig);
 }
 
 int main()
@@ -98,93 +109,64 @@ int main()
     auto box_render_sys = gCoordinator.RegisterSystem<BoxRenderSystem>();
     auto dropoff_sys = gCoordinator.RegisterSystem<CollectingSystem>();
 
+    auto tooling_sys = gCoordinator.RegisterSystem<Tooling>();
+
+
+    tooling_sys->init();
+
     set_system_signatures();
 
-    // object placer heree until i rlly like add some way to do player state mngr...
-    {
-        // player
-        int ec = gCoordinator.CreateEntity();
-        {
-            gCoordinator.AddComponent(
-                ec,
-                render{ 0.5f, PLAYER_IDLE});
-            gCoordinator.AddComponent(
-                ec,
-                transform2D{ Vector2 {200.0f, 100.0f} });
-            gCoordinator.AddComponent(
-                ec,
-                player{ true, NONE });
-            gCoordinator.AddComponent(
-                ec,
-                collidble{ Rectangle{200, 300, 100, 100 } });
-            gCoordinator.AddComponent(
-                ec,
-                status{ true, true, PLAYER });
-            gCoordinator.AddComponent(
-                ec,
-                physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
-            );
-        }
+    tooling_sys->deserialize();
 
-        // floor...
-        ec = gCoordinator.CreateEntity();
-        {
-            float w = GetScreenWidth();
-            float y = GetScreenHeight();
-            gCoordinator.AddComponent(
-                ec,
-                box_render{ w, 100, BLACK });
-            gCoordinator.AddComponent(
-                ec,
-                transform2D{ Vector2 {0, 500} });
-            gCoordinator.AddComponent(
-                ec,
-                collidble{ Rectangle{0, y - 100, w, 100 } });
-            gCoordinator.AddComponent(
-                ec,
-                status{ true, true, WALL });
-        }
+    ////// object placer heree until i rlly like add some way to do player state mngr...
+    //  {
+    //      // player
+    //      int ec = gCoordinator.CreateEntity();
+    //      {
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              render{ 0.5f, PLAYER_IDLE});
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              transform2D{ Vector2 {200.0f, 100.0f} });
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              player{ true, NONE });
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              collidble{ Rectangle{200, 300, 100, 100 } });
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              status{ true, true, PLAYER });
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
+    //          );
+    //      }
 
-        // item
-        Entity item = gCoordinator.CreateEntity();
-        {
-            gCoordinator.AddComponent(
-                item,
-                render{ 1.0f, TEMP_ITEM});
-            gCoordinator.AddComponent(
-                item,
-                transform2D{ Vector2 {500.0f, 300.0f} });
-            gCoordinator.AddComponent(
-                item,
-                collectable{ false });
-            gCoordinator.AddComponent(
-                item,
-                collidble{Rectangle{200, 400, 100, 100 } });
-            gCoordinator.AddComponent(
-                item,
-                status{ true, true, ITEM });
-        }
+    //       //floor...
+    //      ec = gCoordinator.CreateEntity();
+    //      {
+    //          float w = GetScreenWidth();
+    //          float y = GetScreenHeight();
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              box_render{ w, 100 });
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              transform2D{ Vector2 {0, 500} });
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              collidble{ Rectangle{0, y - 100, w, 100 } });
+    //          gCoordinator.AddComponent(
+    //              ec,
+    //              status{ true, true, WALL });
+    //      }
 
-        // item colelctor
-        ec = gCoordinator.CreateEntity();
-        {
-            gCoordinator.AddComponent(
-                ec,
-                box_render{  });
-            gCoordinator.AddComponent(
-                ec,
-                transform2D{ Vector2 {600.0f, 300.0f} });
-            gCoordinator.AddComponent(
-                ec,
-                collecting{ TEMP });
-            gCoordinator.AddComponent(
-                ec,
-                collidble{ Rectangle{200, 400, 100, 100 } });
-            gCoordinator.AddComponent(
-                ec,
-                status{ true, true, DROPOFF });
-        }
-    }
+    //  tooling_sys->serialize();
+    //  }
+
+//    tooling_sys->serialize();
 
     render_sys->init();
     box_render_sys->init();
@@ -200,24 +182,55 @@ int main()
 
         // UPDATE
         {
-            player_movement_sys->update(deltaTime);
-            collision_sys->CheckCollisions();
-            camera_sys->update();
-        }
+            if (!tooling_sys->GetToolStatus())
+            {
+                player_movement_sys->update(deltaTime);
+                collision_sys->CheckCollisions();
+            }
 
+            camera_sys->update();
+            tooling_sys->update();
+
+            // hard coded resett
+            if (IsKeyPressed(KEY_TWO))
+            {
+                player_movement_sys->ResetPlayerPos();
+            }
+        }
 
         // DRAW
         {
             BeginDrawing();
 
+            if (tooling_sys->GetToolStatus())
+            {
+                ClearBackground(DARKGRAY);
+            }
+            else
+            {
+                ClearBackground(DARKBLUE);
+            }
+
             camera_sys->BeginCameraMode();
-            ClearBackground(SKYBLUE);
+
+
+            rlPushMatrix();
+                rlTranslatef(0, 25 * 50, 0);
+                rlRotatef(90, 1, 0, 0);
+                DrawGrid(500, 100);
+            rlPopMatrix();
+
             
             box_render_sys->draw();
 
             render_sys->draw();
 
-            collision_sys->debug_draw_collisions();
+            if (tooling_sys->GetToolStatus())
+            {
+                tooling_sys->draw();
+            }
+
+           // collision_sys->debug_draw_collisions();
 
             camera_sys->EndCameraMode();
 

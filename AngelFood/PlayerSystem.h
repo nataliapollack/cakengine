@@ -12,6 +12,8 @@ public:
     void PickedUpItem(Event& event);
     void DroppedItem(Event& event);
 
+    void ResetPlayerPos();
+
 private:
     void AccumulateForces();
 
@@ -36,4 +38,6 @@ private:
 
     bool should_jump;
     bool is_gliding;
+
+    Vector2 spawn_pos;
 };

@@ -13,6 +13,8 @@ extern Coordinator gCoordinator;
 
 void PlayerSystem::init()
 {
+    spawn_pos = Vector2{ 210, 270 };
+
     coyote_time = Timer(0.35f);
     jump_buffering = Timer(0.1f);
 
@@ -22,7 +24,7 @@ void PlayerSystem::init()
     max_speed = 400.0f;
     min_speed = 100.0f;
 
-    jump_impulse = 10.0f;
+    jump_impulse = 7.0f;
     gravity = 980.f;
 
     max_glide_fall = 1.0f;
@@ -223,4 +225,17 @@ void PlayerSystem::DroppedItem(Event& event)
 
 
     playuh.holding = NONE;
+}
+
+void PlayerSystem::ResetPlayerPos()
+{
+    for (auto& entity : entities_list)
+    {
+        auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+        auto& phy = gCoordinator.GetComponent<physics>(entity);
+
+        phy.f = Vector2{ 0,0 };
+        phy.vel = Vector2{ 0,0 };
+        transf.pos = spawn_pos;
+    }
 }

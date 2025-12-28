@@ -138,6 +138,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
+    <ClCompile Include="Tooling.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="Timer.hpp" />
+    <ClInclude Include="Tooling.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

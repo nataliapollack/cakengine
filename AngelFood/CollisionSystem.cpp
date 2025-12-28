@@ -98,6 +98,8 @@ void CollisionSystem::debug_draw_collisions()
         {
             auto& collision = gCoordinator.GetComponent<collidble>(i);
             DrawRectangleRec(collision.box, ColorAlpha(RED, 0.3));
+
+            DrawText(TextFormat("EN: %d", i), collision.box.x, collision.box.y, 10, GREEN);
         }
     }
 }

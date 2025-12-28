@@ -3,9 +3,9 @@
 void AssetManager::load_assets()
 {
     // playerr
-    textures[HALO] = LoadTexture("art/player/HALO.png");
-    textures[PLAYER_IDLE] = LoadTexture("art/player/PLAYER_IDLE.png");
-    textures[PLAYER_FALL] = LoadTexture("art/player/PLAYER_FALL.png");
+    textures[HALO] = LoadTexture("art/HALO.png");
+    textures[PLAYER_IDLE] = LoadTexture("art/PLAYER_IDLE.png");
+    textures[PLAYER_FALL] = LoadTexture("art/PLAYER_FALL.png");
     textures[TEMP_ITEM] = LoadTexture("art/TEMP_ITEM.png");
 }
 
