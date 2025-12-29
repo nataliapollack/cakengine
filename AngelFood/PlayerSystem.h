@@ -36,6 +36,9 @@ public:
 
     void ResetPlayerPos();
 
+    void SetGlideUnlocked(bool value);
+    void SetDoubleJumpUnlocked(bool value);
+
 private:
     void fixedUpdate();
 
@@ -82,8 +85,8 @@ private:
     float gravity;
 
     // collision qol
-    float collision_forgiveness = 0.4f;
-    float x_correction = 0.0f;
+    float collision_forgiveness;
+    float x_correction;
 
     struct glide_values
     {
@@ -91,6 +94,7 @@ private:
         float max_glide_fall;
         bool is_gliding;
         bool can_glide;
+        bool glide_unlocked;
     };
     glide_values m_glide;
 

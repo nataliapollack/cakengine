@@ -34,6 +34,8 @@ void PlayerSystem::init()
         { 3.0f, 1.5f },
         0.4f,
         0.0f,
+        2, // change to 1 to disable double jump
+        2,
         false,
         false
     };
@@ -43,36 +45,20 @@ void PlayerSystem::init()
         Timer(3.0f),
         1.0f,
         false,
-        false
+        false,
+        true
     };
 
     gravity = 3000.f;
 
-    //coyote_time = Timer(0.35f);
-    //jump_buffering = Timer(0.1f);
-    //glide_time = Timer(3.0f);
-
-    //time_walking = 0.0f;
-    //time_to_accel = 1.0f;
-    //time_to_decel = 0.25f;
-    //max_speed = 400.0f;
-    //min_speed = 200.0f;
-
-    //jump_height = { 3.0f, 1.5f };
-    //jump_time = 0.4f;
-    //jump_charges = 2;
-
-    //should_jump = false;
-    //is_jumping = false;
+    collision_forgiveness = 0.4f;
+    x_correction = 0.0f;
 
     for (size_t i = 0; i < m_jump.jump_height.size(); ++i)
     {
         m_jump.jump_impulse[i] =
             sqrtf(2.0f * gravity * JUMP_SCALE * m_jump.jump_height[i]);
     }
-
-    //max_glide_fall = 1.0f;
-    //is_gliding = false;
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
@@ -247,7 +233,7 @@ void PlayerSystem::GlideInput(Entity entity)
     auto& vel = phy.vel;
 
     m_glide.is_gliding = IsKeyDown(KEY_LEFT_SHIFT) && !playuh.on_ground &&
-        vel.y > 0.0f && m_glide.can_glide;
+        vel.y > 0.0f && m_glide.can_glide && m_glide.glide_unlocked;
 }
 
 void PlayerSystem::HitWall(Event& event)
@@ -370,6 +356,19 @@ void PlayerSystem::ResetPlayerPos()
         phy.vel = Vector2{ 0,0 };
         transf.pos = spawn_pos;
     }
+}
+
+void PlayerSystem::SetGlideUnlocked(bool value)
+{
+    m_glide.glide_unlocked = value;
+}
+
+void PlayerSystem::SetDoubleJumpUnlocked(bool value)
+{
+    if (value)
+        m_jump.jump_charges = 2;
+    else
+        m_jump.jump_charges = 1;
 }
 
 // Time Manager  -------------------------------------------------------------
