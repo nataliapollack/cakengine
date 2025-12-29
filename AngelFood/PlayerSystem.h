@@ -83,6 +83,7 @@ private:
     jump_values m_jump;
 
     float gravity;
+    float max_fall;
 
     // collision qol
     float collision_forgiveness;

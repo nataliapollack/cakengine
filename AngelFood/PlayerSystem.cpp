@@ -49,7 +49,8 @@ void PlayerSystem::init()
         true
     };
 
-    gravity = 3000.f;
+    gravity = 3000.0f;
+    max_fall = 50.0f;
 
     collision_forgiveness = 0.4f;
     x_correction = 0.0f;
@@ -159,6 +160,11 @@ void PlayerSystem::fixedUpdate()
         if (m_glide.is_gliding)
         {
             vel.y = Clamp(vel.y, 0.0f, m_glide.max_glide_fall);
+        }
+        else if (vel.y > 0.0f)
+        {
+            std::cout << vel.y << "\n";
+            vel.y = Clamp(vel.y, 0.0f, max_fall);
         }
 
         forces = Vector2Zero();
