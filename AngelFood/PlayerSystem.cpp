@@ -163,7 +163,7 @@ void PlayerSystem::fixedUpdate()
         }
         else if (vel.y > 0.0f)
         {
-            std::cout << vel.y << "\n";
+            //std::cout << vel.y << "\n";
             vel.y = Clamp(vel.y, 0.0f, max_fall);
         }
 
