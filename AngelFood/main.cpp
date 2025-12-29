@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 #include "raymath.h"
+#include <algorithm> 
 
 // systems
 #include "RenderSystem.h"
@@ -179,17 +180,18 @@ int main()
     while (!WindowShouldClose())
     {
         float deltaTime = GetFrameTime();
+        float clamped_dt = std::clamp(deltaTime, 0.01f, 0.03f);
 
         // UPDATE
         {
             if (!tooling_sys->GetToolStatus())
             {
-                player_movement_sys->update(deltaTime);
+                player_movement_sys->update(clamped_dt);
                 collision_sys->CheckCollisions();
             }
 
             camera_sys->update();
-            tooling_sys->update();
+          //  tooling_sys->update();
 
             // hard coded resett
             if (IsKeyPressed(KEY_TWO))
@@ -214,11 +216,11 @@ int main()
             camera_sys->BeginCameraMode();
 
 
-            rlPushMatrix();
-                rlTranslatef(0, 25 * 50, 0);
-                rlRotatef(90, 1, 0, 0);
-                DrawGrid(500, 100);
-            rlPopMatrix();
+            //rlPushMatrix();
+            //    rlTranslatef(0, 25 * 50, 0);
+            //    rlRotatef(90, 1, 0, 0);
+            //    DrawGrid(500, 100);
+            //rlPopMatrix();
 
             
             box_render_sys->draw();
@@ -233,6 +235,9 @@ int main()
            // collision_sys->debug_draw_collisions();
 
             camera_sys->EndCameraMode();
+
+
+           // DrawText(TextFormat("dt %f", clamped_dt), 20, 20, 40, RED);
 
             EndDrawing();
         }
