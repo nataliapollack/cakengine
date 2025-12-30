@@ -15,6 +15,7 @@ constexpr float JUMP_SCALE = 0.045f;
 
 void PlayerSystem::init()
 {
+    current_state = IDLE;
     starting_pawn_pos = Vector2{ -50, -50 };
 
     m_walk =
@@ -84,8 +85,8 @@ void PlayerSystem::init()
 
 void PlayerSystem::update(float dt)
 {
+    current_state = IDLE;
     m_time->increment();
-
     for (auto& entity : entities_list)
     {
         WalkInput();
@@ -97,6 +98,8 @@ void PlayerSystem::update(float dt)
     {
         fixedUpdate();
     }
+    
+    update_state();
 }
 
 void PlayerSystem::fixedUpdate()
@@ -399,6 +402,8 @@ void PlayerSystem::HitSpikes(Event& event)
         auto& transf = gCoordinator.GetComponent<transform2D>(entity);
         transf.pos = spawn_pos;
 
+        current_state = FALL;
+
         auto& phy = gCoordinator.GetComponent<physics>(entity);
 
         phy.f = Vector2{ 0,0 };
@@ -412,6 +417,15 @@ void PlayerSystem::HitSpawner(Event& event)
     {
         auto& transf = gCoordinator.GetComponent<transform2D>(entity);
         spawn_pos = transf.pos;
+    }
+}
+
+void PlayerSystem::update_state()
+{
+    for (auto& entity : entities_list)
+    {
+        auto& rend = gCoordinator.GetComponent<render>(entity);
+        rend.txt = (ASSETS)current_state;
     }
 }
 

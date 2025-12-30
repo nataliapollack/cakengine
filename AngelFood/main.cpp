@@ -234,7 +234,7 @@ int main()
 
            // collision_sys->debug_draw_collisions();
 
-            DrawCircle(0, 0, 10, BLUE);
+         //   DrawCircle(0, 0, 10, BLUE);
             camera_sys->EndCameraMode();
 
 

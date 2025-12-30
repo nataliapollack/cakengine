@@ -1,6 +1,7 @@
 #pragma once
 #include "System.hpp"
 #include "Timer.hpp"
+#include "Player.h"
 
 #include <chrono>
 
@@ -31,6 +32,8 @@ public:
     void init();
     void update(float dt);
 
+    void update_state();
+
     void PickedUpItem(Event& event);
     void DroppedItem(Event& event);
 
@@ -42,6 +45,8 @@ public:
     void SetDoubleJumpUnlocked(bool value);
 
 private:
+    PLAYER_STATES current_state;
+
     void fixedUpdate();
 
     void WalkInput();
