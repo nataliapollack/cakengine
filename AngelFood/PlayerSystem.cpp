@@ -15,7 +15,7 @@ constexpr float JUMP_SCALE = 0.045f;
 
 void PlayerSystem::init()
 {
-    spawn_pos = Vector2{ 210, 270 };
+    starting_pawn_pos = Vector2{ -50, -50 };
 
     m_walk =
     {
@@ -63,6 +63,12 @@ void PlayerSystem::init()
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Collision::SPIKES, PlayerSystem::HitSpikes));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Collision::SPAWNER, PlayerSystem::HitSpawner));
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Item::PICKEDUP, PlayerSystem::PickedUpItem));
@@ -360,7 +366,7 @@ void PlayerSystem::ResetPlayerPos()
 
         phy.f = Vector2{ 0,0 };
         phy.vel = Vector2{ 0,0 };
-        transf.pos = spawn_pos;
+        transf.pos = starting_pawn_pos;
     }
 }
 
@@ -375,6 +381,30 @@ void PlayerSystem::SetDoubleJumpUnlocked(bool value)
         m_jump.jump_charges = 2;
     else
         m_jump.jump_charges = 1;
+}
+
+void PlayerSystem::HitSpikes(Event& event)
+{
+    // note to nat. maybe add delay + player state here.
+    for (auto& entity : entities_list)
+    {
+        auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+        transf.pos = spawn_pos;
+
+        auto& phy = gCoordinator.GetComponent<physics>(entity);
+
+        phy.f = Vector2{ 0,0 };
+        phy.vel = Vector2{ 0,0 };
+    }
+}
+
+void PlayerSystem::HitSpawner(Event& event)
+{
+    for (auto& entity : entities_list)
+    {
+        auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+        spawn_pos = transf.pos;
+    }
 }
 
 // Time Manager  -------------------------------------------------------------

@@ -11,6 +11,14 @@ struct collecting
     HOLDABLE_ITEMS item;
 };
 
+struct spike
+{
+};
+
+struct spawn_zone
+{
+};
+
 struct trapped_critter
 {
 };

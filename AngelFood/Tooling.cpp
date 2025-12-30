@@ -311,8 +311,8 @@ void Tooling::update()
 
             mouseScaleReady = true;
 
-            rec.width = (mouse_pos.x - rec.x);
-            rec.height = (mouse_pos.y - rec.y);
+            rec.width = (int)((mouse_pos.x - rec.x) / 50.0f) * 50.0f;
+            rec.height = (int)((mouse_pos.y - rec.y) / 50.0f) * 50.0f;
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) mouseScaleMode = false;
 
@@ -327,10 +327,15 @@ void Tooling::update()
         {
             Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
+           // mouse_pos.x = mouse_pos / 50
+
             auto& collision = gCoordinator.GetComponent<collidble>(current_en);
             auto& transform = gCoordinator.GetComponent<transform2D>(current_en);
 
             transform.pos = Vector2Add(mouse_pos, mOffset);
+            transform.pos.x = (int)(transform.pos.x / 50.0f) * 50.0f;
+            transform.pos.y = (int)(transform.pos.y / 50.0f) * 50.0f;
+
             collision.box.x = transform.pos.x;
             collision.box.y = transform.pos.y;
             current_rec = collision.box;
@@ -372,6 +377,52 @@ void Tooling::update()
 
              current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 50, 50 };
              current_en = en;
+        }
+
+        if (IsKeyPressed(KEY_SIX))
+        {
+            Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+            int en = gCoordinator.CreateEntity();
+
+            gCoordinator.AddComponent(en,
+                status{ true, true, SPIKES });
+
+            gCoordinator.AddComponent(en,
+                box_render{ 50, 50 });
+
+            gCoordinator.AddComponent(en,
+                transform2D{ mouse_pos.x, mouse_pos.y });
+
+            gCoordinator.AddComponent(
+                en,
+                collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+
+            current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 50, 50 };
+            current_en = en;
+        }
+
+        if (IsKeyPressed(KEY_SEVEN))
+        {
+            Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+            int en = gCoordinator.CreateEntity();
+
+            gCoordinator.AddComponent(en,
+                status{ true, true, SPAWNER });
+
+            gCoordinator.AddComponent(en,
+                box_render{ 50, 50 });
+
+            gCoordinator.AddComponent(en,
+                transform2D{ mouse_pos.x, mouse_pos.y });
+
+            gCoordinator.AddComponent(
+                en,
+                collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+
+            current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 50, 50 };
+            current_en = en;
         }
     }
 }

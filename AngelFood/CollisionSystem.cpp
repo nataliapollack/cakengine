@@ -82,6 +82,18 @@ void CollisionSystem::CheckCollisions()
 
                         gCoordinator.SendEvent(item);
                     }
+
+                    if (stats_j.type == SPIKES)
+                    {
+                        Event ouch(Events::Collision::SPIKES);
+                        gCoordinator.SendEvent(ouch);
+                    }
+
+                    if (stats_j.type == SPAWNER)
+                    {
+                        Event spawner(Events::Collision::SPAWNER);
+                        gCoordinator.SendEvent(spawner);
+                    }
                 }
             }
         }

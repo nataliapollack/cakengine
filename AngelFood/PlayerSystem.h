@@ -35,6 +35,8 @@ public:
     void DroppedItem(Event& event);
 
     void ResetPlayerPos();
+    void HitSpikes(Event& event);
+    void HitSpawner(Event& event);
 
     void SetGlideUnlocked(bool value);
     void SetDoubleJumpUnlocked(bool value);
@@ -99,6 +101,7 @@ private:
     };
     glide_values m_glide;
 
+    Vector2 starting_pawn_pos;
     Vector2 spawn_pos;
 
     std::unique_ptr<TimeManager> m_time;

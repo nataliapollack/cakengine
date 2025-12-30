@@ -10,8 +10,8 @@ void CameraSystem::init()
 {
     gCamera = { 0 };
     gCamera.rotation = 0.0f;
-    gCamera.zoom = 0.670320094f;
-    state = FOLLOW_PLAYER;
+    gCamera.zoom = 0.60;
+    state = FREEROAM;
 
     for (auto& entity : entities_list)
     {
@@ -24,14 +24,15 @@ void CameraSystem::init()
 void CameraSystem::update()
 {
     // there should only ever be one in here lol
-    for (auto& entity : entities_list)
+   for (auto& entity : entities_list)
+
     {
         auto& transf = gCoordinator.GetComponent<transform2D>(entity);
         gCamera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 
         if (state == FOLLOW_PLAYER)
         {
-            // Camera target follows player
+           //  Camera target follows player
             gCamera.target = Vector2{ transf.pos.x, transf.pos.y  };
 
             if (IsKeyPressed(KEY_A))
@@ -84,7 +85,7 @@ void CameraSystem::update()
 
         if (IsKeyPressed(KEY_R))
         {
-            gCamera.zoom = 1.0f;
+            gCamera.zoom = 0.60f;
             gCamera.rotation = 0.0f;
 
             state = FOLLOW_PLAYER;

@@ -137,7 +137,19 @@ void BoxRenderSystem::draw()
             auto const& rend = gCoordinator.GetComponent<box_render>(draw_order[i]);
 
             Rectangle box = { transform.pos.x, transform.pos.y, rend.dimensions.x, rend.dimensions.y };
-            DrawRectangleRec(box, ColorAlpha(GRAY, 1.0));
+
+            if (stats.type == SPIKES)
+            {
+                DrawRectangleRec(box, ColorAlpha(RED, 1.0));
+            }
+            if (stats.type == WALL)
+            {
+                DrawRectangleRec(box, ColorAlpha(GRAY, 1.0));
+            }
+            if (stats.type == SPAWNER)
+            {
+                DrawRectangleRec(box, ColorAlpha(YELLOW, 0.5f));
+            }
             
         }
     }

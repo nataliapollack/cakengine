@@ -6,7 +6,9 @@ const enum OBJECT_TYPE
     PLAYER,
     WALL,
     ITEM,
-    DROPOFF
+    DROPOFF,
+    SPIKES,
+    SPAWNER
 };
 
 enum HOLDABLE_ITEMS
@@ -43,4 +45,6 @@ namespace Events::Item::DroppedOff
 namespace Events::Collision {
     const EventId HIT_WALL = "Events::Collision::COLLIDED"_hash;
     const ParamId COLLISION_DATA = "Events::Item::IMPULSE_FORCE"_hash;
+    const EventId SPIKES = "Events::Collision::SPIKES"_hash;
+    const EventId SPAWNER = "Events::Collision::SPAWNER"_hash;
 }

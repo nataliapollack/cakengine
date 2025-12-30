@@ -91,7 +91,7 @@ void set_system_signatures()
 int main()
 {
     /*** Window Initialization *************************************************************/
-    InitWindow(900, 600, "TBD");
+    InitWindow(900, 600, "ICA");
     SetTargetFPS(60);
 
     InitAudioDevice();
@@ -121,48 +121,48 @@ int main()
 
     ////// object placer heree until i rlly like add some way to do player state mngr...
     //  {
-    //      // player
-    //      int ec = gCoordinator.CreateEntity();
-    //      {
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              render{ 0.5f, PLAYER_IDLE});
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              transform2D{ Vector2 {200.0f, 100.0f} });
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              player{ true, NONE });
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              collidble{ Rectangle{200, 300, 100, 100 } });
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              status{ true, true, PLAYER });
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
-    //          );
-    //      }
+          // player
+          //int ec = gCoordinator.CreateEntity();
+          //{
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        render{ 0.5f, PLAYER_IDLE});
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        transform2D{ Vector2 {-50.0f, -50.0f} });
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        player{ true, NONE });
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        collidble{ Rectangle{00, 00, 100, 100 } });
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        status{ true, true, PLAYER });
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
+          //    );
+          //}
 
-    //       //floor...
-    //      ec = gCoordinator.CreateEntity();
-    //      {
-    //          float w = GetScreenWidth();
-    //          float y = GetScreenHeight();
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              box_render{ w, 100 });
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              transform2D{ Vector2 {0, 500} });
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              collidble{ Rectangle{0, y - 100, w, 100 } });
-    //          gCoordinator.AddComponent(
-    //              ec,
-    //              status{ true, true, WALL });
-    //      }
+          // //floor...
+          //int ec = gCoordinator.CreateEntity();
+          //{
+          //    float w = GetScreenWidth();
+          //    float y = GetScreenHeight();
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        box_render{ w, 100 });
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        transform2D{ Vector2 {0, 500} });
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        collidble{ Rectangle{0, y - 100, w, 100 } });
+          //    gCoordinator.AddComponent(
+          //        ec,
+          //        status{ true, true, WALL });
+          //}
 
     //  tooling_sys->serialize();
     //  }
@@ -191,7 +191,7 @@ int main()
             }
 
             camera_sys->update();
-          //  tooling_sys->update();
+            tooling_sys->update();
 
             // hard coded resett
             if (IsKeyPressed(KEY_TWO))
@@ -216,11 +216,11 @@ int main()
             camera_sys->BeginCameraMode();
 
 
-            //rlPushMatrix();
-            //    rlTranslatef(0, 25 * 50, 0);
-            //    rlRotatef(90, 1, 0, 0);
-            //    DrawGrid(500, 100);
-            //rlPopMatrix();
+            rlPushMatrix();
+                rlTranslatef(0, 25 * 50, 0);
+                rlRotatef(90, 1, 0, 0);
+                DrawGrid(500, 100);
+            rlPopMatrix();
 
             
             box_render_sys->draw();
@@ -234,10 +234,12 @@ int main()
 
            // collision_sys->debug_draw_collisions();
 
+            DrawCircle(0, 0, 10, BLUE);
             camera_sys->EndCameraMode();
 
 
-           // DrawText(TextFormat("dt %f", clamped_dt), 20, 20, 40, RED);
+            DrawText(TextFormat("dt %f", clamped_dt), 20, 20, 40, RED);
+
 
             EndDrawing();
         }
