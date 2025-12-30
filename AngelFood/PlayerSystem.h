@@ -69,6 +69,8 @@ private:
         Timer coyote_time;
         Timer jump_buffering;
 
+        float move_multiplier;
+
         // jump height
         std::array<float, 2> jump_impulse;
         std::array<float, 2> jump_height;
@@ -78,6 +80,7 @@ private:
         // double jump
         size_t jump_charges;
         size_t jump_counter;
+        size_t jump_cost;
 
         bool should_jump;
         bool is_jumping;
@@ -95,6 +98,7 @@ private:
     {
         Timer glide_time;
         float max_glide_fall;
+        float move_multiplier;
         bool is_gliding;
         bool can_glide;
         bool glide_unlocked;

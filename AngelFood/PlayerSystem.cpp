@@ -19,9 +19,9 @@ void PlayerSystem::init()
 
     m_walk =
     {
-        1.0f,
-        0.25f,
-        500.0f,
+        0.75f,
+        0.15f,
+        750.0f,
         300.0f,
         0.0f
     };
@@ -30,20 +30,23 @@ void PlayerSystem::init()
     {
         Timer(0.35f),
         Timer(0.1f),
+        1.5f,
         {},
         { 3.0f, 1.5f },
         0.4f,
         0.0f,
         2, // change to 1 to disable double jump
         2,
+        1,
         false,
         false
     };
 
     m_glide =
     {
-        Timer(3.0f),
+        Timer(0.5f),
         1.0f,
+        1.5f,
         false,
         false,
         true
@@ -113,15 +116,18 @@ void PlayerSystem::fixedUpdate()
 
         auto& vel = phy.vel;
 
-        if (playuh.on_ground && vel.y > 0.0f
+        if (playuh.on_ground && vel.y > 5.0f
             && !m_jump.coyote_time.is_running())
         {
             m_jump.coyote_time.start();
+            std::cout << vel.y << "\n";
         }
 
         if (m_jump.coyote_time.update(m_time->getFixedDt()))
         {
             playuh.on_ground = false;
+            //m_jump.jump_counter -= 1;
+            m_jump.jump_cost = 2;
         }
 
         // Gliding
@@ -158,7 +164,10 @@ void PlayerSystem::fixedUpdate()
         if (FloatEquals(speed, m_walk.min_speed) && !m_glide.is_gliding)
             last_direction = 0.0f;
 
-        float speed_modifier = (!playuh.on_ground) ? 1.5f : 1.0f;
+        float speed_modifier = 
+            (!playuh.on_ground) ? m_jump.move_multiplier : 1.0f;
+        speed_modifier = 
+            (m_glide.is_gliding) ? m_glide.move_multiplier : speed_modifier;
 
         vel.x = last_direction * speed_modifier * speed * m_time->getFixedDt();
 
@@ -169,7 +178,6 @@ void PlayerSystem::fixedUpdate()
         }
         else if (vel.y > 0.0f)
         {
-            //std::cout << vel.y << "\n";
             vel.y = Clamp(vel.y, 0.0f, max_fall);
         }
 
@@ -209,14 +217,14 @@ void PlayerSystem::JumpInput(Entity entity)
         m_jump.jump_buffering.start();
     }
 
-    if (m_jump.should_jump &&
-        (playuh.on_ground || m_jump.jump_counter == (m_jump.jump_charges - 1)))
+    if (m_jump.should_jump && m_jump.jump_counter > 0)
     {
         m_jump.should_jump = false;
 
         vel.y = -m_jump.jump_impulse.at(
             m_jump.jump_charges - m_jump.jump_counter );
-        m_jump.jump_counter -= 1;
+        m_jump.jump_counter -= m_jump.jump_cost;
+        m_jump.jump_cost = 1;
 
         playuh.on_ground = false;
 
