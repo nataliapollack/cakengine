@@ -13,7 +13,8 @@ enum COMPONENTS_LIST
     STATUS,
     PLAYERc,
     COLLECTABLE,
-    COLLECTING
+    COLLECTING,
+    ENVIRONMENT_RENDER
 };
 
 class Tooling : public System

@@ -32,6 +32,7 @@ void register_components()
     gCoordinator.RegisterComponent<transform2D>();
     gCoordinator.RegisterComponent<render>();
     gCoordinator.RegisterComponent<box_render>();
+    gCoordinator.RegisterComponent<render_environment>();
     gCoordinator.RegisterComponent<status>();
     gCoordinator.RegisterComponent<collidble>();
 
@@ -55,6 +56,12 @@ void set_system_signatures()
     sig.set(gCoordinator.GetComponentType<box_render>());
     sig.set(gCoordinator.GetComponentType<transform2D>());
     gCoordinator.SetSystemSignature<BoxRenderSystem>(sig);
+
+    sig.reset();
+
+    sig.set(gCoordinator.GetComponentType<render_environment>());
+    sig.set(gCoordinator.GetComponentType<transform2D>());
+    gCoordinator.SetSystemSignature<EnvironmentRenderSystem>(sig);
 
     sig.reset();
 
@@ -109,7 +116,7 @@ int main()
     auto collision_sys = gCoordinator.RegisterSystem<CollisionSystem>();
     auto box_render_sys = gCoordinator.RegisterSystem<BoxRenderSystem>();
     auto dropoff_sys = gCoordinator.RegisterSystem<CollectingSystem>();
-
+    auto environment_render_sys = gCoordinator.RegisterSystem<EnvironmentRenderSystem>();
     auto tooling_sys = gCoordinator.RegisterSystem<Tooling>();
 
 
@@ -175,6 +182,7 @@ int main()
     camera_sys->init();
     item_sys->init();
     dropoff_sys->init();
+    environment_render_sys->init();
 
     // IN-GAME
     while (!WindowShouldClose())
@@ -223,9 +231,12 @@ int main()
             rlPopMatrix();
 
             
-            box_render_sys->draw();
+            environment_render_sys->draw();
 
             render_sys->draw();
+
+            box_render_sys->draw();
+
 
             if (tooling_sys->GetToolStatus())
             {

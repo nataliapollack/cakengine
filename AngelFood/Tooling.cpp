@@ -1,6 +1,7 @@
 #include "Tooling.h"
 #include "Game.h"
 #include "Coordinator.hpp"
+#include "AssetManager.h"
 
 // components
 #include "Core.h"
@@ -17,6 +18,8 @@
 
 extern Coordinator gCoordinator;
 extern Camera2D gCamera;
+extern AssetManager gAssetMngr;
+
 
 void Tooling::serialize()
 {
@@ -93,6 +96,14 @@ void Tooling::serialize()
                 auto& comp = gCoordinator.GetComponent<collecting>(entity);
                 data << COLLECTING << "\n";
                 data << comp.item << "\n";
+            }
+            if (gCoordinator.HasComponent<render_environment>(entity))
+            {
+                auto& comp = gCoordinator.GetComponent<render_environment>(entity);
+                data << ENVIRONMENT_RENDER << "\n";
+                data << comp.parrallax << "\n";
+                data << comp.txt << "\n";
+                data << comp.depth << "\n";
             }
         }
     }
@@ -232,6 +243,22 @@ void Tooling::deserialize()
 
                 std::getline(load_data, line);
             }
+            if (ENVIRONMENT_RENDER == atoi(line.c_str()))
+            {
+                std::getline(load_data, line);
+                bool x = atoi(line.c_str());
+
+                std::getline(load_data, line);
+                int y = atoi(line.c_str());
+
+                std::getline(load_data, line);
+                int z = atoi(line.c_str());
+
+                gCoordinator.AddComponent(en,
+                    render_environment{x, (ASSETS)y, z});
+
+                std::getline(load_data, line);
+            }
             
             if ("EN" == line)
             {
@@ -260,11 +287,9 @@ void Tooling::update()
         {
             for (auto& entity : entities_list)
             {
-                if (!gCoordinator.HasComponent<box_render>(entity))
-                    continue;
-
                 Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
+                if (gCoordinator.HasComponent<box_render>(entity))
                 {
                     auto& collision = gCoordinator.GetComponent<collidble>(entity);
                     Rectangle rec = collision.box;
@@ -283,16 +308,29 @@ void Tooling::update()
                         }
                     }
                     else mouseScaleReady = false;
+                }
 
-                    if (CheckCollisionPointRec(mouse_pos, rec))
+                if (gCoordinator.HasComponent<render_environment>(entity))
+                {
+                    auto const& transform = gCoordinator.GetComponent<transform2D>(entity);
+                    auto const& rend = gCoordinator.GetComponent<render_environment>(entity);
+
+                    Texture2D texture = gAssetMngr.GetAsset(rend.txt);
+
+                    // std::cout << stats.type << std::endl;
+                    Rectangle source = { 0, 0, texture.width, texture.height };
+                    Vector2 dim = { texture.width , texture.height  };
+                    Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
+
+                    if (CheckCollisionPointRec(mouse_pos, dest))
                     {
-                        current_rec = rec;
+                        current_rec = dest;
                         current_en = entity;
                         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
                         {
                             mouseMoveRect = true;
 
-                            mOffset = Vector2Subtract(Vector2{ rec.x, rec.y }, mouse_pos);
+                            mOffset = Vector2Subtract(Vector2{ transform.pos.x,  transform.pos.y }, mouse_pos);
                             continue;
                         }
                     }
@@ -329,18 +367,30 @@ void Tooling::update()
 
            // mouse_pos.x = mouse_pos / 50
 
-            auto& collision = gCoordinator.GetComponent<collidble>(current_en);
+          //  auto& collision = gCoordinator.GetComponent<collidble>(current_en);
             auto& transform = gCoordinator.GetComponent<transform2D>(current_en);
 
             transform.pos = Vector2Add(mouse_pos, mOffset);
-            transform.pos.x = (int)(transform.pos.x / 50.0f) * 50.0f;
-            transform.pos.y = (int)(transform.pos.y / 50.0f) * 50.0f;
+            transform.pos.x = (int)(transform.pos.x / 25.0f) * 25.0f;
+            transform.pos.y = (int)(transform.pos.y / 25.0f) * 25.0f;
 
-            collision.box.x = transform.pos.x;
-            collision.box.y = transform.pos.y;
-            current_rec = collision.box;
+            //collision.box.x = transform.pos.x;
+            //collision.box.y = transform.pos.y;
+            //current_rec = collision.box;
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) mouseMoveRect = false;
+
+            if (IsKeyPressed(KEY_LEFT))
+            {
+                auto& rend = gCoordinator.GetComponent<render_environment>(current_en);
+
+                rend.txt = ((ASSETS)((int)(rend.txt) + 1));
+
+                if (rend.txt == COUNT)
+                {
+                    rend.txt = ROOM5;
+                }
+            }
 
             if (IsKeyPressed(KEY_Z))
             {
@@ -363,67 +413,70 @@ void Tooling::update()
             int en = gCoordinator.CreateEntity();
 
             gCoordinator.AddComponent(en,
-                status{ true, true, WALL });
+                status{ true, true, ENVIRONMENT });
 
-            gCoordinator.AddComponent(en,
-                box_render{ 50, 50 });
+            //gCoordinator.AddComponent(en,
+            //    box_render{ 50, 50 });
 
             gCoordinator.AddComponent(en,
                 transform2D{ mouse_pos.x, mouse_pos.y });
 
-             gCoordinator.AddComponent(
-             en,
-             collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+            gCoordinator.AddComponent(en,
+                render_environment{ false, ROOM1, 0 });
 
-             current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 50, 50 };
+            // gCoordinator.AddComponent(
+            // en,
+            // collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+
+             current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
              current_en = en;
         }
 
-        if (IsKeyPressed(KEY_SIX))
-        {
-            Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+        //if (IsKeyPressed(KEY_SIX))
+        //{
+        //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-            int en = gCoordinator.CreateEntity();
+        //    int en = gCoordinator.CreateEntity();
 
-            gCoordinator.AddComponent(en,
-                status{ true, true, SPIKES });
+        //    gCoordinator.AddComponent(en,
+        //        status{ true, true, SPIKES });
 
-            gCoordinator.AddComponent(en,
-                box_render{ 50, 50 });
+        //    gCoordinator.AddComponent(en,
+        //        box_render{ 50, 50 });
 
-            gCoordinator.AddComponent(en,
-                transform2D{ mouse_pos.x, mouse_pos.y });
+        //    gCoordinator.AddComponent(en,
+        //        transform2D{ mouse_pos.x, mouse_pos.y });
 
-            gCoordinator.AddComponent(
-                en,
-                collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+        //    gCoordinator.AddComponent(
+        //        en,
+        //        collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
 
-            current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 50, 50 };
-            current_en = en;
-        }
+        //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 50, 50 };
+        //    current_en = en;
+        //}
 
-        if (IsKeyPressed(KEY_SEVEN))
-        {
-            Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+        //if (IsKeyPressed(KEY_SEVEN))
+        //{
+        //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-            int en = gCoordinator.CreateEntity();
+        //    int en = gCoordinator.CreateEntity();
 
-            gCoordinator.AddComponent(en,
-                status{ true, true, SPAWNER });
+        //    gCoordinator.AddComponent(en,
+        //        status{ true, true, SPAWNER });
 
-            gCoordinator.AddComponent(en,
-                box_render{ 50, 50 });
+        //    gCoordinator.AddComponent(en,
+        //        box_render{ 50, 50 });
 
-            gCoordinator.AddComponent(en,
-                transform2D{ mouse_pos.x, mouse_pos.y });
+        //    gCoordinator.AddComponent(en,
+        //        transform2D{ mouse_pos.x, mouse_pos.y });
 
-            gCoordinator.AddComponent(
-                en,
-                collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+        //    gCoordinator.AddComponent(
+        //        en,
+        //        collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
 
-            current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 50, 50 };
-            current_en = en;
-        }
+        //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 50, 50 };
+        //    current_en = en;
+        //}
     }
 }
 

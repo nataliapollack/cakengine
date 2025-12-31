@@ -38,22 +38,22 @@ void CameraSystem::update()
             if (IsKeyPressed(KEY_A))
             {
                 state = FREEROAM;
-                gCamera.target.x -= 5;
+                gCamera.target.x -= 10;
             }
             if (IsKeyPressed(KEY_D))
             {
                 state = FREEROAM;
-                gCamera.target.x += 5;
+                gCamera.target.x += 10;
             }
             if (IsKeyPressed(KEY_W))
             {
                 state = FREEROAM;
-                gCamera.target.y -= 5;
+                gCamera.target.y -= 10;
             }
             if (IsKeyPressed(KEY_S))
             {
                 state = FREEROAM;
-                gCamera.target.y += 5;
+                gCamera.target.y += 10;
             }
 
         }
@@ -62,19 +62,19 @@ void CameraSystem::update()
         {
             if (IsKeyDown(KEY_A))
             {
-                gCamera.target.x -= 5;
+                gCamera.target.x -= 10;
             }
             if (IsKeyDown(KEY_D))
             {
-                gCamera.target.x += 5;
+                gCamera.target.x += 10;
             }
             if (IsKeyDown(KEY_W))
             {
-                gCamera.target.y -= 5;
+                gCamera.target.y -= 10;
             }
             if (IsKeyDown(KEY_S))
             {
-                gCamera.target.y += 5;
+                gCamera.target.y += 10;
             }
         }
 

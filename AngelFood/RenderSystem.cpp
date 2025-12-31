@@ -74,9 +74,9 @@ void RenderSystem::draw()
         }
     }
 
-    for (int i = 0; i < draw_order.size(); i++)
+    for (auto& entity : entities_list)
     {
-        auto& stats = gCoordinator.GetComponent<status>(draw_order[i]);
+        auto& stats = gCoordinator.GetComponent<status>(entity);
 
         if (stats.dirty)
         {
@@ -167,4 +167,71 @@ void BoxRenderSystem::ReorganizeObjects()
     }
 
     std::sort(draw_order.begin(), draw_order.end(), SortByDepth);
+}
+
+// anmother day, another rendering system .....
+void EnvironmentRenderSystem::init()
+{
+    for (auto const& entity : entities_list)
+    {
+        draw_order.push_back(entity);
+    }
+
+    ReorganizeObjects();
+}
+
+void EnvironmentRenderSystem::draw()
+{
+    for (int i = 0; i < draw_order.size(); i++)
+    {
+        auto const& stats = gCoordinator.GetComponent<status>(draw_order[i]);
+
+        if (stats.active)
+        {
+            auto const& transform = gCoordinator.GetComponent<transform2D>(draw_order[i]);
+            auto const& rend = gCoordinator.GetComponent<render_environment>(draw_order[i]);
+
+            Texture2D texture = gAssetMngr.GetAsset(rend.txt);
+
+            // std::cout << stats.type << std::endl;
+            Rectangle source = { 0, 0, texture.width, texture.height };
+            Vector2 dim = { texture.width, texture.height};
+            Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
+            Vector2 origin = { 0, 0 };
+            DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
+        }
+    }
+
+    for (auto& entity : entities_list)
+    {
+        auto& stats = gCoordinator.GetComponent<status>(entity);
+
+        if (stats.dirty)
+        {
+            ReorganizeObjects();
+            stats.dirty = false;
+        }
+    }
+}
+
+bool SortByActualDepth(Entity const& L, Entity const& R)
+{
+    auto const& transformL = gCoordinator.GetComponent<render_environment>(L);
+    auto const& transformR = gCoordinator.GetComponent<render_environment>(R);
+
+    return transformL.depth < transformR.depth;
+}
+
+void EnvironmentRenderSystem::ReorganizeObjects()
+{
+    if (draw_order.size() != entities_list.size())
+    {
+        draw_order.clear();
+        for (auto const& entity : entities_list)
+        {
+            draw_order.push_back(entity);
+        }
+    }
+
+    std::sort(draw_order.begin(), draw_order.end(), SortByActualDepth);
 }

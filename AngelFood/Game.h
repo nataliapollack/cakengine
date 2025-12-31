@@ -5,10 +5,12 @@ const enum OBJECT_TYPE
 {
     PLAYER,
     WALL,
+    PLATFORM,
     ITEM,
     DROPOFF,
     SPIKES,
-    SPAWNER
+    SPAWNER,
+    ENVIRONMENT
 };
 
 enum HOLDABLE_ITEMS
@@ -22,8 +24,42 @@ enum ASSETS
     HALO,
     PLAYER_IDLE,
     PLAYER_FALL,
-    TEMP_ITEM,
+    DAEDALUS_IDLE,
+    KING_IDLE1,
+    KING_IDLE2,
+    BIRD_IDLE1,
+    BIRD_IDLE2,
+    SHEEP_IDLE1,
+    SHEEP_IDLE2,
+    SNAKE_IDLE1,
+    SNAKE_IDLE2,
+    ROOM1,
+    ROOM5,
+    ROOM6,
+    ROOM7,
+    ROOM8,
+    ROOM9,
+    ROOM10,
+    ROOM11,
     COUNT
+};
+
+enum ASSETS_TILES
+{
+    ONE,
+    BOTTOM_ROOTS,
+    TOP_LEFT,
+    TOP_LEFT2,
+    TOP,
+    FLOATING1,
+    FLOATING2,
+    FLOATING3,
+    FLOATING_RIGHT,
+    GROUND,
+    GROUND1,
+    VOID,
+    LEFT_WALL,
+    LEFT_WALL2
 };
 
 namespace Events::Item {

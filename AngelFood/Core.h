@@ -14,6 +14,13 @@ struct render
     ASSETS txt;
 };
 
+struct render_environment
+{
+    bool parrallax;
+    ASSETS txt;
+    int depth;
+};
+
 struct box_render
 {
     Vector2 dimensions;

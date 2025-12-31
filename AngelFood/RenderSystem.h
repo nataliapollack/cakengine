@@ -25,3 +25,13 @@ public:
 private:
     std::vector<Entity> draw_order;
 };
+
+class EnvironmentRenderSystem : public System
+{
+public:
+    void init();
+    void draw();
+    void ReorganizeObjects();
+private:
+    std::vector<Entity> draw_order;
+};
