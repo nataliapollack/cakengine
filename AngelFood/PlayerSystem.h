@@ -47,7 +47,7 @@ public:
 private:
     PLAYER_STATES current_state;
 
-    void fixedUpdate();
+    void fixedUpdate(float dt, Entity entity);
 
     void WalkInput();
     void GlideInput(Entity entity);
@@ -114,4 +114,7 @@ private:
     Vector2 spawn_pos;
 
     std::unique_ptr<TimeManager> m_time;
+
+    Timer death_time;
+    bool is_dead;
 };

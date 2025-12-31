@@ -11,7 +11,8 @@
 
 extern Coordinator gCoordinator;
 
-constexpr float JUMP_SCALE = 0.045f;
+//constexpr float JUMP_SCALE = 0.045f;
+constexpr float JUMP_SCALE = 0.11f;
 
 void PlayerSystem::init()
 {
@@ -20,37 +21,37 @@ void PlayerSystem::init()
 
     m_walk =
     {
-        0.75f,
-        0.15f,
-        750.0f,
-        300.0f,
-        0.0f
+        0.75f,  // time to accel to max speed
+        0.15f,  // time to decel to zero
+        1125.0f, // max speed
+        300.0f, // initial speed
+        0.0f    // how long player has been walking
     };
 
     m_jump =
     {
-        Timer(0.35f),
-        Timer(0.1f),
-        1.5f,
-        {},
-        { 3.0f, 1.5f },
-        0.4f,
-        0.0f,
-        2, // change to 1 to disable double jump
-        2,
-        1,
-        false,
-        false
+        Timer(0.35f),   // coyote time
+        Timer(0.1f),    // jump buffer time
+        1.0f,           // left/right movement multiplier (1125 vel feels best)
+        {},             // jump impulse (calculated later)
+        { 3.0f, 1.5f }, // jump heights
+        0.4f,           // jump time (used for tap vs hold jumping)
+        0.0f,           // tracks time since jump started
+        2,              // number of jumps
+        2,              // number of jumps used since last reset
+        1,              // cost of each jump
+        false,          // has input and needs to execute
+        false           // has started jump
     };
 
     m_glide =
     {
-        Timer(0.5f),
-        1.0f,
-        1.5f,
-        false,
-        false,
-        true
+        Timer(1.0f), // length of glide
+        1.0f,        // max fall vel while gliding
+        1.0f,        // left/right movement multiplier
+        false,       // has started glide
+        false,       // able to glide (in air and moving down and has input)
+        true         // progression stuff...
     };
 
     gravity = 3000.0f;
@@ -64,6 +65,9 @@ void PlayerSystem::init()
         m_jump.jump_impulse[i] =
             sqrtf(2.0f * gravity * JUMP_SCALE * m_jump.jump_height[i]);
     }
+
+    death_time = Timer(1.0f);
+    is_dead = false;
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
@@ -85,113 +89,117 @@ void PlayerSystem::init()
 
 void PlayerSystem::update(float dt)
 {
-    current_state = IDLE;
-    m_time->increment();
-    for (auto& entity : entities_list)
-    {
-        WalkInput();
-        JumpInput(entity);
-        GlideInput(entity);
-    }
-
-    while (m_time->needsFixedUpdate())
-    {
-        fixedUpdate();
-    }
-    
-    update_state();
-}
-
-void PlayerSystem::fixedUpdate()
-{
-    AccumulateForces();
-
     // there should only ever be one in here lol
     for (auto& entity : entities_list)
     {
-        auto& transf = gCoordinator.GetComponent<transform2D>(entity);
-        auto& playuh = gCoordinator.GetComponent<player>(entity);
-        auto& phy = gCoordinator.GetComponent<physics>(entity);
-
-        static float last_direction = 0.0f;
-
-        auto& forces = phy.f;
-
-        auto& vel = phy.vel;
-
-        if (playuh.on_ground && vel.y > 5.0f
-            && !m_jump.coyote_time.is_running())
+        if (is_dead)
         {
-            m_jump.coyote_time.start();
-            std::cout << vel.y << "\n";
-        }
+            if (death_time.update(dt))
+            {
+                auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+                transf.pos = spawn_pos;
 
-        if (m_jump.coyote_time.update(m_time->getFixedDt()))
+                auto& phy = gCoordinator.GetComponent<physics>(entity);
+
+                phy.f = Vector2{ 0,0 };
+                phy.vel = Vector2{ 0,0 };
+
+                is_dead = false;
+            }
+        }
+        else
         {
-            playuh.on_ground = false;
-            //m_jump.jump_counter -= 1;
-            m_jump.jump_cost = 2;
+            current_state = IDLE;
+            m_time->increment();
+            for (auto& entity : entities_list)
+            {
+                WalkInput();
+                JumpInput(entity);
+                GlideInput(entity);
+            }
+
         }
-
-        // Gliding
-        if (IsKeyPressed(KEY_LEFT_SHIFT) && !m_glide.glide_time.is_running())
-        {
-            m_glide.glide_time.start();
-            m_glide.can_glide = true;
-        }
-        if (IsKeyReleased(KEY_LEFT_SHIFT) && m_glide.glide_time.is_running())
-        {
-            m_glide.glide_time.stop();
-        }
-
-        if (m_glide.glide_time.update(m_time->getFixedDt()))
-            m_glide.can_glide = false;
-
-        // Walking
-        if (!FloatEquals(m_walk.direction, 0.0f)) {
-            m_walk.time_walking = Clamp(
-                m_walk.time_walking + m_time->getFixedDt(), 
-                0.0f, m_walk.time_to_accel);
-
-            last_direction = m_walk.direction;
-        }
-        else {
-            m_walk.time_walking = 
-                Clamp(m_walk.time_walking - m_time->getFixedDt(), 
-                0.0f, m_walk.time_to_decel);
-        }
-
-        float speed = 
-            Lerp(m_walk.min_speed, m_walk.max_speed, m_walk.time_walking);
-
-        if (FloatEquals(speed, m_walk.min_speed) && !m_glide.is_gliding)
-            last_direction = 0.0f;
-
-        float speed_modifier = 
-            (!playuh.on_ground) ? m_jump.move_multiplier : 1.0f;
-        speed_modifier = 
-            (m_glide.is_gliding) ? m_glide.move_multiplier : speed_modifier;
-
-        vel.x = last_direction * speed_modifier * speed * m_time->getFixedDt();
-
-        vel.y += forces.y * m_time->getFixedDt() * m_time->getFixedDt();
-        if (m_glide.is_gliding)
-        {
-            vel.y = Clamp(vel.y, 0.0f, m_glide.max_glide_fall);
-        }
-        else if (vel.y > 0.0f)
-        {
-            vel.y = Clamp(vel.y, 0.0f, max_fall);
-        }
-
-        forces = Vector2Zero();
-
-        transf.pos = Vector2Add(transf.pos, vel);
-
-        float last_x = transf.pos.x;
-        transf.pos.x = Lerp(transf.pos.x, transf.pos.x + x_correction, 0.5f);
-        x_correction = Lerp(x_correction, 0.0f, 0.5f);
+        fixedUpdate(dt, entity);
+        update_state();
     }
+}
+
+void PlayerSystem::fixedUpdate(float dt, Entity entity)
+{
+    AccumulateForces();
+
+    auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+    auto& playuh = gCoordinator.GetComponent<player>(entity);
+    auto& phy = gCoordinator.GetComponent<physics>(entity);
+
+    static float last_direction = 0.0f;
+
+    auto& forces = phy.f;
+
+    auto& vel = phy.vel;
+
+    if (playuh.on_ground && vel.y > 5.0f
+        && !m_jump.coyote_time.is_running())
+    {
+        m_jump.coyote_time.start();
+        std::cout << vel.y << "\n";
+    }
+
+    if (m_jump.coyote_time.update(dt))
+    {
+        playuh.on_ground = false;
+        //m_jump.jump_counter -= 1;
+        m_jump.jump_cost = 2;
+    }
+
+    // Gliding
+    if (m_glide.glide_time.update(dt))
+        m_glide.can_glide = false;
+
+    // Walking
+    if (!FloatEquals(m_walk.direction, 0.0f)) {
+        m_walk.time_walking = Clamp(
+            m_walk.time_walking + dt,
+            0.0f, m_walk.time_to_accel);
+
+        last_direction = m_walk.direction;
+    }
+    else {
+        m_walk.time_walking =
+            Clamp(m_walk.time_walking - dt,
+                0.0f, m_walk.time_to_decel);
+    }
+
+    float speed =
+        Lerp(m_walk.min_speed, m_walk.max_speed, m_walk.time_walking);
+
+    if (FloatEquals(speed, m_walk.min_speed) && !m_glide.is_gliding)
+        last_direction = 0.0f;
+
+    float speed_modifier =
+        (!playuh.on_ground) ? m_jump.move_multiplier : 1.0f;
+    speed_modifier =
+        (m_glide.is_gliding) ? m_glide.move_multiplier : speed_modifier;
+
+    vel.x = last_direction * speed_modifier * speed * dt;
+
+    vel.y += forces.y * dt * dt;
+    if (m_glide.is_gliding)
+    {
+        vel.y = Clamp(vel.y, 0.0f, m_glide.max_glide_fall);
+    }
+    else if (vel.y > 0.0f)
+    {
+        vel.y = Clamp(vel.y, 0.0f, max_fall);
+    }
+
+    forces = Vector2Zero();
+
+    transf.pos = Vector2Add(transf.pos, vel);
+
+    float last_x = transf.pos.x;
+    transf.pos.x = Lerp(transf.pos.x, transf.pos.x + x_correction, 0.5f);
+    x_correction = Lerp(x_correction, 0.0f, 0.5f);
 }
 
 void PlayerSystem::WalkInput()
@@ -257,6 +265,16 @@ void PlayerSystem::GlideInput(Entity entity)
 
     m_glide.is_gliding = IsKeyDown(KEY_LEFT_SHIFT) && !playuh.on_ground &&
         vel.y > 0.0f && m_glide.can_glide && m_glide.glide_unlocked;
+
+    if (IsKeyPressed(KEY_LEFT_SHIFT) && !m_glide.glide_time.is_running())
+    {
+        m_glide.glide_time.start();
+        m_glide.can_glide = true;
+    }
+    if (IsKeyReleased(KEY_LEFT_SHIFT) && m_glide.glide_time.is_running())
+    {
+        m_glide.glide_time.stop();
+    }
 }
 
 void PlayerSystem::HitWall(Event& event)
@@ -294,10 +312,8 @@ void PlayerSystem::HitWall(Event& event)
                 {
                     if (overlap.x > transf.pos.x)
                         x_correction = -overlap.width;
-                        //transf.pos.x -= overlap.width;
                     else
                         x_correction = overlap.width;
-                        //transf.pos.x += overlap.width;
                 }
                 else // or not
                 {
@@ -350,22 +366,27 @@ void PlayerSystem::AccumulateForces()
 
 void PlayerSystem::PickedUpItem(Event& event)
 {
-    auto& playuh = gCoordinator.GetComponent<player>(0);
+    for (auto& entity : entities_list)
+    {
+        auto& playuh = gCoordinator.GetComponent<player>(entity);
 
-    OBJECT_TYPE id =  event.GetParam<OBJECT_TYPE>(
-        Events::Item::PickedUp::OBJTYPE);
+        OBJECT_TYPE id = event.GetParam<OBJECT_TYPE>(
+            Events::Item::PickedUp::OBJTYPE);
 
-    playuh.holding = TEMP;
+        playuh.holding = TEMP;
+    }
 
 }
 
 void PlayerSystem::DroppedItem(Event& event)
 {
+    for (auto& entity : entities_list)
+    {
+        auto& playuh = gCoordinator.GetComponent<player>(entity);
 
-    auto& playuh = gCoordinator.GetComponent<player>(0);
 
-
-    playuh.holding = NONE;
+        playuh.holding = NONE;
+    }
 }
 
 void PlayerSystem::ResetPlayerPos()
@@ -399,15 +420,14 @@ void PlayerSystem::HitSpikes(Event& event)
     // note to nat. maybe add delay + player state here.
     for (auto& entity : entities_list)
     {
-        auto& transf = gCoordinator.GetComponent<transform2D>(entity);
-        transf.pos = spawn_pos;
+        if (is_dead) continue;
 
         current_state = FALL;
 
-        auto& phy = gCoordinator.GetComponent<physics>(entity);
+        m_walk.direction = 0.0f;
 
-        phy.f = Vector2{ 0,0 };
-        phy.vel = Vector2{ 0,0 };
+        death_time.start();
+        is_dead = true;
     }
 }
 
