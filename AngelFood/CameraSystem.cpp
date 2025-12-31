@@ -62,19 +62,19 @@ void CameraSystem::update()
         {
             if (IsKeyDown(KEY_A))
             {
-                gCamera.target.x -= 10;
+                gCamera.target.x -= 50;
             }
             if (IsKeyDown(KEY_D))
             {
-                gCamera.target.x += 10;
+                gCamera.target.x += 50;
             }
             if (IsKeyDown(KEY_W))
             {
-                gCamera.target.y -= 10;
+                gCamera.target.y -= 50;
             }
             if (IsKeyDown(KEY_S))
             {
-                gCamera.target.y += 10;
+                gCamera.target.y += 50;
             }
         }
 

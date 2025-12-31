@@ -5,12 +5,12 @@ const enum OBJECT_TYPE
 {
     PLAYER,
     WALL,
-    PLATFORM,
     ITEM,
     DROPOFF,
     SPIKES,
     SPAWNER,
-    ENVIRONMENT
+    ENVIRONMENT,
+    PLATFORM
 };
 
 enum HOLDABLE_ITEMS
@@ -44,22 +44,22 @@ enum ASSETS
     COUNT
 };
 
-enum ASSETS_TILES
+enum TILE_ASSETS
 {
-    ONE,
-    BOTTOM_ROOTS,
-    TOP_LEFT,
-    TOP_LEFT2,
-    TOP,
+    BRANCH1,
+    BRANCH2,
     FLOATING1,
     FLOATING2,
-    FLOATING3,
-    FLOATING_RIGHT,
-    GROUND,
+    EDGE1,
+    EDGE2,
+    EDGE3,
     GROUND1,
-    VOID,
-    LEFT_WALL,
-    LEFT_WALL2
+    GROUND2,
+    DARK,
+    SIDE1,
+    SIDE2,
+    SIDE3,
+    TILE_COUNT
 };
 
 namespace Events::Item {

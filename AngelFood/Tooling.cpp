@@ -51,6 +51,7 @@ void Tooling::serialize()
                 data << BOX_RENDER<< "\n";
                 data << comp.dimensions.x << "\n";
                 data << comp.dimensions.y << "\n";
+                data << comp.platform << "\n";
             }
             if (gCoordinator.HasComponent<collidble>(entity))
             {
@@ -157,8 +158,11 @@ void Tooling::deserialize()
                 std::getline(load_data, line);
                 float y = atof(line.c_str());
 
+                std::getline(load_data, line);
+                bool z = atoi(line.c_str());
+
                 gCoordinator.AddComponent(en,
-                    box_render{ x, y });
+                    box_render{ x, y, z });
 
                 std::getline(load_data, line);
             }
@@ -292,6 +296,7 @@ void Tooling::update()
                 if (gCoordinator.HasComponent<box_render>(entity))
                 {
                     auto& collision = gCoordinator.GetComponent<collidble>(entity);
+                    auto& transform = gCoordinator.GetComponent<transform2D>(entity);
                     Rectangle rec = collision.box;
                     Rectangle rec2 = { rec.x + rec.width - MOUSE_SCALE_MARK_SIZE, rec.y + rec.height - MOUSE_SCALE_MARK_SIZE, MOUSE_SCALE_MARK_SIZE, MOUSE_SCALE_MARK_SIZE };
 
@@ -308,6 +313,23 @@ void Tooling::update()
                         }
                     }
                     else mouseScaleReady = false;
+
+                    if (CheckCollisionPointRec(mouse_pos, rec))
+                    {
+                        current_rec = rec;
+                        current_en = entity;
+                        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                        {
+                            mouseMoveRect = true;
+
+                            mOffset = Vector2Subtract(Vector2{ transform.pos.x,  transform.pos.y }, mouse_pos);
+
+                            auto& box_plat = gCoordinator.GetComponent<box_render>(entity);
+                           // box_plat.platform = !box_plat.platform;
+                            continue;
+                        }
+                    }
+
                 }
 
                 if (gCoordinator.HasComponent<render_environment>(entity))

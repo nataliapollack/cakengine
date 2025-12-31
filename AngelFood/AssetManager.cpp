@@ -31,6 +31,21 @@ void AssetManager::load_assets()
     textures[ROOM9] = LoadTexture("art/room9.png");
     textures[ROOM10] = LoadTexture("art/room10.png");
     textures[ROOM11] = LoadTexture("art/room11.png");
+
+    // tiles
+    tiles[BRANCH1] = LoadTexture("art/Tiles Set 1/Floating Branch1.png");
+    tiles[BRANCH2] = LoadTexture("art/Tiles Set 1/Floating Branch2.png");
+    tiles[FLOATING1] = LoadTexture("art/Tiles Set 1/Floating 1.png");
+    tiles[FLOATING2] = LoadTexture("art/Tiles Set 1/Floating 2.png");
+    tiles[EDGE1] = LoadTexture("art/Tiles Set 1/Edge Grass 1.png");
+    tiles[EDGE2] = LoadTexture("art/Tiles Set 1/Edge Grass 2.png");
+    tiles[EDGE3] = LoadTexture("art/Tiles Set 1/Edge Grass 2.png");
+    tiles[GROUND1] = LoadTexture("art/Tiles Set 1/Ground Grass 1.png");
+    tiles[GROUND2] = LoadTexture("art/Tiles Set 1/Ground Grass 2.png");
+    tiles[DARK] = LoadTexture("art/Tiles Set 1/1x1.png");
+    tiles[SIDE1] = LoadTexture("art/Tiles Set 1/Side Piece 1.png");
+    tiles[SIDE2] = LoadTexture("art/Tiles Set 1/Side Piece 2.png");
+    tiles[SIDE3] = LoadTexture("art/Tiles Set 1/Side Piece 3.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)
@@ -49,4 +64,9 @@ void AssetManager::unload()
     {
         UnloadTexture(textures[i]);
     }
+}
+
+Texture2D AssetManager::GetTileAsset(int asset)
+{
+    return tiles[asset];
 }
