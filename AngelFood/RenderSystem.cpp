@@ -45,32 +45,7 @@ void RenderSystem::draw()
             Vector2 origin = { 0, 0 };
             DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
 
-            // literally just draw the item the player is holding on 
-            if (stats.type == PLAYER)
-            {
-                auto const& playuh = gCoordinator.GetComponent<player>(draw_order[i]);
-                Texture2D halo_texture = gAssetMngr.GetAsset(HALO);
-                Vector2 halo_pos = { transform.pos.x + (dim.x / 2.0f) - (halo_texture.width / 2.0f), transform.pos.y - halo_texture.height};
 
-                if (playuh.holding != NONE)
-                {
-                    Texture2D texture = gAssetMngr.GetAsset(playuh.holding);
-
-                    Rectangle source = { 0, 0, texture.width, texture.height };
-                    Vector2 dim2 = { texture.width * 0.75, texture.height * 0.75 };
-                    float x = transform.pos.x + (dim.x / 2.0f) - (dim2.x / 2.0f);
-                    float y = transform.pos.y - dim2.y + 5;
-                    Rectangle dest = { x, y, dim2.x, dim2.y};
-                    Vector2 origin = { 0, 0 };
-                    DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
-                    halo_pos.y -= (texture.height / 2.0f) + 10;
-                }
-
-                Rectangle source = { 0, 0, halo_texture.width, halo_texture.height };
-                Rectangle dest = { halo_pos.x, halo_pos.y, halo_texture.width * 0.75f, halo_texture.height * 0.75f };
-                Vector2 origin = { 0, 0 };
-                DrawTexturePro(halo_texture, source, dest, origin, 0.0f, WHITE);
-            }
         }
     }
 
@@ -202,10 +177,45 @@ void EnvironmentRenderSystem::draw()
 
             // std::cout << stats.type << std::endl;
             Rectangle source = { 0, 0, texture.width, texture.height };
-            Vector2 dim = { texture.width, texture.height };
+            if (rend.flip_hor)
+            {
+                source.width *= -1;
+            }
+            if (rend.flip_ver)
+            {
+                source.height *= -1;
+            }
+            Vector2 dim = { texture.width * rend.size, texture.height * rend.size};
             Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
             Vector2 origin = { 0, 0 };
-            DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
+            DrawTexturePro(texture, source, dest, origin, rend.rotation, WHITE);
+
+            // literally just draw the item the player is holding on 
+            if (stats.type == PLAYER)
+            {
+                auto const& playuh = gCoordinator.GetComponent<player>(draw_order[i]);
+                Texture2D halo_texture = gAssetMngr.GetAsset(HALO);
+                Vector2 halo_pos = { transform.pos.x + (dim.x / 2.0f) - (halo_texture.width / 2.0f), transform.pos.y - halo_texture.height };
+
+                if (playuh.holding != NONE)
+                {
+                    Texture2D texture = gAssetMngr.GetAsset(playuh.holding);
+
+                    Rectangle source = { 0, 0, texture.width, texture.height };
+                    Vector2 dim2 = { texture.width * 0.75, texture.height * 0.75 };
+                    float x = transform.pos.x + (dim.x / 2.0f) - (dim2.x / 2.0f);
+                    float y = transform.pos.y - dim2.y + 5;
+                    Rectangle dest = { x, y, dim2.x, dim2.y };
+                    Vector2 origin = { 0, 0 };
+                    DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
+                    halo_pos.y -= (texture.height / 2.0f) + 10;
+                }
+
+                Rectangle source = { 0, 0, halo_texture.width, halo_texture.height };
+                Rectangle dest = { halo_pos.x, halo_pos.y, halo_texture.width * 0.75f, halo_texture.height * 0.75f };
+                Vector2 origin = { 0, 0 };
+                DrawTexturePro(halo_texture, source, dest, origin, 0.0f, WHITE);
+            }
         }
     }
 

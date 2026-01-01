@@ -497,7 +497,7 @@ void PlayerSystem::update_state()
 {
     for (auto& entity : entities_list)
     {
-        auto& rend = gCoordinator.GetComponent<render>(entity);
+        auto& rend = gCoordinator.GetComponent<render_environment>(entity);
         rend.txt = (ASSETS)current_state;
     }
 }

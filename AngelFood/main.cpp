@@ -137,12 +137,12 @@ int main()
 
     ////// object placer heree until i rlly like add some way to do player state mngr...
     //  {
-          // player
+           //player
           //int ec = gCoordinator.CreateEntity();
           //{
           //    gCoordinator.AddComponent(
           //        ec,
-          //        render{ 0.5f, PLAYER_IDLE});
+          //        render_environment{ 0, PLAYER_IDLE, 1});
           //    gCoordinator.AddComponent(
           //        ec,
           //        transform2D{ Vector2 {-50.0f, -50.0f} });

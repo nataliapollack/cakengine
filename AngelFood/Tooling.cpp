@@ -103,9 +103,13 @@ void Tooling::serialize()
             {
                 auto& comp = gCoordinator.GetComponent<render_environment>(entity);
                 data << ENVIRONMENT_RENDER << "\n";
-                data << comp.parrallax << "\n";
+                data << comp.animate << "\n";
+                data << comp.flip_hor << "\n";
+                data << comp.flip_ver << "\n";
                 data << comp.txt << "\n";
                 data << comp.depth << "\n";
+                data << comp.size << "\n";
+                data << comp.rotation << "\n";
             }
         }
     }
@@ -254,13 +258,25 @@ void Tooling::deserialize()
                 bool x = atoi(line.c_str());
 
                 std::getline(load_data, line);
-                int y = atoi(line.c_str());
+                bool y = atoi(line.c_str());
 
                 std::getline(load_data, line);
-                int z = atoi(line.c_str());
+                bool z = atoi(line.c_str());
+
+                std::getline(load_data, line);
+                int txt = atoi(line.c_str());
+
+                std::getline(load_data, line);
+                int a = atoi(line.c_str());
+
+                std::getline(load_data, line);
+                float b = atof(line.c_str());
+
+                std::getline(load_data, line);
+                float c = atof(line.c_str());
 
                 gCoordinator.AddComponent(en,
-                    render_environment{x, (ASSETS)y, z});
+                    render_environment{x, y, z, (ASSETS)txt, a, b, c});
 
                 std::getline(load_data, line);
             }
@@ -360,6 +376,15 @@ void Tooling::update()
                 rec.height = box.dimensions.y;
             }
 
+            if (gCoordinator.HasComponent<render_environment>(current_en))
+            {
+                auto& rend = gCoordinator.GetComponent<render_environment>(current_en);
+                Texture2D txt = gAssetMngr.GetAsset(rend.txt);
+
+                rec.width = txt.width;
+                rec.height = txt.height;
+            }
+
             mouseScaleReady = true;
 
             rec.width = (int)((mouse_pos.x - rec.x) / 50.0f) * 50.0f;
@@ -377,6 +402,14 @@ void Tooling::update()
 
                 auto& collision = gCoordinator.GetComponent<collidble>(current_en);
                 collision.box = rec;
+            }
+
+            if (gCoordinator.HasComponent<render_environment>(current_en))
+            {
+                auto& rend = gCoordinator.GetComponent<render_environment>(current_en);
+                Texture2D txt = gAssetMngr.GetAsset(rend.txt);
+
+                rend.size = rec.width / txt.width;
             }
         }
 
@@ -424,20 +457,34 @@ void Tooling::update()
 
                 if (IsKeyPressed(KEY_LEFT))
                 {
-                    rend.txt = (ASSETS)((int)rend.txt + 1);
+                    if (ROOM15 < rend.txt)
+                    {
+                        rend.txt = (ASSETS)((int)rend.txt - 1);
+                        if (rend.txt == COUNT)
+                        {
+                            rend.txt = BRANCH1;
+                        }
+                        if (rend.txt == ROOM15)
+                        {
+                            rend.txt = GLASS3;
+                        }
+                    }
                 }
                 if (IsKeyPressed(KEY_RIGHT))
                 {
-                    rend.txt = (ASSETS)((int)rend.txt - 1);
+                    if (ROOM15 < rend.txt)
+                    {
+                        rend.txt = (ASSETS)((int)rend.txt + 1);
 
-                }
-                if (rend.txt == COUNT)
-                {
-                    rend.txt = BRANCH1;
-                }
-                if (rend.txt == ROOM15)
-                {
-                    rend.txt = GLASS3;
+                        if (rend.txt == COUNT)
+                        {
+                            rend.txt = BRANCH1;
+                        }
+                        if (rend.txt == ROOM15)
+                        {
+                            rend.txt = GLASS3;
+                        }
+                    }
                 }
                 if (IsKeyPressed(KEY_DOWN))
                 {
@@ -452,6 +499,40 @@ void Tooling::update()
                 if (rend.depth < 0)
                 {
                     rend.depth = 0;
+                }
+
+                if (IsKeyPressed(KEY_C))
+                {
+                    rend.flip_hor = !rend.flip_hor;
+                }
+                if (IsKeyPressed(KEY_Z))
+                {
+                    rend.flip_ver = !rend.flip_ver;
+                }
+                if (IsKeyDown(KEY_X))
+                {
+                    rend.rotation += 5.0f;
+                }
+                if (IsKeyDown(KEY_V))
+                {
+                    rend.rotation -= 5.0f;
+                }
+
+                if (IsKeyPressed(KEY_SPACE))
+                {
+                    auto& transform = gCoordinator.GetComponent<transform2D>(current_en);
+                    Texture2D txt = gAssetMngr.GetAsset(rend.txt);
+                    int copy = gCoordinator.CreateEntity();
+
+                    gCoordinator.AddComponent(copy,
+                        status{ stats.active, true, ENVIRONMENT });
+
+                    gCoordinator.AddComponent(copy,
+                        transform2D{ transform.pos});
+
+                    gCoordinator.AddComponent(copy,
+                        render_environment{ rend.animate, rend.flip_ver, rend.flip_hor, 
+                        rend.txt, rend.depth, rend.size, rend.rotation });
                 }
             }
         }
@@ -528,7 +609,7 @@ void Tooling::check_inputs()
             transform2D{ mouse_pos.x, mouse_pos.y });
 
         gCoordinator.AddComponent(en,
-            render_environment{ false, BRANCH1, 0 });
+            render_environment{ false, false, false, BRANCH1, 0, 1.0f, 0.0f });
 
             current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
             current_en = en;
