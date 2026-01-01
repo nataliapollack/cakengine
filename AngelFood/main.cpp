@@ -11,12 +11,13 @@
 #include "ItemSystem.h"
 #include "CollisionSystem.h"
 #include "Tooling.h"
-
+#include "ParticleSystem.h"
 
 // components
 #include "Core.h"
 #include "Player.h"
 #include "Progression.h"
+#include "ParticleEmitter.h"
 
 // msc
 #include "AssetManager.h"
@@ -42,6 +43,8 @@ void register_components()
     gCoordinator.RegisterComponent<collecting>();
 
     gCoordinator.RegisterComponent<physics>();
+
+    gCoordinator.RegisterComponent<particle_emitter>();
 }
 
 void set_system_signatures()
@@ -93,6 +96,11 @@ void set_system_signatures()
 
     sig.set(gCoordinator.GetComponentType<status>());
     gCoordinator.SetSystemSignature<Tooling>(sig);
+
+    sig.reset();
+    
+    sig.set(gCoordinator.GetComponentType<particle_emitter>());
+    gCoordinator.SetSystemSignature<ParticleSystem>(sig);
 }
 
 int main()
@@ -118,6 +126,7 @@ int main()
     auto dropoff_sys = gCoordinator.RegisterSystem<CollectingSystem>();
     auto environment_render_sys = gCoordinator.RegisterSystem<EnvironmentRenderSystem>();
     auto tooling_sys = gCoordinator.RegisterSystem<Tooling>();
+    auto particle_sys = gCoordinator.RegisterSystem<ParticleSystem>();
 
 
     tooling_sys->init();
@@ -183,6 +192,7 @@ int main()
     item_sys->init();
     dropoff_sys->init();
     environment_render_sys->init();
+    particle_sys->init();
 
     // IN-GAME
     while (!WindowShouldClose())
@@ -196,6 +206,7 @@ int main()
             {
                 player_movement_sys->update(clamped_dt);
                 collision_sys->CheckCollisions();
+                particle_sys->update(clamped_dt);
             }
 
             camera_sys->update();
@@ -236,6 +247,8 @@ int main()
             render_sys->draw();
             box_render_sys->draw();
 
+            particle_sys->draw();
+
             if (tooling_sys->GetToolStatus())
             {
                 tooling_sys->draw();
@@ -248,7 +261,8 @@ int main()
 
 
             DrawText(TextFormat("dt %f", clamped_dt), 20, 20, 40, RED);
-
+            
+            // Particles
 
             EndDrawing();
         }

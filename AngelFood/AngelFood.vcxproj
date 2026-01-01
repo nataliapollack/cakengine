@@ -136,6 +136,7 @@
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="ItemSystem.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Tooling.cpp" />
@@ -147,12 +148,17 @@
     <ClInclude Include="Core.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ItemSystem.h" />
+    <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Progression.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="Tooling.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\particle2d.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

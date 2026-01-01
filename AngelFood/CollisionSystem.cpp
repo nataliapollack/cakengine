@@ -94,6 +94,14 @@ void CollisionSystem::CheckCollisions()
                         Event spawner(Events::Collision::SPAWNER);
                         gCoordinator.SendEvent(spawner);
                     }
+
+                    if (stats_j.type == SPARK)
+                    {
+                        Event spark(Events::Collision::SPARK);
+                        gCoordinator.SendEvent(spark);
+
+                        stats_j.active = false;
+                    }
                 }
             }
         }

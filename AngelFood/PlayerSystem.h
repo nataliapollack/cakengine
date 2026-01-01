@@ -3,29 +3,6 @@
 #include "Timer.hpp"
 #include "Player.h"
 
-#include <chrono>
-
-class TimeManager
-{
-public:
-    TimeManager();
-    void increment();
-    bool needsFixedUpdate();
-    void resetLastTime();
-    const float getFixedDt() const;
-    const float getDeltaTime() const;
-    const float getTotalTime() const;
-private:
-    std::chrono::steady_clock::time_point m_lastTime;
-    std::chrono::steady_clock::time_point m_currTime;
-    std::chrono::steady_clock::duration m_timeTaken;
-
-    float m_accumulator;
-    float m_time;
-    float m_deltaTime;
-    const float m_fixedDt = 0.02f;
-};
-
 class PlayerSystem : public System
 {
 public:
@@ -51,10 +28,12 @@ private:
 
     void WalkInput();
     void GlideInput(Entity entity);
-    void JumpInput(Entity entity);
+    void JumpInput(Entity entity, float dt);
 
     void HitWall(Event& event);
     void AccumulateForces();
+
+    void HitSpark(Event& event);
 
     struct walk_values
     {
@@ -113,8 +92,14 @@ private:
     Vector2 starting_pawn_pos;
     Vector2 spawn_pos;
 
-    std::unique_ptr<TimeManager> m_time;
-
     Timer death_time;
     bool is_dead;
+
+    // Spark stuff
+    struct spark_values
+    {
+        size_t double_jump_unlock;
+        size_t held;
+    };
+    spark_values m_spark;
 };

@@ -150,6 +150,14 @@ void BoxRenderSystem::draw()
             {
                 DrawRectangleRec(box, ColorAlpha(YELLOW, 0.5f));
             }
+            if (stats.type == SPARK)
+            {
+                DrawRectangleRec(box, ColorAlpha(SKYBLUE, 0.9f));
+            }
+            if (stats.type == EMITTER)
+            {
+                DrawRectangleRec(box, ColorAlpha(VIOLET, 0.9f));
+            }
         }
     }
 }

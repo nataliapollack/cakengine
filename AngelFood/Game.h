@@ -10,7 +10,9 @@ const enum OBJECT_TYPE
     SPIKES,
     SPAWNER,
     ENVIRONMENT,
-    PLATFORM
+    PLATFORM,
+    SPARK,
+    EMITTER
 };
 
 enum HOLDABLE_ITEMS
@@ -98,4 +100,5 @@ namespace Events::Collision {
     const ParamId COLLISION_DATA = "Events::Item::IMPULSE_FORCE"_hash;
     const EventId SPIKES = "Events::Collision::SPIKES"_hash;
     const EventId SPAWNER = "Events::Collision::SPAWNER"_hash;
+    const EventId SPARK = "Events::Collision::SPARK"_hash;
 }

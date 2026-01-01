@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "Core.h"
 
+#include "ParticleEmitter.h"
+
 #include <iostream>
 
 extern Coordinator gCoordinator;
@@ -69,6 +71,54 @@ void PlayerSystem::init()
     death_time = Timer(1.0f);
     is_dead = false;
 
+    m_spark = {
+        6,
+        0
+    };
+
+    for (auto& entity : entities_list)
+    {
+        auto& coll = gCoordinator.GetComponent<collidble>(entity);
+
+        Vector2 base_offset{ coll.box.width / 2.0f, coll.box.height / 2.0f };
+
+        Vector2 min_offset{ base_offset.x - 20.0f, base_offset.y - 20.0f };
+        Vector2 max_offset{ base_offset.x + 20.0f, base_offset.y + 20.0f };
+
+        // Particle jump thing
+        gCoordinator.AddComponent(entity,
+            particle_emitter{
+                32,         // capacity
+                0,           // alive count
+                { min_offset, max_offset },
+                ColorAlpha(WHITE, 0.7f), // color
+                { Vector2Rotate(Vector2UnitY, DEG2RAD * -60.0f),
+                    Vector2Rotate(Vector2UnitY, DEG2RAD * 60.0f) }, // init dir
+                { 350.0f, 600.0f },      // init speed
+                {0.50f, 1.0f},        // init lifetime
+                {5.0f, 10.0f}, // init size
+                8,          // num per emit
+                false ,        // emitting
+                true,       // one shot effect
+                Timer(0.0f), // time between emits
+                [](particle_emitter& emit, Particle& par, float dt)
+                {
+                    par.velocity = Vector2Scale(par.velocity, 0.9f);
+
+                    par.position = Vector2Add(par.position,
+                        Vector2Scale(par.velocity, dt));
+                },
+                [](particle_emitter& emit, Particle& par)
+                {
+                    par.color.a = static_cast<float>(par.initial_alpha) *
+                        (par.lifetime / par.initial_lifetime);
+                },
+                {}
+            }
+        );
+    }
+
+
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
 
@@ -84,7 +134,8 @@ void PlayerSystem::init()
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Item::DROPPEDOFF, PlayerSystem::DroppedItem));
 
-    m_time = std::make_unique<TimeManager>();
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Collision::SPARK, PlayerSystem::HitSpark));
 }
 
 void PlayerSystem::update(float dt)
@@ -110,11 +161,10 @@ void PlayerSystem::update(float dt)
         else
         {
             current_state = IDLE;
-            m_time->increment();
             for (auto& entity : entities_list)
             {
                 WalkInput();
-                JumpInput(entity);
+                JumpInput(entity, dt);
                 GlideInput(entity);
             }
 
@@ -215,10 +265,11 @@ void PlayerSystem::WalkInput()
     }
 }
 
-void PlayerSystem::JumpInput(Entity entity)
+void PlayerSystem::JumpInput(Entity entity, float dt)
 {
     auto& playuh = gCoordinator.GetComponent<player>(entity);
     auto& phy = gCoordinator.GetComponent<physics>(entity);
+    auto& emit = gCoordinator.GetComponent<particle_emitter>(entity);
 
     auto& vel = phy.vel;
 
@@ -230,6 +281,8 @@ void PlayerSystem::JumpInput(Entity entity)
 
     if (m_jump.should_jump && m_jump.jump_counter > 0)
     {
+        emit.emitting = true;
+
         m_jump.should_jump = false;
 
         vel.y = -m_jump.jump_impulse.at(
@@ -243,7 +296,7 @@ void PlayerSystem::JumpInput(Entity entity)
         m_jump.jump_timer = 0.0f;
     }
 
-    if (m_jump.is_jumping) m_jump.jump_timer += m_time->getFixedDt();
+    if (m_jump.is_jumping) m_jump.jump_timer += dt;
     if (IsKeyReleased(KEY_SPACE))
     {
         if (m_jump.jump_timer < m_jump.jump_time)
@@ -252,7 +305,7 @@ void PlayerSystem::JumpInput(Entity entity)
         }
     }
 
-    if (m_jump.jump_buffering.update(m_time->getFixedDt()))
+    if (m_jump.jump_buffering.update(dt))
         m_jump.should_jump = false;
 }
 
@@ -449,39 +502,11 @@ void PlayerSystem::update_state()
     }
 }
 
-// Time Manager  -------------------------------------------------------------
-
-using namespace std::chrono;
-
-TimeManager::TimeManager()
-    : m_lastTime(steady_clock::now()), m_currTime(steady_clock::now()),
-      m_timeTaken(), m_accumulator(0.0f), m_time(0.0f), m_deltaTime(0.0f) {}
-
-void TimeManager::increment()
+void PlayerSystem::HitSpark(Event& event)
 {
-    m_currTime = steady_clock::now();
-    m_timeTaken = m_currTime - m_lastTime;
-    m_deltaTime = static_cast<float>(m_timeTaken.count()) *
-        steady_clock::period::num / steady_clock::period::den;
-    m_lastTime = m_currTime;
-    m_accumulator += m_deltaTime;
+    std::cout << "Spark hit\n";
+    m_spark.held += 1;
+
+    if (m_spark.held >= m_spark.double_jump_unlock)
+        SetDoubleJumpUnlocked(true);
 }
-
-bool TimeManager::needsFixedUpdate() {
-    const bool result = m_accumulator >= m_fixedDt;
-
-    if (result) {
-        m_accumulator -= m_fixedDt;
-        m_time += m_fixedDt;
-    }
-
-    return result;
-}
-
-void TimeManager::resetLastTime() { m_lastTime = steady_clock::now(); }
-
-const float TimeManager::getFixedDt() const { return m_fixedDt; }
-
-const float TimeManager::getDeltaTime() const { return m_deltaTime; }
-
-const float TimeManager::getTotalTime() const { return m_time; }
