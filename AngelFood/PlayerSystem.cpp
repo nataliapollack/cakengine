@@ -504,7 +504,7 @@ void PlayerSystem::update_state()
 
 void PlayerSystem::HitSpark(Event& event)
 {
-    std::cout << "Spark hit\n";
+    //std::cout << "Spark hit\n";
     m_spark.held += 1;
 
     if (m_spark.held >= m_spark.double_jump_unlock)
