@@ -140,17 +140,16 @@ void BoxRenderSystem::draw()
 
             if (stats.type == SPIKES)
             {
-                DrawRectangleRec(box, ColorAlpha(RED, 1.0));
+                DrawRectangleRec(box, ColorAlpha(RED, 0.5));
             }
             if (stats.type == WALL)
             {
-                DrawRectangleRec(box, ColorAlpha(GRAY, 1.0));
+                DrawRectangleRec(box, ColorAlpha(GRAY, 0.7));
             }
             if (stats.type == SPAWNER)
             {
                 DrawRectangleRec(box, ColorAlpha(YELLOW, 0.5f));
             }
-            
         }
     }
 }
@@ -195,7 +194,7 @@ void EnvironmentRenderSystem::draw()
 
             // std::cout << stats.type << std::endl;
             Rectangle source = { 0, 0, texture.width, texture.height };
-            Vector2 dim = { texture.width, texture.height};
+            Vector2 dim = { texture.width, texture.height };
             Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
             Vector2 origin = { 0, 0 };
             DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);

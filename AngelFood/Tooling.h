@@ -27,6 +27,7 @@ public:
 
     void update();
     void init();
+    void check_inputs();
     void draw();
 
 private:

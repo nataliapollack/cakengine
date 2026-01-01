@@ -231,12 +231,10 @@ int main()
             rlPopMatrix();
 
             
+
             environment_render_sys->draw();
-
             render_sys->draw();
-
             box_render_sys->draw();
-
 
             if (tooling_sys->GetToolStatus())
             {

@@ -34,6 +34,9 @@ enum ASSETS
     SNAKE_IDLE1,
     SNAKE_IDLE2,
     ROOM1,
+    ROOM2,
+    ROOM3,
+    ROOM4,
     ROOM5,
     ROOM6,
     ROOM7,
@@ -41,11 +44,10 @@ enum ASSETS
     ROOM9,
     ROOM10,
     ROOM11,
-    COUNT
-};
-
-enum TILE_ASSETS
-{
+    ROOM12, 
+    ROOM13,
+    ROOM14,
+    ROOM15,
     BRANCH1,
     BRANCH2,
     FLOATING1,
@@ -59,7 +61,20 @@ enum TILE_ASSETS
     SIDE1,
     SIDE2,
     SIDE3,
-    TILE_COUNT
+    GLASS1,
+    GLASS2,
+    GLASS3,
+    BUSH1,
+    BUSH2,
+    BUSH3,
+    ENV_BRANCH1,
+    ENV_BRANCH2,
+    ENV_BRANCH3,
+    ENV_BRANCH4,
+    GRASS1,
+    GRASS2,
+    GRASS3,
+    COUNT
 };
 
 namespace Events::Item {

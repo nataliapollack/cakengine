@@ -24,6 +24,7 @@ struct render_environment
 struct box_render
 {
     Vector2 dimensions;
+    bool platform;
 };
 
 struct animate

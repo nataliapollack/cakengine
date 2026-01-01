@@ -9,12 +9,10 @@ public:
     void load_assets();
 
     Texture2D GetAsset(int asset);
-    Texture2D GetTileAsset(int asset);
     Vector2 GetDimensions(int asset, float multiplier);
 
     void unload();
 
 private:
     Texture2D textures[COUNT];
-    Texture2D tiles[TILE_COUNT];
 };
