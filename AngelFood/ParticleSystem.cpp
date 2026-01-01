@@ -142,10 +142,6 @@ void ParticleSystem::update(float dt)
 					emit.emitting = false;
 				}
 			}
-			//if (emit.one_shot && emit.alive_count >= emit.capacity)
-			//{
-			//	emit.emitting = false;
-			//}
 		}
 
 		// Update living particles
@@ -190,8 +186,19 @@ void ParticleSystem::draw()
 
 			emit.color_curve(emit, par);
 
-			DrawCircle(par.position.x + par.size, par.position.y + par.size,
-				par.size, par.color);
+			if (emit.texture.id != 0)
+			{
+				auto& texture = emit.texture;
+				// Draw texture
+				DrawTexture(texture, par.position.x - texture.width / 2.0f, 
+					par.position.y - texture.height / 2.0f, WHITE);
+			}
+			else
+			{
+				DrawCircle(par.position.x + par.size, 
+					par.position.y + par.size,
+					par.size, par.color);
+			}
 		}
 	}
 

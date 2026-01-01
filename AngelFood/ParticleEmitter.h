@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Timer.hpp"
+#include "raylib.h"
 
 struct Particle
 {
@@ -36,6 +37,8 @@ struct particle_emitter
 
 	bool emitting;
 	bool one_shot;
+
+	Texture2D texture;
 
 	Timer time_between_emit;
 

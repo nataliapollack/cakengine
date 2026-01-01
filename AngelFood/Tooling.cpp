@@ -667,6 +667,7 @@ void Tooling::check_inputs()
                 2,          // num per emit
                 true,        // emitting
                 true,       // one shot effect
+                Texture2D{ 0 },
                 Timer(0.10f), // time between emits
                 [](particle_emitter& emit, Particle& par, float dt)
                 {

@@ -97,9 +97,10 @@ void PlayerSystem::init()
                 { 350.0f, 600.0f },      // init speed
                 {0.50f, 1.0f},        // init lifetime
                 {5.0f, 10.0f}, // init size
-                8,          // num per emit
+                2,          // num per emit
                 false ,        // emitting
                 true,       // one shot effect
+                Texture2D{ 0 },
                 Timer(0.0f), // time between emits
                 [](particle_emitter& emit, Particle& par, float dt)
                 {
