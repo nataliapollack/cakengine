@@ -16,9 +16,20 @@ struct render
 
 struct render_environment
 {
-    bool parrallax;
+    bool animate;
+    bool flip_ver;
+    bool flip_hor;
     ASSETS txt;
     int depth;
+    float size;
+    float rotation;
+};
+
+struct environ_adjustments
+{
+    float scale;
+    float rotation;
+    bool ver_flip;
 };
 
 struct box_render

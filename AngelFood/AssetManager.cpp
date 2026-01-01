@@ -48,7 +48,7 @@ void AssetManager::load_assets()
     textures[EDGE1] = LoadTexture("art/Tiles Set 1/Edge Grass 1.png");
     textures[EDGE2] = LoadTexture("art/Tiles Set 1/Edge Grass 2.png");
     textures[EDGE3] = LoadTexture("art/Tiles Set 1/Edge Grass 2.png");
-    textures[GROUND1] = LoadTexture("art/Tiles Set 1/Ground Grass 1.png");
+    textures[GROUND1] = LoadTexture("art/Tiles Set 1/GroundGrass 1.png");
     textures[GROUND2] = LoadTexture("art/Tiles Set 1/Ground Grass 2.png");
     textures[DARK] = LoadTexture("art/Tiles Set 1/1x1.png");
     textures[SIDE1] = LoadTexture("art/Tiles Set 1/Side Piece 1.png");
@@ -64,7 +64,8 @@ void AssetManager::load_assets()
     textures[BUSH3] = LoadTexture("art/Tiles Set 2/Bush 3.png");
     textures[ENV_BRANCH1] = LoadTexture("art/Tiles Set 2/Environ Branch 1.png");
     textures[ENV_BRANCH2] = LoadTexture("art/Tiles Set 2/Environ Branch 2.png");
-    textures[ENV_BRANCH3] = LoadTexture("art/Tiles Set 2/Environ Branch 3.png");
+    textures[ENV_BRANCH3] = LoadTexture("art/Tiles Set 2/Environ Branch Large 3.png");
+    textures[ENV_BRANCH4] = LoadTexture("art/Tiles Set 2/Environ Branch Large 4.png");
     textures[GRASS1] = LoadTexture("art/Tiles Set 2/Grass1.png");
     textures[GRASS2] = LoadTexture("art/Tiles Set 2/Grass2.png");
     textures[GRASS3] = LoadTexture("art/Tiles Set 2/Grass3.png");
