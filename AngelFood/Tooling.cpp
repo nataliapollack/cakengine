@@ -659,8 +659,8 @@ void Tooling::check_inputs()
                 10,           // alive count
                 { Vector2Zero(), Vector2Zero() }, // offset
                 ColorAlpha(YELLOW, 0.5f), // color
-                { Vector2Rotate(Vector2UnitY, -45.0f), 
-                    Vector2Rotate(Vector2UnitY, 45.0f) }, // init dir
+                Vector2Rotate(Vector2UnitY, -45.0f), // init dir
+                90.0f,
                 { 50.0f, 100.0f },      // init speed
                 {100.0f, 200.0f},        // init lifetime
                 {5.0f, 10.0f},
@@ -706,6 +706,37 @@ void Tooling::check_inputs()
                 },
                 {}
             });
+
+        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+        current_en = en;
+    }
+
+    if (IsKeyPressed(KEY_SEVEN))
+    {
+        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+        int en = gCoordinator.CreateEntity();
+
+        gCoordinator.AddComponent(en,
+            status{ true, true, ITEM });
+
+        gCoordinator.AddComponent(en,
+            box_render{ 50, 50 });
+
+        gCoordinator.AddComponent(en,
+            transform2D{ mouse_pos.x, mouse_pos.y });
+
+        gCoordinator.AddComponent(
+            en,
+            collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+
+        gCoordinator.AddComponent(en,
+            collectable{}
+        );
+
+        gCoordinator.AddComponent(en,
+            collecting{}
+            );
 
         current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
         current_en = en;

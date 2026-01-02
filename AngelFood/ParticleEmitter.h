@@ -28,7 +28,8 @@ struct particle_emitter
 
 	Color color;
 
-	std::pair<Vector2, Vector2> initial_dir;
+	Vector2 initial_dir;
+	float max_angle_variation;
 	std::pair<float, float> initial_speed;
 	std::pair<float, float> initial_lifetime;
 	std::pair<float, float> initial_size;

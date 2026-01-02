@@ -133,6 +133,10 @@ void BoxRenderSystem::draw()
             {
                 DrawRectangleRec(box, ColorAlpha(VIOLET, 0.9f));
             }
+            if (stats.type == ITEM)
+            {
+                DrawRectangleRec(box, ColorAlpha(PINK, 0.9f));
+            }
         }
     }
 }

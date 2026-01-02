@@ -38,12 +38,8 @@ void ParticleSystem::init_emitter(const Entity& entity)
 	{
 		float speed = getRandomFloat(emit.initial_speed.first,
 			emit.initial_speed.second);
-		Vector2 dir = {
-			getRandomFloat(emit.initial_dir.first.x,
-				emit.initial_dir.second.x),
-			getRandomFloat(emit.initial_dir.first.y,
-				emit.initial_dir.second.y)
-		};
+		Vector2 dir = Vector2Rotate(emit.initial_dir, getRandomFloat(0.0f,
+			DEG2RAD * emit.max_angle_variation));
 
 		float lifetime = getRandomFloat(emit.initial_lifetime.first,
 			emit.initial_lifetime.second);
@@ -99,13 +95,10 @@ void ParticleSystem::update(float dt)
 					float speed = getRandomFloat(emit.initial_speed.first,
 						emit.initial_speed.second);
 
-					Vector2 dir
-					{
-						getRandomFloat(emit.initial_dir.first.x,
-							emit.initial_dir.second.x),
-						getRandomFloat(emit.initial_dir.first.y,
-							emit.initial_dir.second.y)
-					};
+					Vector2 dir = Vector2Rotate(
+						emit.initial_dir, getRandomFloat(0.0f,
+						DEG2RAD * emit.max_angle_variation)
+					);
 
 					float lifetime = getRandomFloat(
 						emit.initial_lifetime.first,

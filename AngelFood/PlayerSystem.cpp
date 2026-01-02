@@ -72,7 +72,7 @@ void PlayerSystem::init()
     is_dead = false;
 
     m_spark = {
-        6,
+        5,
         0
     };
 
@@ -92,8 +92,8 @@ void PlayerSystem::init()
                 0,           // alive count
                 { min_offset, max_offset },
                 ColorAlpha(WHITE, 0.7f), // color
-                { Vector2Rotate(Vector2UnitY, DEG2RAD * -60.0f),
-                    Vector2Rotate(Vector2UnitY, DEG2RAD * 60.0f) }, // init dir
+                Vector2Rotate(Vector2UnitY, DEG2RAD * -60.0f),
+                120.0f, // init dir
                 { 350.0f, 600.0f },      // init speed
                 {0.50f, 1.0f},        // init lifetime
                 {5.0f, 10.0f}, // init size
