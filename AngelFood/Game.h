@@ -76,6 +76,7 @@ enum ASSETS
     GRASS1,
     GRASS2,
     GRASS3,
+    ROOTS,
     BG_BRANCH,
     BG_BUSH1,
     BG_BUSH2,

@@ -69,7 +69,7 @@ void AssetManager::load_assets()
     textures[GRASS1] = LoadTexture("art/Tiles Set 2/Grass1.png");
     textures[GRASS2] = LoadTexture("art/Tiles Set 2/Grass2.png");
     textures[GRASS3] = LoadTexture("art/Tiles Set 2/Grass3.png");
-
+    textures[ROOTS] = LoadTexture("art/Tiles Set 2/Deco Roots.png");
 
     textures[BG_BRANCH] = LoadTexture("art/Tiles Set 3/BG Branch 1.png");
     textures[BG_BUSH1] = LoadTexture("art/Tiles Set 3/BG Bush 1.png");
