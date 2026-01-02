@@ -41,8 +41,8 @@ void AssetManager::load_assets()
     textures[ROOM15] = LoadTexture("art/room15.png");
 
     // textures
-    textures[BRANCH1] = LoadTexture("art/Tiles Set 1/Floating Branch1.png");
-    textures[BRANCH2] = LoadTexture("art/Tiles Set 1/Floating Branch2.png");
+    textures[BRANCH1] = LoadTexture("art/Tiles Set 1/Floating Branch 1.png");
+    textures[BRANCH2] = LoadTexture("art/Tiles Set 1/Floating Branch 2.png");
     textures[FLOATING1] = LoadTexture("art/Tiles Set 1/Floating 1.png");
     textures[FLOATING2] = LoadTexture("art/Tiles Set 1/Floating 2.png");
     textures[EDGE1] = LoadTexture("art/Tiles Set 1/Edge Grass 1.png");
@@ -69,6 +69,30 @@ void AssetManager::load_assets()
     textures[GRASS1] = LoadTexture("art/Tiles Set 2/Grass1.png");
     textures[GRASS2] = LoadTexture("art/Tiles Set 2/Grass2.png");
     textures[GRASS3] = LoadTexture("art/Tiles Set 2/Grass3.png");
+
+
+    textures[BG_BRANCH] = LoadTexture("art/Tiles Set 3/BG Branch 1.png");
+    textures[BG_BUSH1] = LoadTexture("art/Tiles Set 3/BG Bush 1.png");
+    textures[BG_BUSH2] = LoadTexture("art/Tiles Set 3/BG Bush 2.png");
+    textures[BG_VINE1] = LoadTexture("art/Tiles Set 3/BG Vine 1.png");
+    textures[BG_VINE2] = LoadTexture("art/Tiles Set 3/BG Vine 2.png");
+    textures[BG_ROOT1] = LoadTexture("art/Tiles Set 3/BG Root 1.png");
+    textures[BG_ROOT2] = LoadTexture("art/Tiles Set 3/BG Root 2.png");
+    textures[BG_ROOT3] = LoadTexture("art/Tiles Set 3/BG Root 3.png");
+    textures[BG_BUSH3] = LoadTexture("art/Tiles Set 3/Bush 4.png");
+    textures[BG_BUSH4] = LoadTexture("art/Tiles Set 3/Bush 5.png");
+    textures[BG_BUSH5] = LoadTexture("art/Tiles Set 3/Bush 6.png");
+    textures[BG_BUSH6] = LoadTexture("art/Tiles Set 3/Bush 7.png");
+    textures[BG_BUSH7] = LoadTexture("art/Tiles Set 3/Bush 8.png");
+    textures[BG_BUSH8] = LoadTexture("art/Tiles Set 3/Bush 9.png");
+    textures[HANGING1] = LoadTexture("art/Tiles Set 3/Hanging 1.png");
+    textures[HANGING2] = LoadTexture("art/Tiles Set 3/Hanging 2.png");
+    textures[HANGING3] = LoadTexture("art/Tiles Set 3/Hanging 3.png");
+    textures[HANGING4] = LoadTexture("art/Tiles Set 3/Hanging 4.png");
+    textures[VINE1] = LoadTexture("art/Tiles Set 3/Vine 1.png");
+    textures[VINE2] = LoadTexture("art/Tiles Set 3/Vine 2.png");
+    textures[VINE3] = LoadTexture("art/Tiles Set 3/Vine 3.png");
+    textures[VINE4] = LoadTexture("art/Tiles Set 3/Vine 4.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)
