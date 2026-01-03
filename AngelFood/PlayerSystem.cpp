@@ -50,9 +50,9 @@ void PlayerSystem::init()
 
     m_glide =
     {
-        Timer(1.0f), // length of glide
+        Timer(1.5f), // length of glide
         1.0f,        // max fall vel while gliding
-        1.0f,        // left/right movement multiplier
+        2.1 / 1.8f,        // left/right movement multiplier
         false,       // has started glide
         false,       // able to glide (in air and moving down and has input)
         true         // progression stuff...
