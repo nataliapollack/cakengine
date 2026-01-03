@@ -26,6 +26,9 @@ void ParticleSystem::init()
 {
 	instanceShader = LoadShader("shaders/particle2d.vs", nullptr);
 	batch = rlLoadRenderBatch(1, 36);
+
+	init_update_functions();
+	init_draw_functions();
 }
 
 void ParticleSystem::init_emitter(const Entity& entity)
@@ -144,7 +147,9 @@ void ParticleSystem::update(float dt)
 			if (!par.active) continue;
 
 			// TODO: update particle code
-			emit.update_function(emit, par, dt);
+			//emit.update_function(emit, par, dt);
+
+			update_functions.at(emit.type)(emit, par, dt);
 
 			par.lifetime -= dt;
 			if (par.lifetime <= 0.0f)
@@ -177,25 +182,161 @@ void ParticleSystem::draw()
 			auto& par = emit.particles.at(i);
 			// TODO: draw particle code
 
-			emit.color_curve(emit, par);
+			draw_functions.at(emit.type)(emit, par);
 
-			if (emit.texture.id != 0)
-			{
-				auto& texture = emit.texture;
-				// Draw texture
-				DrawTexture(texture, par.position.x - texture.width / 2.0f, 
-					par.position.y - texture.height / 2.0f, WHITE);
-			}
-			else
-			{
-				DrawCircle(par.position.x + par.size, 
-					par.position.y + par.size,
-					par.size, par.color);
-			}
+			//emit.color_curve(emit, par);
+
+			//if (emit.texture.id != 0)
+			//{
+			//	auto& texture = emit.texture;
+			//	// Draw texture
+			//	DrawTexture(texture, par.position.x - texture.width / 2.0f, 
+			//		par.position.y - texture.height / 2.0f, WHITE);
+			//}
+			//else
+			//{
+			//	DrawCircle(par.position.x + par.size, 
+			//		par.position.y + par.size,
+			//		par.size, par.color);
+			//}
 		}
 	}
 
 	rlDrawRenderBatchActive();
 	rlSetRenderBatchActive(nullptr);
 	EndShaderMode();
+}
+
+void ParticleSystem::init_update_functions()
+{
+	update_functions.insert({
+	ET_JUMP,
+	[](particle_emitter& emit, Particle& par, float dt)
+	{
+		par.velocity = Vector2Scale(par.velocity, 0.9f);
+
+		par.position = Vector2Add(par.position,
+			Vector2Scale(par.velocity, dt));
+	}
+		});
+
+	update_functions.insert({
+		ET_FIREFLIES,
+		[](particle_emitter& emit, Particle& par, float dt)
+		{
+			Vector2 dir = Vector2Subtract(
+				par.initial_position, par.position);
+			float dist = Vector2Length(dir);
+
+				par.force = Vector2Scale(dir, dist);
+
+				par.velocity += par.force * dt * dt;
+
+				if (GetRandomValue(0, 1))
+				{
+					par.velocity += Vector2Scale(
+						{ par.velocity.y, -par.velocity.x },
+						0.25f
+					);
+				}
+				else
+				{
+					par.velocity += Vector2Scale(
+						{ -par.velocity.y, par.velocity.x },
+						0.25f
+					);
+				}
+
+				par.velocity = Vector2ClampValue(
+					par.velocity, -100.0f, 100.0f);
+
+				par.position = Vector2Add(par.position,
+					Vector2Scale(par.velocity, dt));
+		}
+		});
+
+	update_functions.insert({
+		ET_ITEM_PICKUP,
+		[](particle_emitter& emit, Particle& par, float dt)
+		{
+			par.velocity += { 0.0f, 60000.0f * dt * dt };
+
+			par.position = Vector2Add(par.position,
+				Vector2Scale(par.velocity, dt));
+		}
+		});
+}
+
+
+void ParticleSystem::init_draw_functions()
+{
+	draw_functions.insert({
+		ET_JUMP,
+		[](particle_emitter& emit, Particle& par)
+		{
+			par.color.a = static_cast<float>(par.initial_alpha) *
+				(par.lifetime / par.initial_lifetime);
+
+			if (emit.texture.id != 0)
+			{
+				auto& texture = emit.texture;
+				// Draw texture
+				DrawTexture(texture, par.position.x - texture.width / 2.0f,
+					par.position.y - texture.height / 2.0f, WHITE);
+			}
+			else
+			{
+				DrawCircle(par.position.x + par.size,
+					par.position.y + par.size,
+					par.size, par.color);
+			}
+		}
+	});
+
+	draw_functions.insert({
+		ET_FIREFLIES,
+		[](particle_emitter& emit, Particle& par)
+		{
+			if (emit.texture.id != 0)
+			{
+				auto& texture = emit.texture;
+				// Draw texture
+				DrawTexture(texture, par.position.x - texture.width / 2.0f,
+					par.position.y - texture.height / 2.0f, WHITE);
+			}
+			else
+			{
+				DrawCircle(par.position.x + par.size,
+					par.position.y + par.size,
+					par.size / 2.0f, par.color);
+				DrawCircleGradient(par.position.x + par.size,
+					par.position.y + par.size,
+					par.size * 2.0f, 
+					ColorAlpha(YELLOW, 0.5f), ColorAlpha(YELLOW, 0.f));
+			}
+		}
+	});
+
+	draw_functions.insert({
+		ET_ITEM_PICKUP,
+		[](particle_emitter& emit, Particle& par)
+		{
+			par.color.a = static_cast<float>(par.initial_alpha) *
+				(par.lifetime / par.initial_lifetime);
+
+			if (emit.texture.id != 0)
+			{
+				auto& texture = emit.texture;
+				// Draw texture
+				DrawTexture(texture, par.position.x - texture.width / 2.0f,
+					par.position.y - texture.height / 2.0f, WHITE);
+			}
+			else
+			{
+				DrawCircle(par.position.x + par.size,
+					par.position.y + par.size,
+					par.size, par.color);
+			}
+		}
+	});
 }

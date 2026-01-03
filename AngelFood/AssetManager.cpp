@@ -107,6 +107,13 @@ void AssetManager::load_assets()
     textures[SPARK2] = LoadTexture("art/spark_0001.png");
     textures[SPARK3] = LoadTexture("art/spark_0002.png");
     textures[SPARK4] = LoadTexture("art/spark_0003.png");
+
+    // Main menu stuff
+    textures[TITLE] = LoadTexture("art/MainMenu/Title.png");
+    textures[MENU_ILLUS1] = LoadTexture("art/MainMenu/Menu Illus.png");
+    textures[MENU_ILLUS2] = LoadTexture("art/MainMenu/Menu Illus2.png");
+    textures[START_BUTTON] = LoadTexture("art/MainMenu/Start.png");
+    textures[CREDITS_BUTTON] = LoadTexture("art/MainMenu/Credits.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)

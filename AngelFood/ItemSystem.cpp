@@ -55,20 +55,7 @@ void ItemSystem::TriggerItemPickedUp(Event& event)
                     true,       // one shot effect
                     Texture2D{ 0 },
                     Timer(0.0f), // time between emits
-                    [](particle_emitter& emit, Particle& par, float dt)
-                    {
-                        //par.velocity = Vector2Scale(par.velocity, 0.9f);
-
-                        par.velocity += { 0.0f, 60000.0f * dt * dt };
-
-                        par.position = Vector2Add(par.position,
-                            Vector2Scale(par.velocity, dt));
-                    },
-                    [](particle_emitter& emit, Particle& par)
-                    {
-                        par.color.a = static_cast<float>(par.initial_alpha) *
-                            (par.lifetime / par.initial_lifetime);
-                    },
+                    ET_ITEM_PICKUP,
                     {}
                 }
             );

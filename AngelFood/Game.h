@@ -114,6 +114,11 @@ enum ASSETS
     SPARK2,
     SPARK3,
     SPARK4,
+    TITLE,
+    MENU_ILLUS1,
+    MENU_ILLUS2,
+    START_BUTTON,
+    CREDITS_BUTTON,
     COUNT
 };
 

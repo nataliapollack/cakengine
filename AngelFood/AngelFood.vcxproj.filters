@@ -51,6 +51,9 @@
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>Source Files\systems</Filter>
     </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderSystem.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="ParticleEmitter.h">
       <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

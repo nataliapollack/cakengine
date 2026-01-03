@@ -38,6 +38,16 @@ public:
         return running;
     }
 
+    float time()
+    {
+        return time_to_wait;
+    }
+
+    float count()
+    {
+        return counter;
+    }
+
 private:
     float time_to_wait;
     float counter;

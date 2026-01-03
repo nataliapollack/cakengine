@@ -21,6 +21,7 @@
 
 // msc
 #include "AssetManager.h"
+#include "MainMenu.h"
 
 Coordinator gCoordinator;
 AssetManager gAssetMngr;
@@ -195,78 +196,111 @@ int main()
     environment_render_sys->init();
     particle_sys->init();
 
+    MainMenu menu;
+    menu.init();
+
+    Timer intro_fade(0.5f);
+    bool intro_has_run = false;
+
     // IN-GAME
     while (!WindowShouldClose())
     {
         float deltaTime = GetFrameTime();
-        float clamped_dt = std::clamp(deltaTime, 0.01f, 0.03f);
+        //float clamped_dt = std::clamp(deltaTime, 0.01f, 0.03f);
+        float clamped_dt = std::clamp(deltaTime, 1.0f / 60.0f, 1.0f / 60.0f);
 
-        // UPDATE
+        if (menu.GetScene() == Scene::MAINMENU)
         {
-            if (!tooling_sys->GetToolStatus())
+            // UPDATE
+            menu.update(clamped_dt);
+
+            // DRAW
+            menu.draw();
+        }
+        else if (menu.GetScene() == Scene::GAMEPLAY)
+        {
+            if (!intro_has_run && !intro_fade.is_running())
+                intro_fade.start();
+
+            if (intro_fade.update(clamped_dt))
             {
-                player_movement_sys->update(clamped_dt);
-                collision_sys->CheckCollisions();
-                particle_sys->update(clamped_dt);
+                intro_has_run = true;
             }
+
+            // UPDATE
+            {
+                if (!tooling_sys->GetToolStatus())
+                {
+                    player_movement_sys->update(clamped_dt);
+                    collision_sys->CheckCollisions();
+                    particle_sys->update(clamped_dt);
+                }
 
             camera_sys->update();
             tooling_sys->update();
             environment_render_sys->update();
 
-            // hard coded resett
-            if (IsKeyPressed(KEY_TWO))
-            {
-                player_movement_sys->ResetPlayerPos();
-            }
-        }
-
-        // DRAW
-        {
-            BeginDrawing();
-
-            if (tooling_sys->GetToolStatus())
-            {
-                ClearBackground(DARKGRAY);
-            }
-            else
-            {
-                ClearBackground(DARKBLUE);
+                // hard coded resett
+                if (IsKeyPressed(KEY_TWO))
+                {
+                    player_movement_sys->ResetPlayerPos();
+                }
             }
 
-            camera_sys->BeginCameraMode();
+            // DRAW
+            {
+                BeginDrawing();
+
+                if (tooling_sys->GetToolStatus())
+                {
+                    ClearBackground(DARKGRAY);
+                }
+                else
+                {
+                    ClearBackground(DARKBLUE);
+                }
+
+                camera_sys->BeginCameraMode();
 
 
-            rlPushMatrix();
+                rlPushMatrix();
                 rlTranslatef(0, 25 * 50, 0);
                 rlRotatef(90, 1, 0, 0);
                 DrawGrid(500, 100);
-            rlPopMatrix();
+                rlPopMatrix();
 
-            
 
-            environment_render_sys->draw();
-            render_sys->draw();
-            box_render_sys->draw();
 
-            particle_sys->draw();
+                environment_render_sys->draw();
+                render_sys->draw();
+                box_render_sys->draw();
 
-            if (tooling_sys->GetToolStatus())
-            {
-                tooling_sys->draw();
+                particle_sys->draw();
+
+                if (tooling_sys->GetToolStatus())
+                {
+                    tooling_sys->draw();
+                }
+
+                // collision_sys->debug_draw_collisions();
+
+              //   DrawCircle(0, 0, 10, BLUE);
+                camera_sys->EndCameraMode();
+
+
+                DrawText(TextFormat("dt %f", clamped_dt), 20, 20, 40, RED);
+
+                if (!intro_has_run)
+                {
+                    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(),
+                        ColorAlpha({ 9, 10, 15, 255 },
+                            1.0f - (intro_fade.count() / intro_fade.time())
+                        ));
+                }
+
+
+                EndDrawing();
             }
-
-         //  collision_sys->debug_draw_collisions();
-
-         //   DrawCircle(0, 0, 10, BLUE);
-            camera_sys->EndCameraMode();
-
-
-            DrawText(TextFormat("dt %f", clamped_dt), 20, 20, 40, RED);
-            
-            // Particles
-
-            EndDrawing();
         }
     }
 

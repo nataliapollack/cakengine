@@ -677,55 +677,25 @@ void Tooling::check_inputs()
     //    gCoordinator.AddComponent(en,
     //        status{ true, true, EMITTER });
 
-    //    gCoordinator.AddComponent(en,
-    //        box_render{ 50, 50 });
-
-    //    gCoordinator.AddComponent(en,
-    //        transform2D{ mouse_pos.x, mouse_pos.y });
-
-    //    gCoordinator.AddComponent(en,
-    //        particle_emitter{ 
-    //            10,         // capacity
-    //            10,           // alive count
-    //            { Vector2Zero(), Vector2Zero() }, // offset
-    //            ColorAlpha(YELLOW, 0.5f), // color
-    //            Vector2Rotate(Vector2UnitY, -45.0f), // init dir
-    //            90.0f,
-    //            { 50.0f, 100.0f },      // init speed
-    //            {100.0f, 200.0f},        // init lifetime
-    //            {5.0f, 10.0f},
-    //            2,          // num per emit
-    //            true,        // emitting
-    //            true,       // one shot effect
-    //            Texture2D{ 0 },
-    //            Timer(0.10f), // time between emits
-    //            [](particle_emitter& emit, Particle& par, float dt)
-    //            {
-    //                Vector2 dir = Vector2Subtract(
-    //                    par.initial_position, par.position);
-    //                float dist = Vector2Length(dir);
-
-    //                par.force = Vector2Scale(dir, dist);
-
-    //                par.velocity += par.force * dt * dt;
-
-    //                if (GetRandomValue(0, 1))
-    //                {
-    //                    par.velocity += Vector2Scale(
-    //                        { par.velocity.y, -par.velocity.x },
-    //                        0.25f
-    //                    );
-    //                }
-    //                else
-    //                {
-    //                    par.velocity += Vector2Scale(
-    //                        { -par.velocity.y, par.velocity.x },
-    //                        0.25f
-    //                    );
-    //                }
-
-    //                par.velocity = Vector2ClampValue(
-    //                    par.velocity, -100.0f, 100.0f);
+        gCoordinator.AddComponent(en,
+            particle_emitter{ 
+                10,         // capacity
+                10,           // alive count
+                { Vector2Zero(), Vector2Zero() }, // offset
+                ColorAlpha(YELLOW, 0.5f), // color
+                Vector2Rotate(Vector2UnitY, -45.0f), // init dir
+                90.0f,
+                { 50.0f, 100.0f },      // init speed
+                {100.0f, 200.0f},        // init lifetime
+                {5.0f, 10.0f},
+                2,          // num per emit
+                true,        // emitting
+                true,       // one shot effect
+                Texture2D{ 0 },
+                Timer(0.10f), // time between emits
+                ET_FIREFLIES,
+                {}
+            });
 
     //                par.position = Vector2Add(par.position,
     //                    Vector2Scale(par.velocity, dt));
