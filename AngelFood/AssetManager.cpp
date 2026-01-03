@@ -9,6 +9,7 @@ void AssetManager::load_assets()
 
 
     textures[DAEDALUS_IDLE] = LoadTexture("art/placeholderDaedalus.png");
+    textures[DAEDALUS_FLOAT] = LoadTexture("art/DaedalusFloat.png");
 
     textures[KING_IDLE1] = LoadTexture("art/birdNPC_0000.png");
     textures[KING_IDLE2] = LoadTexture("art/birdNPC_0001.png");

@@ -105,6 +105,7 @@ void set_system_signatures()
     sig.reset();
     
     sig.set(gCoordinator.GetComponentType<particle_emitter>());
+    sig.set(gCoordinator.GetComponentType<transform2D>());
     gCoordinator.SetSystemSignature<ParticleSystem>(sig);
 
     sig.reset();

@@ -23,10 +23,10 @@ void PlayerSystem::init()
 
     m_walk =
     {
-        0.75f,  // time to accel to max speed
+        0.25f,  // time to accel to max speed
         0.15f,  // time to decel to zero
-        1125.0f, // max speed
-        300.0f, // initial speed
+        400.0f, // max speed
+        100.0f, // initial speed
         0.0f    // how long player has been walking
     };
 
@@ -34,7 +34,7 @@ void PlayerSystem::init()
     {
         Timer(0.35f),   // coyote time
         Timer(0.1f),    // jump buffer time
-        1.0f,           // left/right movement multiplier (1125 vel feels best)
+        2.1f / 2.f, // left/right movement multiplier
         {},             // jump impulse (calculated later)
         { 2.25f, 1.5f }, // jump heights
         0.4f,           // jump time (used for tap vs hold jumping)
@@ -56,7 +56,7 @@ void PlayerSystem::init()
         true         // progression stuff...
     };
 
-    gravity = 3000.0f;
+    gravity = 6000.0f / 2.f;
     max_fall = 50.0f;
 
     collision_forgiveness = 0.4f;
@@ -211,7 +211,10 @@ void PlayerSystem::fixedUpdate(float dt, Entity entity)
     }
 
     float speed =
-        Lerp(m_walk.min_speed, m_walk.max_speed, m_walk.time_walking);
+        Lerp(m_walk.min_speed, m_walk.max_speed, 
+            m_walk.time_walking / m_walk.time_to_accel);
+
+    std::cout << speed << "\n";
 
     if (FloatEquals(speed, m_walk.min_speed) && !m_glide.is_gliding)
         last_direction = 0.0f;

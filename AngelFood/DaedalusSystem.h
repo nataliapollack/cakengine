@@ -16,11 +16,13 @@ public:
 
 private:
 	void PlayerInRange(Event& event);
+	void SetNewPosition();
 
 	Vector2 daedalus_position;
 	Vector2 last_position;
 
 	Timer move_timer;
 
+	int emitter;
 	int curr_waypoint;
 };

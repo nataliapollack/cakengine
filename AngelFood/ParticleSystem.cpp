@@ -280,9 +280,10 @@ void ParticleSystem::init_draw_functions()
 			par.color.a = static_cast<float>(par.initial_alpha) *
 				(par.lifetime / par.initial_lifetime);
 
-			Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
-			if (texture.id != 0)
+			
+			if (emit.texture_id != ASSETS::COUNT)
 			{
+				Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
 				// Draw texture
 				DrawTexture(texture, par.position.x - texture.width / 2.0f,
 					par.position.y - texture.height / 2.0f, WHITE);
@@ -300,9 +301,9 @@ void ParticleSystem::init_draw_functions()
 		ET_FIREFLIES,
 		[](particle_emitter& emit, Particle& par)
 		{
-			Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
-			if (texture.id != 0)
+			if (emit.texture_id != ASSETS::COUNT)
 			{
+				Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
 				// Draw texture
 				DrawTexture(texture, par.position.x - texture.width / 2.0f,
 					par.position.y - texture.height / 2.0f, WHITE);
@@ -327,9 +328,9 @@ void ParticleSystem::init_draw_functions()
 			par.color.a = static_cast<float>(par.initial_alpha) *
 				(par.lifetime / par.initial_lifetime);
 
-			Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
-			if (texture.id != 0)
+			if (emit.texture_id != ASSETS::COUNT)
 			{
+				Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
 				// Draw texture
 				DrawTexture(texture, par.position.x - texture.width / 2.0f,
 					par.position.y - texture.height / 2.0f, WHITE);

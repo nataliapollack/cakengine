@@ -6,9 +6,12 @@
 #include "Core.h"
 #include "Events.hpp"
 
+#include "ParticleEmitter.h"
+
 #include "raymath.h"
 
 #include <algorithm>
+#include <iostream>
 
 extern Coordinator gCoordinator;
 extern AssetManager gAssetMngr;
@@ -29,6 +32,44 @@ void DaedalusSystem::init()
 		METHOD_LISTENER(Events::Collision::WAYPOINT, 
 			DaedalusSystem::PlayerInRange)
 	);
+
+	{
+		emitter = gCoordinator.CreateEntity();
+
+		gCoordinator.AddComponent(emitter,
+			status{ true, true, EMITTER });
+
+		gCoordinator.AddComponent(emitter,
+			transform2D{daedalus_position});
+
+		Texture2D texture = gAssetMngr.GetAsset(DAEDALUS_FLOAT);
+
+		Vector2 base_offset{ texture.width / 2.0f, texture.height / 2.0f };
+
+		Vector2 min_offset{ base_offset.x - 20.0f, base_offset.y - 20.0f };
+		Vector2 max_offset{ base_offset.x + 20.0f, base_offset.y + 20.0f };
+
+		gCoordinator.AddComponent(emitter,
+			particle_emitter{
+				32,         // capacity
+				0,           // alive count
+				{ min_offset, max_offset },
+				ColorAlpha(WHITE, 0.7f), // color
+				Vector2Rotate(Vector2UnitY, DEG2RAD * -60.0f),
+				120.0f, // init dir
+				{ 350.0f, 600.0f },      // init speed
+				{0.50f, 1.0f},        // init lifetime
+				{5.0f, 10.0f}, // init size
+				2,          // num per emit
+				false ,        // emitting
+				true,       // one shot effect
+				COUNT,
+				Timer(0.0f), // time between emits
+				ET_JUMP,
+				{}
+			}
+		);
+	}
 }
 
 void DaedalusSystem::update(float dt)
@@ -51,9 +92,26 @@ void DaedalusSystem::update(float dt)
 			{
 				if (!move_timer.update(dt))
 				{
+					float percent = move_timer.count() / move_timer.time();
+					if ((percent > 0.25f && percent < 0.3f) ||
+						(percent > 0.5f && percent < 0.55f) ||
+						(percent > 0.75f && percent < 0.8f))
+					{
+						auto& emit = gCoordinator.GetComponent<particle_emitter>(emitter);
+						auto& transf = gCoordinator.GetComponent<transform2D>(emitter);
+						transf.pos = daedalus_position;
+						emit.emitting = true;
+					}
+
 					daedalus_position =
-						Vector2Lerp(last_position, transf.pos,
-							move_timer.count() / move_timer.time());
+						Vector2Lerp(last_position, transf.pos, percent);
+				}
+				else
+				{
+					if (!way.should_stop)
+					{
+						SetNewPosition();
+					}
 				}
 			}
 		}
@@ -66,6 +124,8 @@ void DaedalusSystem::draw()
 		return;
 
 	Texture2D texture = gAssetMngr.GetAsset(DAEDALUS_IDLE);
+	if (move_timer.is_running())
+		texture = gAssetMngr.GetAsset(DAEDALUS_FLOAT);
 
 	Rectangle source{ 0, 0, texture.width, texture.height };
 	Rectangle dest{ daedalus_position.x, daedalus_position.y,
@@ -83,9 +143,14 @@ void DaedalusSystem::PlayerInRange(Event& event)
 
 	if (way.index != curr_waypoint) return;
 
+	SetNewPosition();
+}
+
+void DaedalusSystem::SetNewPosition()
+{
 	last_position = daedalus_position;
 
-	curr_waypoint = std::clamp(curr_waypoint + 1, 
+	curr_waypoint = std::clamp(curr_waypoint + 1,
 		0, static_cast<int>(entities_list.size()));
 
 	move_timer.start();

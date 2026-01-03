@@ -902,9 +902,10 @@ void Tooling::check_inputs()
     //    current_en = en;
     //}
 
+    static size_t count = 0;
     if (IsKeyPressed(KEY_EIGHT))
     {
-        static size_t count = 0;
+
 
         Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
@@ -920,7 +921,7 @@ void Tooling::check_inputs()
             box_render{ 50, 50 });
 
         gCoordinator.AddComponent(en,
-            waypoint{ count++ });
+            waypoint{ count++, true });
 
         float size = 750.0f;
 
@@ -928,6 +929,35 @@ void Tooling::check_inputs()
             en,
             collidble{ Rectangle{mouse_pos.x - size / 2.0f, 
             mouse_pos.y - size / 2.0f, 
+                size, size } });
+
+        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+        current_en = en;
+    }
+    if (IsKeyPressed(KEY_NINE))
+    {
+        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+        int en = gCoordinator.CreateEntity();
+
+        gCoordinator.AddComponent(en,
+            status{ true, true, WAYPOINT });
+
+        gCoordinator.AddComponent(en,
+            transform2D{ mouse_pos.x, mouse_pos.y });
+
+        gCoordinator.AddComponent(en,
+            box_render{ 50, 50 });
+
+        gCoordinator.AddComponent(en,
+            waypoint{ count++, false });
+
+        float size = 750.0f;
+
+        gCoordinator.AddComponent(
+            en,
+            collidble{ Rectangle{mouse_pos.x - size / 2.0f,
+            mouse_pos.y - size / 2.0f,
                 size, size } });
 
         current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };

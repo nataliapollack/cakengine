@@ -64,4 +64,5 @@ struct status
 struct waypoint
 {
     size_t index;
+    bool should_stop;
 };
