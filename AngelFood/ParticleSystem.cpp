@@ -8,8 +8,11 @@
 #include "raymath.h"
 #include "rlgl.h"
 
+#include "AssetManager.h"
+
 extern Coordinator gCoordinator;
 extern Camera2D gCamera;
+extern AssetManager gAssetMngr;
 
 static float getRandomFloat()
 {
@@ -277,9 +280,9 @@ void ParticleSystem::init_draw_functions()
 			par.color.a = static_cast<float>(par.initial_alpha) *
 				(par.lifetime / par.initial_lifetime);
 
-			if (emit.texture.id != 0)
+			Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
+			if (texture.id != 0)
 			{
-				auto& texture = emit.texture;
 				// Draw texture
 				DrawTexture(texture, par.position.x - texture.width / 2.0f,
 					par.position.y - texture.height / 2.0f, WHITE);
@@ -297,9 +300,9 @@ void ParticleSystem::init_draw_functions()
 		ET_FIREFLIES,
 		[](particle_emitter& emit, Particle& par)
 		{
-			if (emit.texture.id != 0)
+			Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
+			if (texture.id != 0)
 			{
-				auto& texture = emit.texture;
 				// Draw texture
 				DrawTexture(texture, par.position.x - texture.width / 2.0f,
 					par.position.y - texture.height / 2.0f, WHITE);
@@ -324,9 +327,9 @@ void ParticleSystem::init_draw_functions()
 			par.color.a = static_cast<float>(par.initial_alpha) *
 				(par.lifetime / par.initial_lifetime);
 
-			if (emit.texture.id != 0)
+			Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
+			if (texture.id != 0)
 			{
-				auto& texture = emit.texture;
 				// Draw texture
 				DrawTexture(texture, par.position.x - texture.width / 2.0f,
 					par.position.y - texture.height / 2.0f, WHITE);

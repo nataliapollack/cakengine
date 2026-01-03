@@ -45,6 +45,12 @@ void CollisionSystem::CheckCollisions()
                     collision_j.box.y = transform_j.pos.y;
                 }
 
+                if (stats_j.type == WAYPOINT)
+                {
+                    collision_j.box.x = transform_j.pos.x - collision_j.box.width / 2.0f;
+                    collision_j.box.y = transform_j.pos.y - collision_j.box.height / 2.0f;
+                }
+
                 collision_i.box.x = transform_i.pos.x;
                 collision_i.box.y = transform_i.pos.y;
 
@@ -104,6 +110,15 @@ void CollisionSystem::CheckCollisions()
                         gCoordinator.SendEvent(spark);
 
                         stats_j.active = false;
+                    }
+
+                    if (stats_j.type == WAYPOINT)
+                    {
+                        Event waypoint(Events::Collision::WAYPOINT);
+
+                        waypoint.SetParam(Events::Collision::WAYPOINT_DATA, j);
+
+                        gCoordinator.SendEvent(waypoint);
                     }
                 }
             }

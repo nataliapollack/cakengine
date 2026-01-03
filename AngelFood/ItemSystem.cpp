@@ -53,7 +53,7 @@ void ItemSystem::TriggerItemPickedUp(Event& event)
                     16,          // num per emit
                     false ,        // emitting
                     true,       // one shot effect
-                    Texture2D{ 0 },
+                    COUNT,
                     Timer(0.0f), // time between emits
                     ET_ITEM_PICKUP,
                     {}

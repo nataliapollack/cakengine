@@ -3,6 +3,8 @@
 #include "Timer.hpp"
 #include "raylib.h"
 
+#include "Game.h"
+
 struct Particle
 {
 	Vector2 position;
@@ -28,8 +30,8 @@ enum emitter_type : int
 
 struct particle_emitter
 {
-	float capacity;
-	float alive_count;
+	size_t capacity;
+	size_t alive_count;
 
 	std::pair<Vector2, Vector2> offset;
 
@@ -46,7 +48,7 @@ struct particle_emitter
 	bool emitting;
 	bool one_shot;
 
-	Texture2D texture;
+	ASSETS texture_id;
 
 	Timer time_between_emit;
 

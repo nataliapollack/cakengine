@@ -12,6 +12,7 @@
 #include "CollisionSystem.h"
 #include "Tooling.h"
 #include "ParticleSystem.h"
+#include "DaedalusSystem.h"
 
 // components
 #include "Core.h"
@@ -47,6 +48,8 @@ void register_components()
     gCoordinator.RegisterComponent<physics>();
 
     gCoordinator.RegisterComponent<particle_emitter>();
+
+    gCoordinator.RegisterComponent<waypoint>();
 }
 
 void set_system_signatures()
@@ -103,6 +106,12 @@ void set_system_signatures()
     
     sig.set(gCoordinator.GetComponentType<particle_emitter>());
     gCoordinator.SetSystemSignature<ParticleSystem>(sig);
+
+    sig.reset();
+
+    sig.set(gCoordinator.GetComponentType<waypoint>());
+    sig.set(gCoordinator.GetComponentType<transform2D>());
+    gCoordinator.SetSystemSignature<DaedalusSystem>(sig);
 }
 
 int main()
@@ -129,7 +138,7 @@ int main()
     auto environment_render_sys = gCoordinator.RegisterSystem<EnvironmentRenderSystem>();
     auto tooling_sys = gCoordinator.RegisterSystem<Tooling>();
     auto particle_sys = gCoordinator.RegisterSystem<ParticleSystem>();
-
+    auto daedalus_sys = gCoordinator.RegisterSystem<DaedalusSystem>();
 
     tooling_sys->init();
 
@@ -195,6 +204,7 @@ int main()
     dropoff_sys->init();
     environment_render_sys->init();
     particle_sys->init();
+    daedalus_sys->init();
 
     MainMenu menu;
     menu.init();
@@ -233,12 +243,13 @@ int main()
                 {
                     player_movement_sys->update(clamped_dt);
                     collision_sys->CheckCollisions();
+                    daedalus_sys->update(clamped_dt);
                     particle_sys->update(clamped_dt);
                 }
 
-            camera_sys->update();
-            tooling_sys->update();
-            environment_render_sys->update();
+                camera_sys->update();
+                tooling_sys->update();
+                environment_render_sys->update();
 
                 // hard coded resett
                 if (IsKeyPressed(KEY_TWO))
@@ -275,6 +286,8 @@ int main()
                 render_sys->draw();
                 box_render_sys->draw();
 
+                daedalus_sys->draw();
+
                 particle_sys->draw();
 
                 if (tooling_sys->GetToolStatus())
@@ -282,7 +295,7 @@ int main()
                     tooling_sys->draw();
                 }
 
-                // collision_sys->debug_draw_collisions();
+                 //collision_sys->debug_draw_collisions();
 
               //   DrawCircle(0, 0, 10, BLUE);
                 camera_sys->EndCameraMode();
@@ -298,7 +311,7 @@ int main()
                         ));
                 }
 
-
+                //DrawFPS(50, 50);
                 EndDrawing();
             }
         }

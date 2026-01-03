@@ -100,7 +100,7 @@ void PlayerSystem::init()
                 2,          // num per emit
                 false ,        // emitting
                 true,       // one shot effect
-                Texture2D{ 0 },
+                COUNT,
                 Timer(0.0f), // time between emits
                 ET_JUMP,
                 {}

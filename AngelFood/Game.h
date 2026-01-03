@@ -13,7 +13,8 @@ const enum OBJECT_TYPE
     PLATFORM,
     SPARK,
     EMITTER, 
-    NPC
+    NPC,
+    WAYPOINT
 };
 
 enum HOLDABLE_ITEMS
@@ -140,8 +141,10 @@ namespace Events::Item::DroppedOff
 
 namespace Events::Collision {
     const EventId HIT_WALL = "Events::Collision::COLLIDED"_hash;
-    const ParamId COLLISION_DATA = "Events::Item::IMPULSE_FORCE"_hash;
+    const ParamId COLLISION_DATA = "Events::Collision::IMPULSE_FORCE"_hash;
     const EventId SPIKES = "Events::Collision::SPIKES"_hash;
     const EventId SPAWNER = "Events::Collision::SPAWNER"_hash;
     const EventId SPARK = "Events::Collision::SPARK"_hash;
+    const EventId WAYPOINT = "Events::Collision::WAYPOINT"_hash;
+    const ParamId WAYPOINT_DATA = "Events::Collision::WAYPOINT_DATA"_hash;
 }

@@ -60,3 +60,8 @@ struct status
 
     OBJECT_TYPE type;
 };
+
+struct waypoint
+{
+    size_t index;
+};

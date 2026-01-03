@@ -119,6 +119,51 @@ void Tooling::serialize()
                 data << comp.frame_counter << "\n";
                 data << comp.alt_asset << "\n";
             }
+            if (gCoordinator.HasComponent<particle_emitter>(entity))
+            {
+                auto& comp = gCoordinator.GetComponent<particle_emitter>(entity);
+                data << EMITTER << "\n";
+                data << comp.capacity << "\n";
+                data << comp.alive_count << "\n";
+
+                data << comp.offset.first.x << "\n";
+                data << comp.offset.first.y << "\n";
+                data << comp.offset.second.x << "\n";
+                data << comp.offset.second.y << "\n";
+
+                data << comp.color.r << "\n";
+                data << comp.color.g << "\n";
+                data << comp.color.b << "\n";
+                data << comp.color.a << "\n";
+
+                data << comp.initial_dir.x << "\n";
+                data << comp.initial_dir.y << "\n";
+
+                data << comp.max_angle_variation << "\n";
+
+                data << comp.initial_speed.first << "\n";
+                data << comp.initial_speed.second << "\n";
+
+                data << comp.initial_lifetime.first << "\n";
+                data << comp.initial_lifetime.second << "\n";
+
+                data << comp.initial_size.first << "\n";
+                data << comp.initial_size.second << "\n";
+
+                data << comp.num_per_emit << "\n";
+                data << comp.emitting << "\n";
+                data << comp.one_shot << "\n";
+                data << comp.texture_id << "\n";
+
+                data << comp.time_between_emit.time() << "\n";
+                data << comp.type << "\n";
+            }
+            if (gCoordinator.HasComponent<waypoint>(entity))
+            {
+                auto& comp = gCoordinator.GetComponent<waypoint>(entity);
+                data << WAYPOINT << "\n";
+                data << comp.index << "\n";
+            }
         }
     }
 
@@ -304,6 +349,118 @@ void Tooling::deserialize()
 
                 std::getline(load_data, line);
             }
+            if (EMITTER == atoi(line.c_str()))
+            {
+                std::getline(load_data, line);
+                size_t n = atoi(line.c_str());
+
+                std::getline(load_data, line);
+                size_t ac = atoi(line.c_str());
+
+                // offset
+                std::getline(load_data, line);
+                float ofx = atof(line.c_str());
+                std::getline(load_data, line);
+                float ofy = atof(line.c_str());
+                std::getline(load_data, line);
+                float osx = atof(line.c_str());
+                std::getline(load_data, line);
+                float osy = atof(line.c_str());
+
+                // color
+                std::getline(load_data, line);
+                unsigned char cr = atoi(line.c_str());
+                std::getline(load_data, line);
+                unsigned char cg = atoi(line.c_str());
+                std::getline(load_data, line);
+                unsigned char cb = atoi(line.c_str());
+                std::getline(load_data, line);
+                unsigned char ca = atoi(line.c_str());
+
+                // inital dir
+                std::getline(load_data, line);
+                float idx = atof(line.c_str());
+                std::getline(load_data, line);
+                float idy = atof(line.c_str());
+
+                // angle variation
+                std::getline(load_data, line);
+                float av = atof(line.c_str());
+
+                // initial speed
+                std::getline(load_data, line);
+                float isfx = atof(line.c_str());
+                std::getline(load_data, line);
+                float isfy = atof(line.c_str());
+
+                // initial lifetime
+                std::getline(load_data, line);
+                float ilfx = atof(line.c_str());
+                std::getline(load_data, line);
+                float ilfy = atof(line.c_str());
+
+                // initial size
+                std::getline(load_data, line);
+                float izfx = atof(line.c_str());
+                std::getline(load_data, line);
+                float izfy = atof(line.c_str());
+
+                // num per emit
+                std::getline(load_data, line);
+                size_t ne = atoi(line.c_str());
+
+                // emit
+                std::getline(load_data, line);
+                bool e = atoi(line.c_str());
+
+                // one shot
+                std::getline(load_data, line);
+                bool os = atoi(line.c_str());
+
+                // texture id
+                ASSETS tid = static_cast<ASSETS>(atoi(line.c_str()));
+
+                // timer
+                std::getline(load_data, line);
+                float tr = atof(line.c_str());
+
+                // type
+                std::getline(load_data, line);
+                int t = atoi(line.c_str());
+
+                gCoordinator.AddComponent(en,
+                    particle_emitter
+                    {
+                        n,
+                        ac,
+                        { Vector2{ ofx, ofy }, Vector2{ osx, osy } },
+                        { cr, cg, cb, ca },
+                        { idx, idy },
+                        av,
+                        { isfx, isfy },
+                        { ilfx, ilfy },
+                        { izfx, izfy },
+                        ne,
+                        e,
+                        os,
+                        tid,
+                        tr,
+                        static_cast<emitter_type>(t),
+                        {}
+                    });
+
+                std::getline(load_data, line);
+            }
+            if (WAYPOINT == atoi(line.c_str()))
+            {
+                std::getline(load_data, line);
+                size_t idx = atoi(line.c_str());
+
+                gCoordinator.AddComponent(en,
+                    waypoint{ idx });
+
+                std::getline(load_data, line);
+            }
             
             if ("EN" == line)
             {
@@ -467,6 +624,13 @@ void Tooling::update()
                 auto& collision = gCoordinator.GetComponent<collidble>(current_en);
                 collision.box.x = transform.pos.x;
                 collision.box.y = transform.pos.y;
+
+                auto& stats = gCoordinator.GetComponent<status>(current_en);
+                if (stats.type == WAYPOINT)
+                {
+                    collision.box.x = transform.pos.x - collision.box.width / 2.0f;
+                    collision.box.y = transform.pos.y - collision.box.height / 2.0f;
+                }
             }
             
             current_rec = rec;
@@ -677,25 +841,25 @@ void Tooling::check_inputs()
     //    gCoordinator.AddComponent(en,
     //        status{ true, true, EMITTER });
 
-        gCoordinator.AddComponent(en,
-            particle_emitter{ 
-                10,         // capacity
-                10,           // alive count
-                { Vector2Zero(), Vector2Zero() }, // offset
-                ColorAlpha(YELLOW, 0.5f), // color
-                Vector2Rotate(Vector2UnitY, -45.0f), // init dir
-                90.0f,
-                { 50.0f, 100.0f },      // init speed
-                {100.0f, 200.0f},        // init lifetime
-                {5.0f, 10.0f},
-                2,          // num per emit
-                true,        // emitting
-                true,       // one shot effect
-                Texture2D{ 0 },
-                Timer(0.10f), // time between emits
-                ET_FIREFLIES,
-                {}
-            });
+        //gCoordinator.AddComponent(en,
+        //    particle_emitter{ 
+        //        10,         // capacity
+        //        10,           // alive count
+        //        { Vector2Zero(), Vector2Zero() }, // offset
+        //        ColorAlpha(YELLOW, 0.5f), // color
+        //        Vector2Rotate(Vector2UnitY, -45.0f), // init dir
+        //        90.0f,
+        //        { 50.0f, 100.0f },      // init speed
+        //        {100.0f, 200.0f},        // init lifetime
+        //        {5.0f, 10.0f},
+        //        2,          // num per emit
+        //        true,        // emitting
+        //        true,       // one shot effect
+        //        Texture2D{ 0 },
+        //        Timer(0.10f), // time between emits
+        //        ET_FIREFLIES,
+        //        {}
+        //    });
 
     //                par.position = Vector2Add(par.position,
     //                    Vector2Scale(par.velocity, dt));
@@ -737,4 +901,36 @@ void Tooling::check_inputs()
     //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
     //    current_en = en;
     //}
+
+    if (IsKeyPressed(KEY_EIGHT))
+    {
+        static size_t count = 0;
+
+        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+        int en = gCoordinator.CreateEntity();
+
+        gCoordinator.AddComponent(en,
+            status{ true, true, WAYPOINT });
+
+        gCoordinator.AddComponent(en,
+            transform2D{ mouse_pos.x, mouse_pos.y });
+
+        gCoordinator.AddComponent(en,
+            box_render{ 50, 50 });
+
+        gCoordinator.AddComponent(en,
+            waypoint{ count++ });
+
+        float size = 750.0f;
+
+        gCoordinator.AddComponent(
+            en,
+            collidble{ Rectangle{mouse_pos.x - size / 2.0f, 
+            mouse_pos.y - size / 2.0f, 
+                size, size } });
+
+        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+        current_en = en;
+    }
 }

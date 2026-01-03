@@ -134,6 +134,7 @@
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
+    <ClCompile Include="DaedalusSystem.cpp" />
     <ClCompile Include="ItemSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="DaedalusSystem.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ItemSystem.h" />
     <ClInclude Include="MainMenu.h" />
