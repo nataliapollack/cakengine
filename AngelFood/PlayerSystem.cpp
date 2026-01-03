@@ -226,8 +226,6 @@ void PlayerSystem::fixedUpdate(float dt, Entity entity)
         Lerp(m_walk.min_speed, m_walk.max_speed, 
             m_walk.time_walking / m_walk.time_to_accel);
 
-    std::cout << speed << "\n";
-
     if (FloatEquals(speed, m_walk.min_speed) && !m_glide.is_gliding)
         last_direction = 0.0f;
 
@@ -362,6 +360,7 @@ void PlayerSystem::HitWall(Event& event)
                 m_jump.jump_counter = m_jump.jump_charges;
 
                 m_jump.is_jumping = false;
+                m_jump.jump_cost = 1;
             }
             else if (vel.y < 0) // roof
             {
