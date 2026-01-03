@@ -112,6 +112,11 @@ void DaedalusSystem::update(float dt)
 					{
 						SetNewPosition();
 					}
+					else
+					{
+						Event flight_end(Events::Input::END_DAEDALUS_FLIGHT);
+						gCoordinator.SendEvent(flight_end);
+					}
 				}
 			}
 		}
@@ -141,9 +146,13 @@ void DaedalusSystem::PlayerInRange(Event& event)
 
 	auto& way = gCoordinator.GetComponent<waypoint>(hit_waypoint);
 
-	if (way.index != curr_waypoint) return;
+	if (way.index != curr_waypoint || 
+		curr_waypoint == entities_list.size() - 1) return;
 
 	SetNewPosition();
+
+	Event flight_start(Events::Input::START_DAEDALUS_FLIGHT);
+	gCoordinator.SendEvent(flight_start);
 }
 
 void DaedalusSystem::SetNewPosition()

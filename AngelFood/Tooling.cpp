@@ -163,6 +163,7 @@ void Tooling::serialize()
                 auto& comp = gCoordinator.GetComponent<waypoint>(entity);
                 data << WAYPOINT << "\n";
                 data << comp.index << "\n";
+                data << comp.should_stop << "\n";
             }
         }
     }
@@ -455,9 +456,11 @@ void Tooling::deserialize()
             {
                 std::getline(load_data, line);
                 size_t idx = atoi(line.c_str());
+                std::getline(load_data, line);
+                bool ss = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
-                    waypoint{ idx });
+                    waypoint{ idx, ss });
 
                 std::getline(load_data, line);
             }

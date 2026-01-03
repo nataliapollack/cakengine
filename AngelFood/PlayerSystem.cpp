@@ -27,7 +27,9 @@ void PlayerSystem::init()
         0.15f,  // time to decel to zero
         400.0f, // max speed
         100.0f, // initial speed
-        0.0f    // how long player has been walking
+        0.0f,   // how long player has been walking
+        0.0f,   // direction player is walking
+        true    // can walk
     };
 
     m_jump =
@@ -126,6 +128,13 @@ void PlayerSystem::init()
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::SPARK, PlayerSystem::HitSpark));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Input::START_DAEDALUS_FLIGHT,
+            PlayerSystem::StopInput));
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Input::END_DAEDALUS_FLIGHT,
+            PlayerSystem::StartInput));
 }
 
 void PlayerSystem::update(float dt)
@@ -153,9 +162,12 @@ void PlayerSystem::update(float dt)
             current_state = IDLE;
             for (auto& entity : entities_list)
             {
-                WalkInput();
-                JumpInput(entity, dt);
-                GlideInput(entity);
+                if (m_walk.can_walk)
+                {
+                    WalkInput();
+                    JumpInput(entity, dt);
+                    GlideInput(entity);
+                }
             }
 
         }
@@ -502,4 +514,15 @@ void PlayerSystem::HitSpark(Event& event)
 
     if (m_spark.held >= m_spark.double_jump_unlock)
         SetDoubleJumpUnlocked(true);
+}
+
+void PlayerSystem::StartInput(Event& event)
+{
+    m_walk.can_walk = true;
+}
+
+void PlayerSystem::StopInput(Event& event)
+{
+    m_walk.can_walk = false;
+    m_walk.direction = 0.0f;
 }

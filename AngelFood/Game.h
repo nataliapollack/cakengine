@@ -140,7 +140,8 @@ namespace Events::Item::DroppedOff
     const ParamId ITEMID = "Events::Item::DroppedOff::ITEMID"_hash;
 }
 
-namespace Events::Collision {
+namespace Events::Collision
+{
     const EventId HIT_WALL = "Events::Collision::COLLIDED"_hash;
     const ParamId COLLISION_DATA = "Events::Collision::IMPULSE_FORCE"_hash;
     const EventId SPIKES = "Events::Collision::SPIKES"_hash;
@@ -148,4 +149,10 @@ namespace Events::Collision {
     const EventId SPARK = "Events::Collision::SPARK"_hash;
     const EventId WAYPOINT = "Events::Collision::WAYPOINT"_hash;
     const ParamId WAYPOINT_DATA = "Events::Collision::WAYPOINT_DATA"_hash;
+}
+
+namespace Events::Input
+{
+    const EventId START_DAEDALUS_FLIGHT = "Events::Input::START_DAEDALUS_FLIGHT"_hash;
+    const EventId END_DAEDALUS_FLIGHT = "Events::Input::END_DAEDALUS_FLIGHT"_hash;
 }

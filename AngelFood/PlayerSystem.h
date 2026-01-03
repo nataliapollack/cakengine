@@ -35,6 +35,9 @@ private:
 
     void HitSpark(Event& event);
 
+    void StartInput(Event& event);
+    void StopInput(Event& event);
+
     struct walk_values
     {
         float time_to_accel;
@@ -44,6 +47,7 @@ private:
         float time_walking;
 
         float direction;
+        bool can_walk;
     };
     walk_values m_walk;
 
