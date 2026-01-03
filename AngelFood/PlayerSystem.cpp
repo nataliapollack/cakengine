@@ -13,8 +13,8 @@
 
 extern Coordinator gCoordinator;
 
-//constexpr float JUMP_SCALE = 0.045f;
-constexpr float JUMP_SCALE = 0.11f;
+//constexpr float JUMP_SCALE = 0.11f;
+constexpr float JUMP_SCALE = 0.03667f;
 
 void PlayerSystem::init()
 {

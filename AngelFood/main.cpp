@@ -198,7 +198,8 @@ int main()
     while (!WindowShouldClose())
     {
         float deltaTime = GetFrameTime();
-        float clamped_dt = std::clamp(deltaTime, 0.01f, 0.03f);
+        //float clamped_dt = std::clamp(deltaTime, 0.01f, 0.03f);
+        float clamped_dt = std::clamp(deltaTime, 1.0f / 60.0f, 1.0f / 60.0f);
 
         // UPDATE
         {
