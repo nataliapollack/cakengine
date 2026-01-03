@@ -124,6 +124,13 @@ void CollisionSystem::CheckCollisions()
 
                         gCoordinator.SendEvent(waypoint);
                     }
+
+                    if (stats_j.type == ENDPOINT)
+                    {
+                        Event endpoint(Events::Collision::ENDPOINT);
+
+                        gCoordinator.SendEvent(endpoint);
+                    }
                 }
             }
         }

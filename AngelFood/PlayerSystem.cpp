@@ -73,6 +73,7 @@ void PlayerSystem::init()
 
     death_time = Timer(1.0f);
     is_dead = false;
+    end_time = Timer(1.0f);
     is_end = false;
 
     m_spark = {
@@ -170,7 +171,10 @@ void PlayerSystem::update(float dt)
         else if (is_end)
         {
             // ending stuff
-            
+            if (end_time.update(dt))
+            {
+                // something goes here
+            }
         }
         else
         {

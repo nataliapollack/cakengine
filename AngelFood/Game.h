@@ -14,7 +14,8 @@ const enum OBJECT_TYPE
     SPARK,
     EMITTER, 
     NPC,
-    WAYPOINT
+    WAYPOINT,
+    ENDPOINT
 };
 
 enum HOLDABLE_ITEMS
@@ -159,6 +160,7 @@ namespace Events::Collision {
     const EventId SPARK = "Events::Collision::SPARK"_hash;
     const EventId WAYPOINT = "Events::Collision::WAYPOINT"_hash;
     const ParamId WAYPOINT_DATA = "Events::Collision::WAYPOINT_DATA"_hash;
+    const EventId ENDPOINT = "Events::Collision::ENDPOINT"_hash;
 }
 
 namespace Events::Input
