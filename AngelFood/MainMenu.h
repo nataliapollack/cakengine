@@ -31,10 +31,14 @@ private:
     Texture2D start;
     Texture2D credits;
 
+    Timer fade_time;
+    Timer gap_time;
+    Timer illus_time;
     Timer start_time;
 
     Button curr_button;
     Scene curr_scene;
 
     bool start_game;
+    bool change_illus;
 };

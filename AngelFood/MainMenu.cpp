@@ -13,12 +13,17 @@ void MainMenu::init()
     illus2 = gAssetMngr.GetAsset(MENU_ILLUS2);
     start = gAssetMngr.GetAsset(START_BUTTON);
     credits = gAssetMngr.GetAsset(CREDITS_BUTTON);
-    start_time = Timer(2.0f);
+
+    fade_time = Timer(1.0f);
+    gap_time = Timer(0.5f);
+    illus_time = Timer(1.0f);
+    start_time = Timer(1.0f);
 
     curr_button = Button::START;
     curr_scene = Scene::MAINMENU;
 
     start_game = false;
+    change_illus = false;
 }
 
 void MainMenu::update(float dt)
@@ -29,10 +34,10 @@ void MainMenu::update(float dt)
         {
             curr_button = Button::CREDITS;
         }
-        if (IsKeyPressed(KEY_ENTER))
+        if (IsKeyReleased(KEY_ENTER))
         {
             start_game = true;
-            start_time.start();
+            fade_time.start();
         }
     }
 
@@ -44,17 +49,36 @@ void MainMenu::update(float dt)
         }
     }
 
-    if (start_game && start_time.update(dt))
+    if (start_game)
     {
-        curr_scene = Scene::GAMEPLAY;
+        if (fade_time.update(dt))
+        {
+            gap_time.start();
+        }
+        if (gap_time.update(dt))
+        {
+            change_illus = true;
+            illus_time.start();
+        }
+        if (illus_time.update(dt))
+        {
+            start_time.start();
+        }
+        if (start_time.update(dt))
+        {
+            curr_scene = Scene::GAMEPLAY;
+        }
     }
 }
 
 void MainMenu::draw()
 {
     float fade = 1.0f -
-        ((start_time.count() / start_time.time())
+        ((fade_time.count() / fade_time.time())
             * 1.0f);
+
+    float illus_fade = 1.0f -
+        ((start_time.count() / start_time.time()) * 1.0f);
 
     // DRAW
     ClearBackground({ 9, 10, 15, 255 });
@@ -79,7 +103,7 @@ void MainMenu::draw()
 
     {
         Texture2D illus =
-            (start_game) ? illus2 : illus1;
+            (change_illus) ? illus2 : illus1;
 
         float illus_width = illus.width * scale;
         float illus_height = illus.height * scale;
@@ -95,12 +119,15 @@ void MainMenu::draw()
         DrawTexturePro(
             illus,
             source, dest,
-            Vector2Zero(), 0.0f, WHITE);
+            Vector2Zero(), 0.0f, ColorAlpha(WHITE, illus_fade));
     }
 
     {
         float select_scale =
             (curr_button == Button::START) ? 1.5f : 1.0f;
+
+        select_scale = (curr_button == Button::START &&
+            IsKeyDown(KEY_ENTER)) ? 1.25 : select_scale;
 
         float start_width = start.width * scale * scale *
             select_scale;
@@ -116,16 +143,21 @@ void MainMenu::draw()
             illus1.height * scale * 1.2,
             start_width, start_height };
 
+        Color color = (curr_button == Button::START) ?
+            ColorAlpha(IsKeyDown(KEY_ENTER) ? BLUE : SKYBLUE, fade) :
+            ColorAlpha(WHITE, fade);
+
         DrawTexturePro(start, source, dest,
             Vector2Zero(), 0.0f,
-            (curr_button == Button::START) ?
-            ColorAlpha(SKYBLUE, fade) :
-            ColorAlpha(WHITE, fade));
+            color);
     }
 
     {
         float select_scale =
             (curr_button == Button::CREDITS) ? 1.5f : 1.0f;
+
+        select_scale = (curr_button == Button::CREDITS &&
+            IsKeyDown(KEY_ENTER)) ? 1.25 : select_scale;
 
         float credits_width = credits.width * scale * scale *
             select_scale;
@@ -141,11 +173,13 @@ void MainMenu::draw()
             illus1.height * scale * 1.2,
             credits_width, credits_height };
 
+        Color color = (curr_button == Button::CREDITS) ?
+            ColorAlpha(IsKeyDown(KEY_ENTER) ? BLUE : SKYBLUE, fade) :
+            ColorAlpha(WHITE, fade);
+
         DrawTexturePro(credits, source, dest,
             Vector2Zero(), 0.0f,
-            (curr_button == Button::CREDITS) ?
-            ColorAlpha(SKYBLUE, fade) :
-            ColorAlpha(WHITE, fade));
+            color);
     }
 
     EndDrawing();
