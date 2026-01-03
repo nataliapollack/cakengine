@@ -24,6 +24,8 @@ public:
 private:
     PLAYER_STATES current_state;
 
+    int fruit_count;
+
     void fixedUpdate(float dt, Entity entity);
 
     void WalkInput();

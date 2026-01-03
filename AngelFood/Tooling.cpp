@@ -104,8 +104,8 @@ void Tooling::serialize()
                 auto& comp = gCoordinator.GetComponent<render_environment>(entity);
                 data << ENVIRONMENT_RENDER << "\n";
                 data << comp.animate << "\n";
-                data << comp.flip_hor << "\n";
                 data << comp.flip_ver << "\n";
+                data << comp.flip_hor << "\n";
                 data << comp.txt << "\n";
                 data << comp.depth << "\n";
                 data << comp.size << "\n";
@@ -494,18 +494,21 @@ void Tooling::update()
         {
             for (auto& entity : entities_list)
             {
+                auto const& stats = gCoordinator.GetComponent<status>(current_en);
+
                 Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
                 auto& transform = gCoordinator.GetComponent<transform2D>(entity);
                 Rectangle rec = Rectangle{ transform.pos.x, transform.pos.y, 100, 100 };
 
-                if (gCoordinator.HasComponent<box_render>(entity))
+                if (gCoordinator.HasComponent<box_render>(entity) && !only_walls)
                 {
                     auto& box = gCoordinator.GetComponent<box_render>(entity);
                     rec.width = box.dimensions.x;
                     rec.height = box.dimensions.y;
                 }
-                if (gCoordinator.HasComponent<render_environment>(entity))
+                if (gCoordinator.HasComponent<render_environment>(entity) && !only_env)
                 {
+                   // continue;
                     auto& rend = gCoordinator.GetComponent<render_environment>(entity);
                     Texture2D texture = gAssetMngr.GetAsset(rend.txt);
 
@@ -516,7 +519,7 @@ void Tooling::update()
                 Rectangle rec2 = { rec.x + rec.width - MOUSE_SCALE_MARK_SIZE, rec.y + rec.height - MOUSE_SCALE_MARK_SIZE, MOUSE_SCALE_MARK_SIZE, MOUSE_SCALE_MARK_SIZE };
 
 
-                if (CheckCollisionPointRec(mouse_pos, rec2))
+                if (CheckCollisionPointRec(mouse_pos, rec2) && stats.active)
                 {
                     current_rec = rec;
                     mouseScaleReady = true;
@@ -533,7 +536,7 @@ void Tooling::update()
                 {
                     current_rec = rec;
                     current_en = entity;
-                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && stats.active)
                     {
                         mouseMoveRect = true;
 
@@ -565,14 +568,17 @@ void Tooling::update()
                 auto& rend = gCoordinator.GetComponent<render_environment>(current_en);
                 Texture2D txt = gAssetMngr.GetAsset(rend.txt);
 
-                rec.width = txt.width;
-                rec.height = txt.height;
+                rec.width = txt.width * rend.size;
+                rec.height = txt.height * rend.size;
             }
 
             mouseScaleReady = true;
 
             rec.width = (int)((mouse_pos.x - rec.x) / 50.0f) * 50.0f;
             rec.height = (int)((mouse_pos.y - rec.y) / 50.0f) * 50.0f;
+
+            if (rec.width < 25) rec.width = 25.0f;
+            if (rec.height < 25) rec.height = 25.0f;
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) mouseScaleMode = false;
 
@@ -640,6 +646,31 @@ void Tooling::update()
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) mouseMoveRect = false;
 
+            if (gCoordinator.HasComponent<box_render>(current_en))
+            {
+                if (IsKeyPressed(KEY_SPACE))
+                {
+                    auto& transform = gCoordinator.GetComponent<transform2D>(current_en);
+                    auto& stats = gCoordinator.GetComponent<status>(current_en);
+                    auto& box = gCoordinator.GetComponent<box_render>(current_en);
+                    auto& col = gCoordinator.GetComponent<collidble>(current_en);
+
+                    int copy = gCoordinator.CreateEntity();
+
+                    gCoordinator.AddComponent(copy,
+                        status{ stats.active, true, WALL });
+
+                    gCoordinator.AddComponent(copy,
+                        transform2D{ transform.pos });
+
+                    gCoordinator.AddComponent(copy,
+                        box_render{ box.dimensions, box.platform });
+
+                    gCoordinator.AddComponent(copy,
+                        col.box);
+                }
+            }
+
             if (gCoordinator.HasComponent<render_environment>(current_en))
             {
                 auto& rend = gCoordinator.GetComponent<render_environment>(current_en);
@@ -651,13 +682,13 @@ void Tooling::update()
                     if (ROOM15 < rend.txt)
                     {
                         rend.txt = (ASSETS)((int)rend.txt - 1);
-                        if (rend.txt == COUNT)
-                        {
-                            rend.txt = BRANCH1;
-                        }
                         if (rend.txt == ROOM15)
                         {
-                            rend.txt = GLASS3;
+                            rend.txt = BG_GLASS;
+                        }
+                        if (rend.txt == CREDITS_BUTTON)
+                        {
+                            rend.txt = VINE4;
                         }
                     }
                 }
@@ -667,13 +698,13 @@ void Tooling::update()
                     {
                         rend.txt = (ASSETS)((int)rend.txt + 1);
 
-                        if (rend.txt == KING_HAPPY1)
+                        if (rend.txt == FRUIT1)
+                        {
+                            rend.txt = BG_GLASS;
+                        }
+                        if (rend.txt == COUNT)
                         {
                             rend.txt = BRANCH1;
-                        }
-                        if (rend.txt == ROOM15)
-                        {
-                            rend.txt = GLASS3;
                         }
                     }
                 }
@@ -724,6 +755,20 @@ void Tooling::update()
                     gCoordinator.AddComponent(copy,
                         render_environment{ rend.animate, rend.flip_ver, rend.flip_hor, 
                         rend.txt, rend.depth, rend.size, rend.rotation });
+                }
+
+                if (IsKeyPressed(KEY_LEFT_BRACKET))
+                {
+                    rend.size += 0.5;
+                }
+                if (IsKeyPressed(KEY_RIGHT_BRACKET))
+                {
+                    rend.size -= 0.5;
+                }
+
+                if (rend.size <= 0)
+                {
+                    rend.size = 0.25;
                 }
             }
         }
@@ -800,170 +845,82 @@ void Tooling::check_inputs()
             transform2D{ mouse_pos.x, mouse_pos.y });
 
         gCoordinator.AddComponent(en,
-            render_environment{ false, false, false, BRANCH1, 0, 1.0f, 0.0f });
+            render_environment{ true, false, false, BRANCH1, 0, 1.0f, 0.0f });
+
+        //gCoordinator.AddComponent(en,
+        //    animate{ 3.0f, 0, FRUIT2});
+
+        //gCoordinator.AddComponent(en,
+        //    collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 200, 300 } });
+
+        //gCoordinator.AddComponent(en,
+        //    collectable{ false });
 
             current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
             current_en = en;
     }
 
-    //if (IsKeyPressed(KEY_FIVE))
-    //{
-    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
-
-    //    int en = gCoordinator.CreateEntity();
-
-    //    gCoordinator.AddComponent(en,
-    //        status{ true, true, ITEM });
-
-    //    gCoordinator.AddComponent(en,
-    //        render_environment{ true, false, false, FRUIT1, 0, 1.0f, 0.0f });
-
-    //    gCoordinator.AddComponent(en,
-    //        transform2D{ mouse_pos.x, mouse_pos.y });
-
-    //    gCoordinator.AddComponent(en,
-    //        animate{ 5.0f, 0, FRUIT2 });
-
-    //    gCoordinator.AddComponent(en,
-    //        collectable{ false });
-
-    //    gCoordinator.AddComponent(
-    //        en,
-    //        collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 159, 201 } });
-
-    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-    //    current_en = en;
-    //}
-
-    //if (IsKeyPressed(KEY_SIX))
-    //{
-    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
-
-    //    int en = gCoordinator.CreateEntity();
-
-    //    gCoordinator.AddComponent(en,
-    //        status{ true, true, EMITTER });
-
-        //gCoordinator.AddComponent(en,
-        //    particle_emitter{ 
-        //        10,         // capacity
-        //        10,           // alive count
-        //        { Vector2Zero(), Vector2Zero() }, // offset
-        //        ColorAlpha(YELLOW, 0.5f), // color
-        //        Vector2Rotate(Vector2UnitY, -45.0f), // init dir
-        //        90.0f,
-        //        { 50.0f, 100.0f },      // init speed
-        //        {100.0f, 200.0f},        // init lifetime
-        //        {5.0f, 10.0f},
-        //        2,          // num per emit
-        //        true,        // emitting
-        //        true,       // one shot effect
-        //        Texture2D{ 0 },
-        //        Timer(0.10f), // time between emits
-        //        ET_FIREFLIES,
-        //        {}
-        //    });
-
-    //                par.position = Vector2Add(par.position,
-    //                    Vector2Scale(par.velocity, dt));
-    //            },
-    //            [](particle_emitter& emit, Particle& par)
-    //            {
-    //                // Change color over time
-    //            },
-    //            {}
-    //        });
-
-    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-    //    current_en = en;
-    //}
-
-    //if (IsKeyPressed(KEY_SEVEN))
-    //{
-    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
-
-    //    int en = gCoordinator.CreateEntity();
-
-    //    gCoordinator.AddComponent(en,
-    //        status{ true, true, ITEM });
-
-    //    gCoordinator.AddComponent(en,
-    //        box_render{ 50, 50 });
-
-    //    gCoordinator.AddComponent(en,
-    //        transform2D{ mouse_pos.x, mouse_pos.y });
-
-    //    gCoordinator.AddComponent(
-    //        en,
-    //        collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
-
-    //    gCoordinator.AddComponent(en,
-    //        collectable{}
-    //    );
-
-    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-    //    current_en = en;
-    //}
-
-    static size_t count = 0;
-    if (IsKeyPressed(KEY_EIGHT))
+    if (IsKeyPressed(KEY_FIVE))
     {
-
-
         Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
         int en = gCoordinator.CreateEntity();
 
         gCoordinator.AddComponent(en,
-            status{ true, true, WAYPOINT });
+            status{ true, true, ENVIRONMENT });
 
         gCoordinator.AddComponent(en,
             transform2D{ mouse_pos.x, mouse_pos.y });
 
         gCoordinator.AddComponent(en,
-            box_render{ 50, 50 });
+            render_environment{ false, false, false, BRANCH1, 0, 1.0f, 0.0f });
 
-        gCoordinator.AddComponent(en,
-            waypoint{ count++, true });
+        //gCoordinator.AddComponent(en,
+        //    box_render{ Vector2{100, 100}, false });
 
-        float size = 750.0f;
+        //gCoordinator.AddComponent(en,
+        //    collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 100, 100 } });
 
-        gCoordinator.AddComponent(
-            en,
-            collidble{ Rectangle{mouse_pos.x - size / 2.0f, 
-            mouse_pos.y - size / 2.0f, 
-                size, size } });
+        //gCoordinator.AddComponent(en,
+        //    collecting{ FRUIT, 2 });
 
         current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
         current_en = en;
     }
-    if (IsKeyPressed(KEY_NINE))
+
+    if (IsKeyPressed(KEY_BACKSPACE))
     {
-        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+        auto& stats = gCoordinator.GetComponent<status>(current_en);
 
-        int en = gCoordinator.CreateEntity();
+        stats.active = false;
+    }
 
-        gCoordinator.AddComponent(en,
-            status{ true, true, WAYPOINT });
+    if (IsKeyPressed(KEY_E))
+    {
+        only_env = !only_env;
+    }
 
-        gCoordinator.AddComponent(en,
-            transform2D{ mouse_pos.x, mouse_pos.y });
+    if (IsKeyPressed(KEY_T))
+    {
+        only_walls = !only_walls;
+    }
+}
 
-        gCoordinator.AddComponent(en,
-            box_render{ 50, 50 });
+void Tooling::delete_inactivity()
+{
+    std::vector<Entity> deleting_list;
 
-        gCoordinator.AddComponent(en,
-            waypoint{ count++, false });
+    for (auto& entity : entities_list)
+    {
+        auto const& stats = gCoordinator.GetComponent<status>(entity);
+        if (!stats.active)
+        {
+            deleting_list.push_back(entity);
+        }
+    }
 
-        float size = 750.0f;
-
-        gCoordinator.AddComponent(
-            en,
-            collidble{ Rectangle{mouse_pos.x - size / 2.0f,
-            mouse_pos.y - size / 2.0f,
-                size, size } });
-
-        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-        current_en = en;
+    for (int i = 0; i < deleting_list.size(); i++)
+    {
+        gCoordinator.DestroyEntity(deleting_list[i]);
     }
 }

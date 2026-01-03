@@ -20,7 +20,8 @@ const enum OBJECT_TYPE
 enum HOLDABLE_ITEMS
 {
     NONE,
-    TEMP = 3
+    BIRD = 6,
+    FRUIT = 76
 };
 
 enum ASSETS
@@ -120,6 +121,8 @@ enum ASSETS
     MENU_ILLUS2,
     START_BUTTON,
     CREDITS_BUTTON,
+    BG_GLASS,
+    COVER,
     DAEDALUS_FLOAT,
     COUNT
 };
@@ -127,6 +130,8 @@ enum ASSETS
 namespace Events::Item {
     const EventId PICKEDUP = "Events::Item::PICKEDUP"_hash;
     const EventId DROPPEDOFF = "Events::Item::DROPPEDOFF"_hash;
+    const EventId CONFIRMED_PICKEDUP = "Events::Item::CONFIRMED_PICKEDUP"_hash;
+    const EventId CONFIRMED_DROPPEDOFF = "Events::Item::CONFIRMED_DROPPEDOFF"_hash;
 }
 
 namespace Events::Item::PickedUp
@@ -137,11 +142,16 @@ namespace Events::Item::PickedUp
 
 namespace Events::Item::DroppedOff
 {
+    const ParamId OBJECTID = "Events::Item::DroppedOff::OBJECTID"_hash;
     const ParamId ITEMID = "Events::Item::DroppedOff::ITEMID"_hash;
 }
 
-namespace Events::Collision
+namespace Events::Spark::Collected
 {
+    const ParamId SPARKID = "Events::Spark::Collected::SPARKID"_hash;
+}
+
+namespace Events::Collision {
     const EventId HIT_WALL = "Events::Collision::COLLIDED"_hash;
     const ParamId COLLISION_DATA = "Events::Collision::IMPULSE_FORCE"_hash;
     const EventId SPIKES = "Events::Collision::SPIKES"_hash;

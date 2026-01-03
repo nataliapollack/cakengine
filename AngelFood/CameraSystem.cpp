@@ -90,7 +90,7 @@ void CameraSystem::update()
 
             state = FOLLOW_PLAYER;
         }
-    }
+   }
 }
 
 void CameraSystem::BeginCameraMode()

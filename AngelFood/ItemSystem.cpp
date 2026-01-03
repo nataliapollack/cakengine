@@ -8,13 +8,18 @@
 #include "raylib.h"
 #include "raymath.h"
 
+#include "AssetManager.h"
+
 #include <iostream>
+
+extern AssetManager gAssetMngr;
+
 
 extern Coordinator gCoordinator;
 
 void ItemSystem::init()
 {
-    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::PICKEDUP, ItemSystem::TriggerItemPickedUp));
+    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::CONFIRMED_PICKEDUP, ItemSystem::TriggerItemPickedUp));
 }
 
 void ItemSystem::TriggerItemPickedUp(Event& event)
@@ -94,7 +99,7 @@ void ItemSystem::TriggerItemDroppedOff(Event& event)
 
 void CollectingSystem::init()
 {
-    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::DROPPEDOFF, CollectingSystem::TriggerItemDroppedOff));
+    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::CONFIRMED_DROPPEDOFF, CollectingSystem::TriggerItemDroppedOff));
 }
 
 void CollectingSystem::TriggerItemDroppedOff(Event& event)
@@ -106,11 +111,88 @@ void CollectingSystem::TriggerItemDroppedOff(Event& event)
         auto& staus = gCoordinator.GetComponent<collecting>(entity);
         if (staus.item == item_id)
         {
-            
+            staus.amount_needed--;
             auto& set = gCoordinator.GetComponent<status>(entity);
-            set.active = false;
-
+            if (staus.amount_needed <= 0)
+            {
+                set.active = false;
+                // spawn spark here :p
+                // swap npc state here
+            }
             return;
         }
     }
+}
+
+void SparkSystem::init()
+{
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Collision::SPARK, SparkSystem::TriggerSparkCollected));
+}
+
+void SparkSystem::update()
+{
+    for (auto& entity : entities_list)
+    {
+        auto& stats = gCoordinator.GetComponent<status>(entity);
+        auto& sparky = gCoordinator.GetComponent<spark>(entity);
+
+        if (stats.active)
+        {
+            if (sparky.frame_counter >= (60 / 5.0f))
+            {
+                sparky.frame_counter = 0;
+                sparky.current_asset = (ASSETS)((int)sparky.current_asset + 1);
+
+                if (sparky.current_asset == TITLE)
+                {
+                    sparky.current_asset = SPARK1;
+                }
+            }
+            sparky.frame_counter++;
+        }
+    }
+}
+
+void SparkSystem::draw()
+{
+    for (auto& entity : entities_list)
+    {
+        auto const& stats = gCoordinator.GetComponent<status>(entity);
+
+        if (stats.active)
+        {
+            auto const& transform = gCoordinator.GetComponent<transform2D>(entity);
+            auto const& rend = gCoordinator.GetComponent<spark>(entity);
+
+            Texture2D texture = gAssetMngr.GetAsset(rend.current_asset);
+
+            Rectangle source = { 0, 0, texture.width, texture.height };
+            Vector2 dim = { texture.width * 0.55, texture.height * 0.55};
+            Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
+            Vector2 origin = { 0, 0 };
+            DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
+        }
+    }
+}
+
+void SparkSystem::TriggerSparkCollected(Event& event)
+{
+    spark_count++;
+
+    Entity item_id = event.GetParam<Entity>(Events::Spark::Collected::SPARKID);
+    //  std::cout << item_id << "\n";
+    for (auto& entity : entities_list)
+    {
+        auto& staus = gCoordinator.GetComponent<status>(entity);
+        if (entity == item_id)
+        {
+            staus.active = false;
+        }
+    }
+}
+
+void SparkSystem::TriggerSparkSpawned(Event& event)
+{
+
 }

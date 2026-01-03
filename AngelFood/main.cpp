@@ -44,6 +44,7 @@ void register_components()
 
     gCoordinator.RegisterComponent<collectable>();
     gCoordinator.RegisterComponent<collecting>();
+    gCoordinator.RegisterComponent<spark>();
 
     gCoordinator.RegisterComponent<physics>();
 
@@ -110,6 +111,16 @@ void set_system_signatures()
 
     sig.reset();
 
+    sig.set(gCoordinator.GetComponentType<spark>());
+    gCoordinator.SetSystemSignature<SparkSystem>(sig);
+
+    sig.reset();
+
+    sig.set(gCoordinator.GetComponentType<spark>());
+    gCoordinator.SetSystemSignature<SparkSystem>(sig);
+
+    sig.reset();
+
     sig.set(gCoordinator.GetComponentType<waypoint>());
     sig.set(gCoordinator.GetComponentType<transform2D>());
     gCoordinator.SetSystemSignature<DaedalusSystem>(sig);
@@ -139,58 +150,58 @@ int main()
     auto environment_render_sys = gCoordinator.RegisterSystem<EnvironmentRenderSystem>();
     auto tooling_sys = gCoordinator.RegisterSystem<Tooling>();
     auto particle_sys = gCoordinator.RegisterSystem<ParticleSystem>();
-    auto daedalus_sys = gCoordinator.RegisterSystem<DaedalusSystem>();
+    auto spark_sys = gCoordinator.RegisterSystem<SparkSystem>();
 
+    auto daedalus_sys = gCoordinator.RegisterSystem<DaedalusSystem>();
     tooling_sys->init();
 
     set_system_signatures();
 
-    tooling_sys->deserialize();
+   tooling_sys->deserialize();
 
     ////// object placer heree until i rlly like add some way to do player state mngr...
     //  {
-           //player
-          //int ec = gCoordinator.CreateEntity();
-          //{
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        render_environment{ 0, PLAYER_IDLE, 1});
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        transform2D{ Vector2 {-50.0f, -50.0f} });
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        player{ true, NONE });
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        collidble{ Rectangle{00, 00, 100, 100 } });
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        status{ true, true, PLAYER });
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
-          //    );
-          //}
-
-          // //floor...
-          //int ec = gCoordinator.CreateEntity();
-          //{
-          //    float w = GetScreenWidth();
-          //    float y = GetScreenHeight();
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        box_render{ w, 100 });
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        transform2D{ Vector2 {0, 500} });
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        collidble{ Rectangle{0, y - 100, w, 100 } });
-          //    gCoordinator.AddComponent(
-          //        ec,
-          //        status{ true, true, WALL });
-          //}
+     //      player
+        //int ec = gCoordinator.CreateEntity();
+        //{
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        render{ 0.5f, PLAYER_IDLE });
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        transform2D{ Vector2 {200.0f, 100.0f} });
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        player{ true, NONE });
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        collidble{ Rectangle{200, 300, 100, 100 } });
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        status{ true, true, PLAYER });
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
+        //    );
+        //}
+           //spark testing
+        //int ec = gCoordinator.CreateEntity();
+        //{
+        //    float w = GetScreenWidth();
+        //    float y = GetScreenHeight();
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        box_render{ w, 100 });
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        transform2D{ Vector2 {0, 500} });
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        collidble{ Rectangle{0, y - 100, w, 100 } });
+        //    gCoordinator.AddComponent(
+        //        ec,
+        //        status{ true, true, WALL });
+        //}
 
     //  tooling_sys->serialize();
     //  }
@@ -205,6 +216,7 @@ int main()
     dropoff_sys->init();
     environment_render_sys->init();
     particle_sys->init();
+    spark_sys->init();
     daedalus_sys->init();
 
     MainMenu menu;
@@ -213,12 +225,16 @@ int main()
     Timer intro_fade(0.5f);
     bool intro_has_run = false;
 
+    bool draw_boxes = true;
+
     // IN-GAME
     while (!WindowShouldClose())
     {
         float deltaTime = GetFrameTime();
-        //float clamped_dt = std::clamp(deltaTime, 0.01f, 0.03f);
-        float clamped_dt = std::clamp(deltaTime, 1.0f / 60.0f, 1.0f / 60.0f);
+        float clamped_dt = std::clamp(deltaTime, 0.01f, 0.03f);
+       // float clamped_dt = std::clamp(deltaTime, 1.0f / 60.0f, 1.0f / 60.0f);
+
+        //float clamped_dt = 0.03;
 
         if (menu.GetScene() == Scene::MAINMENU)
         {
@@ -248,14 +264,19 @@ int main()
                     particle_sys->update(clamped_dt);
                 }
 
-                camera_sys->update();
-                tooling_sys->update();
-                environment_render_sys->update();
+            camera_sys->update();
+            tooling_sys->update();
+            environment_render_sys->update();
+            spark_sys->update();
 
                 // hard coded resett
                 if (IsKeyPressed(KEY_TWO))
                 {
                     player_movement_sys->ResetPlayerPos();
+                }
+                if (IsKeyPressed(KEY_MINUS))
+                {
+                    draw_boxes = !draw_boxes;
                 }
             }
 
@@ -287,8 +308,6 @@ int main()
                 render_sys->draw();
                 box_render_sys->draw();
 
-                daedalus_sys->draw();
-
                 particle_sys->draw();
 
                 if (tooling_sys->GetToolStatus())
@@ -296,7 +315,7 @@ int main()
                     tooling_sys->draw();
                 }
 
-                 //collision_sys->debug_draw_collisions();
+                // collision_sys->debug_draw_collisions();
 
               //   DrawCircle(0, 0, 10, BLUE);
                 camera_sys->EndCameraMode();
@@ -315,6 +334,9 @@ int main()
                 //DrawFPS(50, 50);
                 EndDrawing();
             }
+
+            tooling_sys->delete_inactivity();
+
         }
     }
 

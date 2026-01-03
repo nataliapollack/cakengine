@@ -4,6 +4,7 @@
 
 #include "PlayerSystem.h"
 
+#include "Progression.h"
 #include "Player.h"
 #include "Core.h"
 
@@ -430,9 +431,26 @@ void PlayerSystem::PickedUpItem(Event& event)
         OBJECT_TYPE id = event.GetParam<OBJECT_TYPE>(
             Events::Item::PickedUp::OBJTYPE);
 
-        playuh.holding = TEMP;
-    }
+        auto& render_env = gCoordinator.GetComponent<render_environment>(id);
+        // THIS IS BAD SORRY
+        if (render_env.txt == FRUIT1 && (playuh.holding == FRUIT || playuh.holding == NONE))
+        {
+            playuh.holding = FRUIT;
 
+            Event item(Events::Item::CONFIRMED_PICKEDUP);
+            item.SetParam(Events::Item::PickedUp::ITEMID, id);
+            gCoordinator.SendEvent(item);
+
+            fruit_count++;
+        }
+        if (render_env.txt == BIRD_IDLE1 && playuh.holding == NONE)
+        {
+            Event item(Events::Item::CONFIRMED_PICKEDUP);
+            item.SetParam(Events::Item::PickedUp::ITEMID, id);
+            gCoordinator.SendEvent(item);
+            playuh.holding = BIRD;
+        }
+    }
 }
 
 void PlayerSystem::DroppedItem(Event& event)
@@ -441,8 +459,32 @@ void PlayerSystem::DroppedItem(Event& event)
     {
         auto& playuh = gCoordinator.GetComponent<player>(entity);
 
+        Entity id = event.GetParam<Entity>(
+            Events::Item::DroppedOff::OBJECTID);
 
-        playuh.holding = NONE;
+        auto& collector = gCoordinator.GetComponent<collecting>(id);
+        if (collector.item == playuh.holding)
+        {
+            if (collector.item == FRUIT)
+            {
+                fruit_count--;
+                if (fruit_count == 0)
+                {
+                    playuh.holding = NONE;
+                }
+
+                Event item(Events::Item::CONFIRMED_DROPPEDOFF);
+                item.SetParam(Events::Item::DroppedOff::ITEMID, playuh.holding);
+                gCoordinator.SendEvent(item);
+            }
+            else
+            {
+                Event item(Events::Item::CONFIRMED_DROPPEDOFF);
+                item.SetParam(Events::Item::DroppedOff::ITEMID, playuh.holding);
+                playuh.holding = NONE;
+                gCoordinator.SendEvent(item);
+            }
+        }
     }
 }
 
@@ -485,6 +527,10 @@ void PlayerSystem::HitSpikes(Event& event)
 
         death_time.start();
         is_dead = true;
+
+        auto& playuh = gCoordinator.GetComponent<player>(entity);
+        fruit_count = 0;
+        playuh.holding = NONE;
     }
 }
 

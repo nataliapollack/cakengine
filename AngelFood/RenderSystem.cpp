@@ -39,7 +39,7 @@ void RenderSystem::draw()
             Texture2D texture= gAssetMngr.GetAsset(rend.txt);
 
             // std::cout << stats.type << std::endl;
-            Rectangle source = { 0, 0, texture.width, texture.height };
+             Rectangle source = { 0, 0, texture.width, texture.height };
             Vector2 dim = { texture.width * rend.size, texture.height * rend.size };
             Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
             Vector2 origin = { 0, 0 };
@@ -135,6 +135,10 @@ void BoxRenderSystem::draw()
             {
                 DrawRectangleRec(box, ColorAlpha(PINK, 0.9f));
             }
+            if (stats.type == DROPOFF)
+            {
+                DrawRectangleRec(box, ColorAlpha(PURPLE, 0.9f));
+            }
         }
     }
 }
@@ -166,6 +170,11 @@ void EnvironmentRenderSystem::init()
 
 void EnvironmentRenderSystem::draw()
 {
+    if (draw_order.size() != entities_list.size())
+    {
+        ReorganizeObjects();
+    }
+
     for (int i = 0; i < draw_order.size(); i++)
     {
         auto const& stats = gCoordinator.GetComponent<status>(draw_order[i]);
@@ -204,13 +213,13 @@ void EnvironmentRenderSystem::draw()
                     Texture2D texture = gAssetMngr.GetAsset(playuh.holding);
 
                     Rectangle source = { 0, 0, texture.width, texture.height };
-                    Vector2 dim2 = { texture.width * 0.75, texture.height * 0.75 };
+                    Vector2 dim2 = { texture.width * 0.5, texture.height * 0.5 };
                     float x = transform.pos.x + (dim.x / 2.0f) - (dim2.x / 2.0f);
                     float y = transform.pos.y - dim2.y + 5;
                     Rectangle dest = { x, y, dim2.x, dim2.y };
                     Vector2 origin = { 0, 0 };
                     DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
-                    halo_pos.y -= (texture.height / 2.0f) + 10;
+                    halo_pos.y -= (texture.height / 2.0f);
                 }
 
                 Rectangle source = { 0, 0, halo_texture.width, halo_texture.height };

@@ -75,9 +75,9 @@ void AssetManager::load_assets()
     textures[BG_BUSH2] = LoadTexture("art/Tiles Set 3/BG Bush 2.png");
     textures[BG_VINE1] = LoadTexture("art/Tiles Set 3/BG Vine 1.png");
     textures[BG_VINE2] = LoadTexture("art/Tiles Set 3/BG Vine 2.png");
-    textures[BG_ROOT1] = LoadTexture("art/Tiles Set 3/BG Root 1.png");
-    textures[BG_ROOT2] = LoadTexture("art/Tiles Set 3/BG Root 2.png");
-    textures[BG_ROOT3] = LoadTexture("art/Tiles Set 3/BG Root 3.png");
+    textures[BG_ROOT1] = LoadTexture("art/Tiles Set 3/Big Root 1.png");
+    textures[BG_ROOT2] = LoadTexture("art/Tiles Set 3/Big Root 2.png");
+    textures[BG_ROOT3] = LoadTexture("art/Tiles Set 3/Big Root 3.png");
     textures[BG_BUSH3] = LoadTexture("art/Tiles Set 3/Bush 4.png");
     textures[BG_BUSH4] = LoadTexture("art/Tiles Set 3/Bush 5.png");
     textures[BG_BUSH5] = LoadTexture("art/Tiles Set 3/Bush 6.png");
@@ -92,6 +92,7 @@ void AssetManager::load_assets()
     textures[VINE2] = LoadTexture("art/Tiles Set 3/Vine 2.png");
     textures[VINE3] = LoadTexture("art/Tiles Set 3/Vine 3.png");
     textures[VINE4] = LoadTexture("art/Tiles Set 3/Vine 4.png");
+    textures[BG_GLASS] = LoadTexture("art/Tiles Set 3/Glass.png");
 
     // MORE Animations
     textures[FRUIT1] = LoadTexture("art/fruit_0000.png");
@@ -115,6 +116,8 @@ void AssetManager::load_assets()
     textures[MENU_ILLUS2] = LoadTexture("art/MainMenu/Menu Illus2.png");
     textures[START_BUTTON] = LoadTexture("art/MainMenu/Start.png");
     textures[CREDITS_BUTTON] = LoadTexture("art/MainMenu/Credits.png");
+
+    textures[COVER] = LoadTexture("art/HiddenAreaBarrier.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)

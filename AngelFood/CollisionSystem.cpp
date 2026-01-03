@@ -51,8 +51,10 @@ void CollisionSystem::CheckCollisions()
                     collision_j.box.y = transform_j.pos.y - collision_j.box.height / 2.0f;
                 }
 
-                collision_i.box.x = transform_i.pos.x;
-                collision_i.box.y = transform_i.pos.y;
+                {
+                    collision_i.box.x = transform_i.pos.x + 25;
+                    collision_i.box.y = transform_i.pos.y;
+                }
 
                 if (CheckCollisionRecs(collision_i.box, collision_j.box))
                 {
@@ -88,6 +90,7 @@ void CollisionSystem::CheckCollisions()
                         auto& playuh = gCoordinator.GetComponent<player>(i);
                         Event item(Events::Item::DROPPEDOFF);
                         item.SetParam(Events::Item::DroppedOff::ITEMID, playuh.holding);
+                        item.SetParam(Events::Item::DroppedOff::OBJECTID, j);
 
                         gCoordinator.SendEvent(item);
                     }
@@ -107,6 +110,7 @@ void CollisionSystem::CheckCollisions()
                     if (stats_j.type == SPARK)
                     {
                         Event spark(Events::Collision::SPARK);
+                        spark.SetParam(Events::Spark::Collected::SPARKID, i);
                         gCoordinator.SendEvent(spark);
 
                         stats_j.active = false;
