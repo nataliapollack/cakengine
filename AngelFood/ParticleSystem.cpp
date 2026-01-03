@@ -308,7 +308,11 @@ void ParticleSystem::init_draw_functions()
 			{
 				DrawCircle(par.position.x + par.size,
 					par.position.y + par.size,
-					par.size, par.color);
+					par.size / 2.0f, par.color);
+				DrawCircleGradient(par.position.x + par.size,
+					par.position.y + par.size,
+					par.size * 2.0f, 
+					ColorAlpha(YELLOW, 0.5f), ColorAlpha(YELLOW, 0.f));
 			}
 		}
 	});
