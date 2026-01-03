@@ -34,6 +34,7 @@ void register_components()
     gCoordinator.RegisterComponent<render>();
     gCoordinator.RegisterComponent<box_render>();
     gCoordinator.RegisterComponent<render_environment>();
+    gCoordinator.RegisterComponent<animate>();
     gCoordinator.RegisterComponent<status>();
     gCoordinator.RegisterComponent<collidble>();
 
@@ -211,6 +212,7 @@ int main()
 
             camera_sys->update();
             tooling_sys->update();
+            environment_render_sys->update();
 
             // hard coded resett
             if (IsKeyPressed(KEY_TWO))
@@ -254,7 +256,7 @@ int main()
                 tooling_sys->draw();
             }
 
-           // collision_sys->debug_draw_collisions();
+         //  collision_sys->debug_draw_collisions();
 
          //   DrawCircle(0, 0, 10, BLUE);
             camera_sys->EndCameraMode();

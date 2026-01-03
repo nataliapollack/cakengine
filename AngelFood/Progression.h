@@ -15,20 +15,18 @@ struct spike
 {
 };
 
-struct spawn_zone
-{
-};
-
-struct trapped_critter
-{
-};
-
-struct critter
-{
-
-};
-
 struct spark
 {
+
+};
+
+struct NPC
+{
+
+};
+
+struct Spark
+{
+    bool picked_up;
 
 };

@@ -14,7 +14,8 @@ enum COMPONENTS_LIST
     PLAYERc,
     COLLECTABLE,
     COLLECTING,
-    ENVIRONMENT_RENDER
+    ENVIRONMENT_RENDER,
+    ANIMATE
 };
 
 class Tooling : public System

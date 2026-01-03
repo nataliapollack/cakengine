@@ -12,7 +12,8 @@ const enum OBJECT_TYPE
     ENVIRONMENT,
     PLATFORM,
     SPARK,
-    EMITTER
+    EMITTER, 
+    NPC
 };
 
 enum HOLDABLE_ITEMS
@@ -99,6 +100,20 @@ enum ASSETS
     VINE2,
     VINE3,
     VINE4,
+    FRUIT1,
+    FRUIT2,
+    KING_HAPPY1,
+    KING_HAPPY2,
+    BIRD_HAPPY1,
+    BIRD_HAPPY2,
+    SHEEP_HAPPY1,
+    SHEEP_HAPPY2,
+    SNAKE_PLAY1,
+    SNAKE_PLAY2,
+    SPARK1,
+    SPARK2,
+    SPARK3,
+    SPARK4,
     COUNT
 };
 
