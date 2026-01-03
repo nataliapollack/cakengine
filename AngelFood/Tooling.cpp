@@ -669,41 +669,7 @@ void Tooling::check_inputs()
                 true,       // one shot effect
                 Texture2D{ 0 },
                 Timer(0.10f), // time between emits
-                [](particle_emitter& emit, Particle& par, float dt)
-                {
-                    Vector2 dir = Vector2Subtract(
-                        par.initial_position, par.position);
-                    float dist = Vector2Length(dir);
-
-                    par.force = Vector2Scale(dir, dist);
-
-                    par.velocity += par.force * dt * dt;
-
-                    if (GetRandomValue(0, 1))
-                    {
-                        par.velocity += Vector2Scale(
-                            { par.velocity.y, -par.velocity.x },
-                            0.25f
-                        );
-                    }
-                    else
-                    {
-                        par.velocity += Vector2Scale(
-                            { -par.velocity.y, par.velocity.x },
-                            0.25f
-                        );
-                    }
-
-                    par.velocity = Vector2ClampValue(
-                        par.velocity, -100.0f, 100.0f);
-
-                    par.position = Vector2Add(par.position,
-                        Vector2Scale(par.velocity, dt));
-                },
-                [](particle_emitter& emit, Particle& par)
-                {
-                    // Change color over time
-                },
+                ET_FIREFLIES,
                 {}
             });
 

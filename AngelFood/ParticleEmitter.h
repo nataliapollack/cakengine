@@ -19,6 +19,13 @@ struct Particle
 	bool active;
 };
 
+enum emitter_type : int
+{
+	ET_JUMP,
+	ET_FIREFLIES,
+	ET_ITEM_PICKUP
+};
+
 struct particle_emitter
 {
 	float capacity;
@@ -43,8 +50,7 @@ struct particle_emitter
 
 	Timer time_between_emit;
 
-	std::function<void(particle_emitter&, Particle&, float)> update_function;
-	std::function<void(particle_emitter&, Particle&)> color_curve;
+	emitter_type type;
 
 	std::vector<Particle> particles;
 };
