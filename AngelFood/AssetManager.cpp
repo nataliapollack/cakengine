@@ -93,6 +93,13 @@ void AssetManager::load_assets()
     textures[VINE2] = LoadTexture("art/Tiles Set 3/Vine 2.png");
     textures[VINE3] = LoadTexture("art/Tiles Set 3/Vine 3.png");
     textures[VINE4] = LoadTexture("art/Tiles Set 3/Vine 4.png");
+
+    // Main menu stuff
+    textures[TITLE] = LoadTexture("art/MainMenu/Title.png");
+    textures[MENU_ILLUS1] = LoadTexture("art/MainMenu/Menu Illus.png");
+    textures[MENU_ILLUS2] = LoadTexture("art/MainMenu/Menu Illus2.png");
+    textures[START_BUTTON] = LoadTexture("art/MainMenu/Start.png");
+    textures[CREDITS_BUTTON] = LoadTexture("art/MainMenu/Credits.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)
