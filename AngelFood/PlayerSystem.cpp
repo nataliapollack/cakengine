@@ -14,7 +14,7 @@
 extern Coordinator gCoordinator;
 
 //constexpr float JUMP_SCALE = 0.11f;
-constexpr float JUMP_SCALE = 0.03667f;
+constexpr float JUMP_SCALE = 0.03f;
 
 void PlayerSystem::init()
 {
@@ -36,7 +36,7 @@ void PlayerSystem::init()
         Timer(0.1f),    // jump buffer time
         1.0f,           // left/right movement multiplier (1125 vel feels best)
         {},             // jump impulse (calculated later)
-        { 3.0f, 1.5f }, // jump heights
+        { 2.25f, 1.5f }, // jump heights
         0.4f,           // jump time (used for tap vs hold jumping)
         0.0f,           // tracks time since jump started
         2,              // number of jumps
@@ -291,7 +291,7 @@ void PlayerSystem::JumpInput(Entity entity, float dt)
     {
         if (m_jump.jump_timer < m_jump.jump_time)
         {
-            vel.y /= 1.5f;
+            vel.y /= 1.8f;
         }
     }
 
