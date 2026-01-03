@@ -198,6 +198,9 @@ int main()
     MainMenu menu;
     menu.init();
 
+    Timer intro_fade(0.5f);
+    bool intro_has_run = false;
+
     // IN-GAME
     while (!WindowShouldClose())
     {
@@ -212,10 +215,17 @@ int main()
 
             // DRAW
             menu.draw();
-            
         }
         else if (menu.GetScene() == Scene::GAMEPLAY)
         {
+            if (!intro_has_run && !intro_fade.is_running())
+                intro_fade.start();
+
+            if (intro_fade.update(clamped_dt))
+            {
+                intro_has_run = true;
+            }
+
             // UPDATE
             {
                 if (!tooling_sys->GetToolStatus())
@@ -278,7 +288,14 @@ int main()
 
                 DrawText(TextFormat("dt %f", clamped_dt), 20, 20, 40, RED);
 
-                // Particles
+                if (!intro_has_run)
+                {
+                    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(),
+                        ColorAlpha({ 9, 10, 15, 255 },
+                            1.0f - (intro_fade.count() / intro_fade.time())
+                        ));
+                }
+
 
                 EndDrawing();
             }
