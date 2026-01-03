@@ -21,7 +21,7 @@
 
 // msc
 #include "AssetManager.h"
-#include "Timer.hpp"
+#include "MainMenu.h"
 
 Coordinator gCoordinator;
 AssetManager gAssetMngr;
@@ -103,33 +103,6 @@ void set_system_signatures()
     sig.set(gCoordinator.GetComponentType<particle_emitter>());
     gCoordinator.SetSystemSignature<ParticleSystem>(sig);
 }
-
-enum Scene : int
-{
-    MAINMENU,
-    GAMEPLAY
-};
-
-enum Button : int
-{
-    START,
-    CREDITS
-};
-
-static Scene curr_scene = MAINMENU;
-static Button curr_button = Button::START;
-
-struct MainMenuData
-{
-    Texture2D title;
-    Texture2D illus1;
-    Texture2D illus2;
-    Texture2D start;
-    Texture2D credits;
-
-    Timer start_time;
-    bool start_game;
-};
 
 int main()
 {
@@ -222,16 +195,8 @@ int main()
     environment_render_sys->init();
     particle_sys->init();
 
-    MainMenuData menu
-    {
-        gAssetMngr.GetAsset(TITLE),
-        gAssetMngr.GetAsset(MENU_ILLUS1),
-        gAssetMngr.GetAsset(MENU_ILLUS2),
-        gAssetMngr.GetAsset(START_BUTTON),
-        gAssetMngr.GetAsset(CREDITS_BUTTON),
-        Timer(2.0f),
-        false
-    };
+    MainMenu menu;
+    menu.init();
 
     // IN-GAME
     while (!WindowShouldClose())
@@ -240,133 +205,16 @@ int main()
         //float clamped_dt = std::clamp(deltaTime, 0.01f, 0.03f);
         float clamped_dt = std::clamp(deltaTime, 1.0f / 60.0f, 1.0f / 60.0f);
 
-        if (curr_scene == Scene::MAINMENU)
+        if (menu.GetScene() == Scene::MAINMENU)
         {
             // UPDATE
-            if (curr_button == Button::START && !menu.start_game)
-            {
-                if (IsKeyPressed(KEY_RIGHT))
-                {
-                    curr_button = Button::CREDITS;
-                }
-                if (IsKeyPressed(KEY_ENTER))
-                {
-                    menu.start_game = true;
-                    menu.start_time.start();
-                }
-            }
-
-            if (curr_button == Button::CREDITS && !menu.start_game)
-            {
-                if (IsKeyPressed(KEY_LEFT))
-                {
-                    curr_button = Button::START;
-                }
-            }
-
-            if (menu.start_game && menu.start_time.update(clamped_dt))
-            {
-                curr_scene = Scene::GAMEPLAY;
-            }
-            float fade = 1.0f -
-                ((menu.start_time.count() / menu.start_time.time())
-                    * 1.0f);
+            menu.update(clamped_dt);
 
             // DRAW
-            ClearBackground({ 9, 10, 15, 255 });
-            BeginDrawing();
-
-            float upper_border = GetScreenHeight() * 0.1f;
-            float width = GetScreenWidth();
-            float scale = 0.8f;
-
-            {
-                float title_width = menu.title.width * scale;
-                float title_height = menu.title.height * scale;
-
-                Rectangle source{ 0, 0, menu.title.width, menu.title.height };
-
-                Rectangle dest{ (width - title_width) * 0.5f, upper_border,
-                    title_width, title_height };
-
-                DrawTexturePro(menu.title, source, dest,
-                    Vector2Zero(), 0.0f, ColorAlpha(WHITE, fade));
-            }
-
-            {
-                Texture2D illus = 
-                    (menu.start_game) ? menu.illus2 : menu.illus1;
-
-                float illus_width = illus.width * scale;
-                float illus_height = illus.height * scale;
-
-                Rectangle source{ 0, 0, 
-                    illus.width, illus.height };
-
-                Rectangle dest{ 
-                    (width - illus_width) * 0.52f, 
-                    upper_border + menu.title.height * 0.8f * scale,
-                    illus_width, illus_height };
-
-                DrawTexturePro(
-                    illus, 
-                    source, dest,
-                    Vector2Zero(), 0.0f, WHITE);
-            }
-
-            {
-                float select_scale = 
-                    (curr_button == Button::START) ? 1.5f : 1.0f;
-
-                float start_width = menu.start.width * scale * scale * 
-                    select_scale;
-                float start_height = menu.start.height * scale * scale * 
-                    select_scale;
-
-                Rectangle source{ 0, 0,
-                    menu.start.width, menu.start.height };
-
-                Rectangle dest{
-                    (width - start_width) * 0.2f,
-                    upper_border + menu.title.height * 0.8f * scale + 
-                    menu.illus1.height * scale * 1.2,
-                    start_width, start_height };
-
-                DrawTexturePro(menu.start, source, dest,
-                    Vector2Zero(), 0.0f, 
-                    (curr_button == Button::START) ?
-                    ColorAlpha(SKYBLUE, fade) :
-                    ColorAlpha(WHITE, fade));
-            }
-
-            {
-                float select_scale =
-                    (curr_button == Button::CREDITS) ? 1.5f : 1.0f;
-
-                float credits_width = menu.credits.width * scale * scale * 
-                    select_scale;
-                float credits_height = menu.credits.height * scale * scale * 
-                    select_scale;
-
-                Rectangle source{ 0, 0,
-                    menu.credits.width, menu.credits.height };
-
-                Rectangle dest{
-                    (width - credits_width) * 0.8f,
-                    upper_border + menu.title.height * 0.8f * scale +
-                    menu.illus1.height * scale * 1.2,
-                    credits_width, credits_height };
-
-                DrawTexturePro(menu.credits, source, dest,
-                    Vector2Zero(), 0.0f,
-                    (curr_button == Button::CREDITS) ? 
-                    ColorAlpha(SKYBLUE, fade) :
-                    ColorAlpha(WHITE, fade));
-            }
-
-            EndDrawing();
+            menu.draw();
+            
         }
-        else if (curr_scene == Scene::GAMEPLAY)
+        else if (menu.GetScene() == Scene::GAMEPLAY)
         {
             // UPDATE
             {

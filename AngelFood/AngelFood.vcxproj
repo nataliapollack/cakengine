@@ -136,6 +136,7 @@
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="ItemSystem.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Core.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ItemSystem.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Progression.h" />
