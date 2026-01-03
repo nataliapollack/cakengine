@@ -31,8 +31,13 @@ public:
     void check_inputs();
     void draw();
 
+    void delete_inactivity();
+
 private:
     bool tooling_on;
+
+    bool only_env = false;
+    bool only_walls = false;
 
     bool mouseScaleReady = false;
     bool mouseScaleMode = false;

@@ -9,6 +9,7 @@ struct collectable
 struct collecting
 {
     HOLDABLE_ITEMS item;
+    int amount_needed;
 };
 
 struct spike
@@ -17,12 +18,12 @@ struct spike
 
 struct spark
 {
-
+    int frame_counter;
+    ASSETS current_asset;
 };
 
 struct NPC
 {
-
 };
 
 struct Spark
