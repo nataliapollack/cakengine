@@ -40,6 +40,8 @@ private:
     void StartInput(Event& event);
     void StopInput(Event& event);
 
+    void HitEndpoint(Event& event);
+
     struct walk_values
     {
         float time_to_accel;
@@ -100,6 +102,8 @@ private:
 
     Timer death_time;
     bool is_dead;
+    Timer end_time;
+    bool is_end;
 
     // Spark stuff
     struct spark_values

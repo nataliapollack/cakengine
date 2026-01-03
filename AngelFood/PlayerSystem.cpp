@@ -73,6 +73,7 @@ void PlayerSystem::init()
 
     death_time = Timer(1.0f);
     is_dead = false;
+    is_end = false;
 
     m_spark = {
         5,
@@ -89,26 +90,30 @@ void PlayerSystem::init()
         Vector2 max_offset{ base_offset.x + 20.0f, base_offset.y + 20.0f };
 
         // Particle jump thing
-        gCoordinator.AddComponent(entity,
-            particle_emitter{
-                32,         // capacity
-                0,           // alive count
-                { min_offset, max_offset },
-                ColorAlpha(WHITE, 0.7f), // color
-                Vector2Rotate(Vector2UnitY, DEG2RAD * -60.0f),
-                120.0f, // init dir
-                { 350.0f, 600.0f },      // init speed
-                {0.50f, 1.0f},        // init lifetime
-                {5.0f, 10.0f}, // init size
-                2,          // num per emit
-                false ,        // emitting
-                true,       // one shot effect
-                COUNT,
-                Timer(0.0f), // time between emits
-                ET_JUMP,
-                {}
-            }
-        );
+        if (!gCoordinator.HasComponent<particle_emitter>(entity))
+        {
+            gCoordinator.AddComponent(entity,
+                particle_emitter{
+                    32,         // capacity
+                    0,           // alive count
+                    { min_offset, max_offset },
+                    ColorAlpha(WHITE, 0.7f), // color
+                    Vector2Rotate(Vector2UnitY, DEG2RAD * -60.0f),
+                    120.0f, // init dir
+                    { 350.0f, 600.0f },      // init speed
+                    {0.50f, 1.0f},        // init lifetime
+                    {5.0f, 10.0f}, // init size
+                    2,          // num per emit
+                    false ,        // emitting
+                    true,       // one shot effect
+                    COUNT,
+                    Timer(0.0f), // time between emits
+                    ET_JUMP,
+                    {}
+                }
+            );
+        }
+
     }
 
 
@@ -136,6 +141,10 @@ void PlayerSystem::init()
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Input::END_DAEDALUS_FLIGHT,
             PlayerSystem::StartInput));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Collision::ENDPOINT, PlayerSystem::HitEndpoint)
+    );
 }
 
 void PlayerSystem::update(float dt)
@@ -157,6 +166,11 @@ void PlayerSystem::update(float dt)
 
                 is_dead = false;
             }
+        }
+        else if (is_end)
+        {
+            // ending stuff
+            
         }
         else
         {
@@ -570,4 +584,11 @@ void PlayerSystem::StopInput(Event& event)
 {
     m_walk.can_walk = false;
     m_walk.direction = 0.0f;
+}
+
+void PlayerSystem::HitEndpoint(Event& event)
+{
+    is_end = true;
+    current_state = FALL;
+    m_walk.can_walk = false;
 }

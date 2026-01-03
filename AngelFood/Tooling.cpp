@@ -131,10 +131,10 @@ void Tooling::serialize()
                 data << comp.offset.second.x << "\n";
                 data << comp.offset.second.y << "\n";
 
-                data << comp.color.r << "\n";
-                data << comp.color.g << "\n";
-                data << comp.color.b << "\n";
-                data << comp.color.a << "\n";
+                data << static_cast<int>(comp.color.r) << "\n";
+                data << static_cast<int>(comp.color.g) << "\n";
+                data << static_cast<int>(comp.color.b) << "\n";
+                data << static_cast<int>(comp.color.a) << "\n";
 
                 data << comp.initial_dir.x << "\n";
                 data << comp.initial_dir.y << "\n";
@@ -904,6 +904,91 @@ void Tooling::check_inputs()
     {
         only_walls = !only_walls;
     }
+
+    //static size_t count = 0;
+    //if (IsKeyPressed(KEY_EIGHT))
+    //{
+    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+    //    int en = gCoordinator.CreateEntity();
+
+    //    gCoordinator.AddComponent(en,
+    //        status{ true, true, WAYPOINT });
+
+    //    gCoordinator.AddComponent(en,
+    //        transform2D{ mouse_pos.x, mouse_pos.y });
+
+    //    gCoordinator.AddComponent(en,
+    //        box_render{ 50, 50 });
+
+    //    gCoordinator.AddComponent(en,
+    //        waypoint{ count++ });
+
+    //    float size = 750.0f;
+
+    //    gCoordinator.AddComponent(
+    //        en,
+    //        collidble{ Rectangle{mouse_pos.x - size / 2.0f,
+    //        mouse_pos.y - size / 2.0f,
+    //            size, size } });
+
+    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+    //    current_en = en;
+    //}
+    //if (IsKeyPressed(KEY_NINE))
+    //{
+    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+    //    int en = gCoordinator.CreateEntity();
+
+    //    gCoordinator.AddComponent(en,
+    //        status{ true, true, WAYPOINT });
+
+    //    gCoordinator.AddComponent(en,
+    //        transform2D{ mouse_pos.x, mouse_pos.y });
+
+    //    gCoordinator.AddComponent(en,
+    //        box_render{ 50, 50 });
+
+    //    gCoordinator.AddComponent(en,
+    //        waypoint{ count++, false });
+
+    //    float size = 750.0f;
+
+    //    gCoordinator.AddComponent(
+    //        en,
+    //        collidble{ Rectangle{mouse_pos.x - size / 2.0f,
+    //        mouse_pos.y - size / 2.0f,
+    //            size, size } });
+
+    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+    //    current_en = en;
+    //}
+    //if (IsKeyPressed(KEY_NINE))
+    //{
+    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+    //    int en = gCoordinator.CreateEntity();
+
+    //    float size = 100.0f;
+
+    //    gCoordinator.AddComponent(en,
+    //        status{ true, true, ENDPOINT });
+
+    //    gCoordinator.AddComponent(en,
+    //        transform2D{ mouse_pos.x, mouse_pos.y });
+
+    //    gCoordinator.AddComponent(en,
+    //        box_render{ size, size });
+
+    //    gCoordinator.AddComponent(
+    //        en,
+    //        collidble{ Rectangle{mouse_pos.x,
+    //        mouse_pos.y, size, size} });
+
+    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, size, size };
+    //    current_en = en;
+    //}
 }
 
 void Tooling::delete_inactivity()
