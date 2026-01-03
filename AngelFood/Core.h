@@ -25,22 +25,17 @@ struct render_environment
     float rotation;
 };
 
-struct environ_adjustments
+struct animate
 {
-    float scale;
-    float rotation;
-    bool ver_flip;
+    float speed;
+    int frame_counter;
+    ASSETS alt_asset;
 };
 
 struct box_render
 {
     Vector2 dimensions;
     bool platform;
-};
-
-struct animate
-{
-    Vector2 size_dest;
 };
 
 struct collidble

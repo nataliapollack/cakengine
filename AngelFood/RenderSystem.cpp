@@ -59,8 +59,6 @@ void RenderSystem::draw()
             stats.dirty = false;
         }
     }
-
-
 }
 
 
@@ -255,4 +253,26 @@ void EnvironmentRenderSystem::ReorganizeObjects()
     }
 
     std::sort(draw_order.begin(), draw_order.end(), SortByActualDepth);
+}
+
+void EnvironmentRenderSystem::update()
+{
+    for (auto const& entity : entities_list)
+    {
+        auto& rend = gCoordinator.GetComponent<render_environment>(entity);
+
+        if (rend.animate)
+        {
+            auto& anime = gCoordinator.GetComponent<animate>(entity);
+            if (anime.frame_counter >= (60 / anime.speed))
+            {
+                anime.frame_counter = 0;
+                ASSETS temp = rend.txt;
+
+                rend.txt = anime.alt_asset;
+                anime.alt_asset = temp;
+            }
+            anime.frame_counter++;
+        }
+    }
 }

@@ -39,11 +39,14 @@ void CollisionSystem::CheckCollisions()
                 auto& transform_i = gCoordinator.GetComponent<transform2D>(i);
                 auto& transform_j = gCoordinator.GetComponent<transform2D>(j);
 
+                if (stats_j.type != ITEM)
+                {
+                    collision_j.box.x = transform_j.pos.x;
+                    collision_j.box.y = transform_j.pos.y;
+                }
+
                 collision_i.box.x = transform_i.pos.x;
                 collision_i.box.y = transform_i.pos.y;
-
-                collision_j.box.x = transform_j.pos.x;
-                collision_j.box.y = transform_j.pos.y;
 
                 if (CheckCollisionRecs(collision_i.box, collision_j.box))
                 {

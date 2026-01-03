@@ -33,10 +33,8 @@ void AssetManager::load_assets()
     textures[ROOM9] = LoadTexture("art/room9.png");
     textures[ROOM10] = LoadTexture("art/room10.png");
     textures[ROOM11] = LoadTexture("art/room11.png");
-
-    textures[ROOM12] = LoadTexture("art/TEMP_ITEM.png");
-    textures[ROOM13] = LoadTexture("art/TEMP_ITEM.png");
-
+    textures[ROOM12] = LoadTexture("art/room12.png");
+    textures[ROOM13] = LoadTexture("art/room13.png");
     textures[ROOM14] = LoadTexture("art/room14.png");
     textures[ROOM15] = LoadTexture("art/room15.png");
 
@@ -93,6 +91,22 @@ void AssetManager::load_assets()
     textures[VINE2] = LoadTexture("art/Tiles Set 3/Vine 2.png");
     textures[VINE3] = LoadTexture("art/Tiles Set 3/Vine 3.png");
     textures[VINE4] = LoadTexture("art/Tiles Set 3/Vine 4.png");
+
+    // MORE Animations
+    textures[FRUIT1] = LoadTexture("art/fruit_0000.png");
+    textures[FRUIT2]= LoadTexture("art/fruit_0001.png");
+    textures[KING_HAPPY1] = LoadTexture("art/bird_happy_0000.png");
+    textures[KING_HAPPY2] = LoadTexture("art/bird_happy_0001.png");
+    textures[BIRD_HAPPY1] = LoadTexture("art/minibird_happy_0000.png");
+    textures[BIRD_HAPPY2] = LoadTexture("art/minibird_happy_0001.png");
+    textures[SHEEP_HAPPY1] = LoadTexture("art/sheep_happy_0000.png");
+    textures[SHEEP_HAPPY2] = LoadTexture("art/sheep_happy_0001.png");
+    textures[SNAKE_PLAY1] = LoadTexture("art/snake_Playing_0000.png");
+    textures[SNAKE_PLAY2] = LoadTexture("art/snake_Playing_0001.png");
+    textures[SPARK1] = LoadTexture("art/spark_0000.png");
+    textures[SPARK2] = LoadTexture("art/spark_0001.png");
+    textures[SPARK3] = LoadTexture("art/spark_0002.png");
+    textures[SPARK4] = LoadTexture("art/spark_0003.png");
 
     // Main menu stuff
     textures[TITLE] = LoadTexture("art/MainMenu/Title.png");

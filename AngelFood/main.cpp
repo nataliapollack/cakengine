@@ -35,6 +35,7 @@ void register_components()
     gCoordinator.RegisterComponent<render>();
     gCoordinator.RegisterComponent<box_render>();
     gCoordinator.RegisterComponent<render_environment>();
+    gCoordinator.RegisterComponent<animate>();
     gCoordinator.RegisterComponent<status>();
     gCoordinator.RegisterComponent<collidble>();
 
@@ -235,8 +236,9 @@ int main()
                     particle_sys->update(clamped_dt);
                 }
 
-                camera_sys->update();
-                tooling_sys->update();
+            camera_sys->update();
+            tooling_sys->update();
+            environment_render_sys->update();
 
                 // hard coded resett
                 if (IsKeyPressed(KEY_TWO))

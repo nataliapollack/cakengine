@@ -111,6 +111,14 @@ void Tooling::serialize()
                 data << comp.size << "\n";
                 data << comp.rotation << "\n";
             }
+            if (gCoordinator.HasComponent<animate>(entity))
+            {
+                auto& comp = gCoordinator.GetComponent<animate>(entity);
+                data << ANIMATE << "\n";
+                data << comp.speed << "\n";
+                data << comp.frame_counter << "\n";
+                data << comp.alt_asset << "\n";
+            }
         }
     }
 
@@ -277,6 +285,22 @@ void Tooling::deserialize()
 
                 gCoordinator.AddComponent(en,
                     render_environment{x, y, z, (ASSETS)txt, a, b, c});
+
+                std::getline(load_data, line);
+            }
+            if (ANIMATE == atoi(line.c_str()))
+            {
+                std::getline(load_data, line);
+                float a = atof(line.c_str());
+
+                std::getline(load_data, line);
+                int b = atoi(line.c_str());
+
+                std::getline(load_data, line);
+                int c = atoi(line.c_str());
+
+                gCoordinator.AddComponent(en,
+                    animate{ a, b, (ASSETS)c});
 
                 std::getline(load_data, line);
             }
@@ -476,7 +500,7 @@ void Tooling::update()
                     {
                         rend.txt = (ASSETS)((int)rend.txt + 1);
 
-                        if (rend.txt == COUNT)
+                        if (rend.txt == KING_HAPPY1)
                         {
                             rend.txt = BRANCH1;
                         }
@@ -615,43 +639,43 @@ void Tooling::check_inputs()
             current_en = en;
     }
 
-    if (IsKeyPressed(KEY_FIVE))
-    {
-        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+    //if (IsKeyPressed(KEY_FIVE))
+    //{
+    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-        int en = gCoordinator.CreateEntity();
+    //    int en = gCoordinator.CreateEntity();
 
-        gCoordinator.AddComponent(en,
-            status{ true, true, SPARK });
+    //    gCoordinator.AddComponent(en,
+    //        status{ true, true, ITEM });
 
-        gCoordinator.AddComponent(en,
-            box_render{ 50, 50 });
+    //    gCoordinator.AddComponent(en,
+    //        render_environment{ true, false, false, FRUIT1, 0, 1.0f, 0.0f });
 
-        gCoordinator.AddComponent(en,
-            transform2D{ mouse_pos.x, mouse_pos.y });
+    //    gCoordinator.AddComponent(en,
+    //        transform2D{ mouse_pos.x, mouse_pos.y });
 
-        gCoordinator.AddComponent(
-            en,
-            collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+    //    gCoordinator.AddComponent(en,
+    //        animate{ 5.0f, 0, FRUIT2 });
 
-        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-        current_en = en;
-    }
+    //    gCoordinator.AddComponent(en,
+    //        collectable{ false });
 
-    if (IsKeyPressed(KEY_SIX))
-    {
-        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+    //    gCoordinator.AddComponent(
+    //        en,
+    //        collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 159, 201 } });
 
-        int en = gCoordinator.CreateEntity();
+    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+    //    current_en = en;
+    //}
 
-        gCoordinator.AddComponent(en,
-            status{ true, true, EMITTER });
+    //if (IsKeyPressed(KEY_SIX))
+    //{
+    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-        gCoordinator.AddComponent(en,
-            box_render{ 50, 50 });
+    //    int en = gCoordinator.CreateEntity();
 
-        gCoordinator.AddComponent(en,
-            transform2D{ mouse_pos.x, mouse_pos.y });
+    //    gCoordinator.AddComponent(en,
+    //        status{ true, true, EMITTER });
 
         gCoordinator.AddComponent(en,
             particle_emitter{ 
@@ -673,38 +697,44 @@ void Tooling::check_inputs()
                 {}
             });
 
-        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-        current_en = en;
-    }
+    //                par.position = Vector2Add(par.position,
+    //                    Vector2Scale(par.velocity, dt));
+    //            },
+    //            [](particle_emitter& emit, Particle& par)
+    //            {
+    //                // Change color over time
+    //            },
+    //            {}
+    //        });
 
-    if (IsKeyPressed(KEY_SEVEN))
-    {
-        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+    //    current_en = en;
+    //}
 
-        int en = gCoordinator.CreateEntity();
+    //if (IsKeyPressed(KEY_SEVEN))
+    //{
+    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-        gCoordinator.AddComponent(en,
-            status{ true, true, ITEM });
+    //    int en = gCoordinator.CreateEntity();
 
-        gCoordinator.AddComponent(en,
-            box_render{ 50, 50 });
+    //    gCoordinator.AddComponent(en,
+    //        status{ true, true, ITEM });
 
-        gCoordinator.AddComponent(en,
-            transform2D{ mouse_pos.x, mouse_pos.y });
+    //    gCoordinator.AddComponent(en,
+    //        box_render{ 50, 50 });
 
-        gCoordinator.AddComponent(
-            en,
-            collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
+    //    gCoordinator.AddComponent(en,
+    //        transform2D{ mouse_pos.x, mouse_pos.y });
 
-        gCoordinator.AddComponent(en,
-            collectable{}
-        );
+    //    gCoordinator.AddComponent(
+    //        en,
+    //        collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 50, 50 } });
 
-        gCoordinator.AddComponent(en,
-            collecting{}
-            );
+    //    gCoordinator.AddComponent(en,
+    //        collectable{}
+    //    );
 
-        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-        current_en = en;
-    }
+    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+    //    current_en = en;
+    //}
 }

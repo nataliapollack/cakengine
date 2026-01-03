@@ -31,7 +31,10 @@ class EnvironmentRenderSystem : public System
 public:
     void init();
     void draw();
+    void update();
     void ReorganizeObjects();
 private:
     std::vector<Entity> draw_order;
+
+
 };
