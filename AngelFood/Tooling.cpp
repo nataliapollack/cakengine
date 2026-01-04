@@ -922,9 +922,9 @@ void Tooling::check_inputs()
             box_render{ 50, 50 });
 
         gCoordinator.AddComponent(en,
-            waypoint{ count++ });
+            waypoint{ count++, true });
 
-        float size = 750.0f;
+        float size = 2000.0f;
 
         gCoordinator.AddComponent(
             en,
