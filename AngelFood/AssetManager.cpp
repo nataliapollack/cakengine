@@ -134,6 +134,7 @@ void AssetManager::load_assets()
     // custscene stuff
     textures[CUTSCENE1] = LoadTexture("art/Cutscene/cutscene1.png");
     textures[CUTSCENE2] = LoadTexture("art/Cutscene/cutscene2.png");
+    textures[CUTSCENE3] = LoadTexture("art/Cutscene/cutsceneEnd.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)

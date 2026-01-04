@@ -42,8 +42,10 @@ private:
 
     Texture2D cut1;
     Texture2D cut2;
+    Texture2D cut3;
 
     Timer outro_time;
+    Timer final_time;
 
     Timer fade_time;
     Timer gap_time;
@@ -56,4 +58,5 @@ private:
     bool start_game;
     bool change_illus;
     bool outro_running;
+    bool final;
 };

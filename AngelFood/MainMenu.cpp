@@ -18,8 +18,10 @@ void MainMenu::init()
 
     cut1 = gAssetMngr.GetAsset(CUTSCENE1);
     cut2 = gAssetMngr.GetAsset(CUTSCENE2);
+    cut3 = gAssetMngr.GetAsset(CUTSCENE3);
 
     outro_time = Timer(3.0f);
+    final_time = Timer(2.0f);
 
     fade_time = Timer(1.0f);
     gap_time = Timer(0.5f);
@@ -32,6 +34,7 @@ void MainMenu::init()
     start_game = false;
     change_illus = false;
     outro_running = false;
+    final = false;
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::ENDPOINT,
@@ -203,8 +206,14 @@ void MainMenu::updateOutro(float dt)
     // do stuff
     if (outro_time.update(dt))
     {
-        // exit
+        final_time.start();
+        final = true;
+    }
 
+    if (final_time.update(dt))
+    {
+        // exit
+        final = false;
         // fade menu back in
         curr_scene = Scene::MAINMENU;
         outro_running = false;
@@ -214,6 +223,7 @@ void MainMenu::updateOutro(float dt)
         curr_button = Button::START;
         fade_time.reset();
         start_time.reset();
+        final_time.reset();
 
         Event reset(Events::Scene::RESET);
         gCoordinator.SendEvent(reset);
@@ -230,7 +240,7 @@ void MainMenu::drawOutro()
 
     // cutscene 1
     float percent = (outro_time.count() / outro_time.time());
-    if (percent < 0.5f)
+    if (!final && percent < 0.5f)
     {
         Rectangle source{ 0, 0, cut1.width, cut1.height };
 
@@ -239,7 +249,7 @@ void MainMenu::drawOutro()
         DrawTexturePro(cut1, source, dest,
             Vector2Zero(), 0.0f, ColorAlpha(WHITE, 1.0f));
     }
-    else
+    else if (!final)
     {
         float fade = (percent > 0.9f) ? 10.0f * (1.0f - percent) : 1.0f;
 
@@ -248,6 +258,19 @@ void MainMenu::drawOutro()
         Rectangle dest{ 0.0f, 0.0f, cut2.width, cut2.height };
 
         DrawTexturePro(cut2, source, dest,
+            Vector2Zero(), 0.0f, ColorAlpha(WHITE, fade));
+    }
+    else if (final)
+    {
+        percent = (final_time.count() / outro_time.time());
+        float fade = (percent > 0.9f) ? 10.0f * (1.0f - percent) : 1.0f;
+        fade = (percent < 0.1f) ? percent * 10.0f : fade;
+
+        Rectangle source{ 0, 0, cut3.width, cut3.height };
+
+        Rectangle dest{ 0.0f, 0.0f, cut3.width, cut3.height };
+
+        DrawTexturePro(cut3, source, dest,
             Vector2Zero(), 0.0f, ColorAlpha(WHITE, fade));
     }
 

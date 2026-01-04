@@ -139,6 +139,7 @@ enum ASSETS
     FINAL_ROOM,
     CUTSCENE1,
     CUTSCENE2,
+    CUTSCENE3,
     COUNT
 };
 
