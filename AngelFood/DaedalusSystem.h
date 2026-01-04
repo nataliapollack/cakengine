@@ -18,6 +18,8 @@ private:
 	void PlayerInRange(Event& event);
 	void SetNewPosition();
 
+	void reset(Event& event);
+
 	Vector2 daedalus_position;
 	Vector2 last_position;
 

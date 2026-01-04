@@ -65,16 +65,14 @@ void PlayerSystem::update(float dt)
         {
             if (death_time.update(dt))
             {
-                auto& transf = gCoordinator.GetComponent<transform2D>(entity);
-                transf.pos = spawn_pos;
 
                 Event items(Events::Item::DROPPED_SPIKES);
                 gCoordinator.SendEvent(items);
 
                 auto& phy = gCoordinator.GetComponent<physics>(entity);
 
-                phy.f = Vector2{ 0,0 };
-                phy.vel = Vector2{ 0,0 };
+                auto& col = gCoordinator.GetComponent<collidble>(entity);
+                col.box.height *= 2.0f;
 
                 is_dead = false;
             }
@@ -89,6 +87,17 @@ void PlayerSystem::update(float dt)
 
                 death_time.start();
                 is_dead = true;
+
+                auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+                transf.pos = spawn_pos;
+
+                auto& phy = gCoordinator.GetComponent<physics>(entity);
+
+                phy.f = Vector2{ 0,0 };
+                phy.vel = Vector2{ 0,0 };
+
+                auto& col = gCoordinator.GetComponent<collidble>(entity);
+                col.box.height /= 2.0f;
             }
         }
         else if (is_end)
@@ -550,7 +559,7 @@ void PlayerSystem::StopInput(Event& event)
 void PlayerSystem::HitEndpoint(Event& event)
 {
     is_end = true;
-    current_state = DEAD;
+    current_state = FALL;
     m_walk.can_walk = false;
     m_walk.direction = 0.0f;
 }
@@ -609,11 +618,11 @@ void PlayerSystem::Reset(Event& event)
             sqrtf(2.0f * gravity * JUMP_SCALE * m_jump.jump_height[i]);
     }
 
-    death_time = Timer(0.85f);
+    death_time = Timer(0.75f);
     is_dead = false;
     is_end = false;
 
-    hurt_time = Timer(0.15f);
+    hurt_time = Timer(0.5f);
     is_hurt = false;
 
     m_spark = {

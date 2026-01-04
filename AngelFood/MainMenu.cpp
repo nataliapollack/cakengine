@@ -16,6 +16,11 @@ void MainMenu::init()
     start = gAssetMngr.GetAsset(START_BUTTON);
     credits = gAssetMngr.GetAsset(CREDITS_BUTTON);
 
+    cut1 = gAssetMngr.GetAsset(CUTSCENE1);
+    cut2 = gAssetMngr.GetAsset(CUTSCENE2);
+
+    outro_time = Timer(3.0f);
+
     fade_time = Timer(1.0f);
     gap_time = Timer(0.5f);
     illus_time = Timer(1.0f);
@@ -196,19 +201,23 @@ void MainMenu::drawIntro()
 void MainMenu::updateOutro(float dt)
 {
     // do stuff
+    if (outro_time.update(dt))
+    {
+        // exit
 
-    // fade menu back in
-    curr_scene = Scene::MAINMENU;
-    outro_running = false;
+        // fade menu back in
+        curr_scene = Scene::MAINMENU;
+        outro_running = false;
 
-    start_game = false;
-    change_illus = false;
-    curr_button = Button::START;
-    fade_time.reset();
-    start_time.reset();
+        start_game = false;
+        change_illus = false;
+        curr_button = Button::START;
+        fade_time.reset();
+        start_time.reset();
 
-    Event reset(Events::Scene::RESET);
-    gCoordinator.SendEvent(reset);
+        Event reset(Events::Scene::RESET);
+        gCoordinator.SendEvent(reset);
+    }
 }
 
 void MainMenu::drawOutro()
@@ -218,6 +227,29 @@ void MainMenu::drawOutro()
     BeginDrawing();
 
     // Outro cutscenes
+
+    // cutscene 1
+    float percent = (outro_time.count() / outro_time.time());
+    if (percent < 0.5f)
+    {
+        Rectangle source{ 0, 0, cut1.width, cut1.height };
+
+        Rectangle dest{ 0.0f, 0.0f, cut1.width, cut1.height };
+
+        DrawTexturePro(cut1, source, dest,
+            Vector2Zero(), 0.0f, ColorAlpha(WHITE, 1.0f));
+    }
+    else
+    {
+        float fade = (percent > 0.9f) ? 10.0f * (1.0f - percent) : 1.0f;
+
+        Rectangle source{ 0, 0, cut2.width, cut2.height };
+
+        Rectangle dest{ 0.0f, 0.0f, cut2.width, cut2.height };
+
+        DrawTexturePro(cut2, source, dest,
+            Vector2Zero(), 0.0f, ColorAlpha(WHITE, fade));
+    }
 
     EndDrawing();
 }
@@ -235,6 +267,8 @@ void MainMenu::SetScene(Scene newScene)
 void MainMenu::SetOutro(Event& event)
 {
     outro_running = true;
+
+    outro_time.start();
 }
 
 bool MainMenu::GetOutro() const

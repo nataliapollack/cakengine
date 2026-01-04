@@ -232,7 +232,7 @@ int main()
     Timer intro_fade(0.5f);
     bool intro_has_run = false;
 
-    Timer outro_fade(2.0f);
+    Timer outro_fade(0.5f);
 
     bool draw_boxes = true;
 
@@ -333,6 +333,7 @@ int main()
 
                 environment_render_sys->draw();
                 render_sys->draw();
+                daedalus_sys->draw();
 
                 if (draw_boxes)
                     box_render_sys->draw();

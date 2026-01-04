@@ -40,6 +40,11 @@ private:
     Texture2D start;
     Texture2D credits;
 
+    Texture2D cut1;
+    Texture2D cut2;
+
+    Timer outro_time;
+
     Timer fade_time;
     Timer gap_time;
     Timer illus_time;
