@@ -1,9 +1,11 @@
 
 #include "MainMenu.h"
 #include "AssetManager.h"
+#include "Coordinator.hpp"
 
 #include "raymath.h"
 
+extern Coordinator gCoordinator;
 extern AssetManager gAssetMngr;
 
 void MainMenu::init()
@@ -24,9 +26,15 @@ void MainMenu::init()
 
     start_game = false;
     change_illus = false;
+    outro_running = false;
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Collision::ENDPOINT,
+            MainMenu::SetOutro
+        ));
 }
 
-void MainMenu::update(float dt)
+void MainMenu::updateIntro(float dt)
 {
     if (curr_button == Button::START && !start_game)
     {
@@ -71,7 +79,7 @@ void MainMenu::update(float dt)
     }
 }
 
-void MainMenu::draw()
+void MainMenu::drawIntro()
 {
     float fade = 1.0f -
         ((fade_time.count() / fade_time.time())
@@ -185,7 +193,51 @@ void MainMenu::draw()
     EndDrawing();
 }
 
+void MainMenu::updateOutro(float dt)
+{
+    // do stuff
+
+    // fade menu back in
+    curr_scene = Scene::MAINMENU;
+    outro_running = false;
+
+    start_game = false;
+    change_illus = false;
+    curr_button = Button::START;
+    fade_time.reset();
+    start_time.reset();
+
+    Event reset(Events::Scene::RESET);
+    gCoordinator.SendEvent(reset);
+}
+
+void MainMenu::drawOutro()
+{
+    // DRAW
+    ClearBackground({ 9, 10, 15, 255 });
+    BeginDrawing();
+
+    // Outro cutscenes
+
+    EndDrawing();
+}
+
 Scene MainMenu::GetScene() const
 {
     return curr_scene;
+}
+
+void MainMenu::SetScene(Scene newScene)
+{
+    curr_scene = newScene;
+}
+
+void MainMenu::SetOutro(Event& event)
+{
+    outro_running = true;
+}
+
+bool MainMenu::GetOutro() const
+{
+    return outro_running;
 }

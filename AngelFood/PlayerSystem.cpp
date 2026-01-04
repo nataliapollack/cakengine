@@ -73,7 +73,6 @@ void PlayerSystem::init()
 
     death_time = Timer(1.0f);
     is_dead = false;
-    end_time = Timer(1.0f);
     is_end = false;
 
     m_spark = {
@@ -146,6 +145,10 @@ void PlayerSystem::init()
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::ENDPOINT, PlayerSystem::HitEndpoint)
     );
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Scene::RESET, PlayerSystem::Reset)
+    );
 }
 
 void PlayerSystem::update(float dt)
@@ -171,10 +174,7 @@ void PlayerSystem::update(float dt)
         else if (is_end)
         {
             // ending stuff
-            if (end_time.update(dt))
-            {
-                // something goes here
-            }
+
         }
         else
         {
@@ -592,4 +592,13 @@ void PlayerSystem::HitEndpoint(Event& event)
     is_end = true;
     current_state = FALL;
     m_walk.can_walk = false;
+    m_walk.direction = 0.0f;
+}
+
+void PlayerSystem::Reset(Event& event)
+{
+    current_state = IDLE;
+    is_end = false;
+    m_walk.can_walk = true;
+    ResetPlayerPos();
 }

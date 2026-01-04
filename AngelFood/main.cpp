@@ -23,6 +23,8 @@
 // msc
 #include "AssetManager.h"
 #include "MainMenu.h"
+#include "Game.h"
+#include "Events.hpp"
 
 Coordinator gCoordinator;
 AssetManager gAssetMngr;
@@ -126,6 +128,8 @@ void set_system_signatures()
     gCoordinator.SetSystemSignature<DaedalusSystem>(sig);
 }
 
+
+
 int main()
 {
     /*** Window Initialization *************************************************************/
@@ -225,6 +229,8 @@ int main()
     Timer intro_fade(0.5f);
     bool intro_has_run = false;
 
+    Timer outro_fade(2.0f);
+
     bool draw_boxes = true;
 
     // IN-GAME
@@ -239,10 +245,10 @@ int main()
         if (menu.GetScene() == Scene::MAINMENU)
         {
             // UPDATE
-            menu.update(clamped_dt);
+            menu.updateIntro(clamped_dt);
 
             // DRAW
-            menu.draw();
+            menu.drawIntro();
         }
         else if (menu.GetScene() == Scene::GAMEPLAY)
         {
@@ -252,6 +258,22 @@ int main()
             if (intro_fade.update(clamped_dt))
             {
                 intro_has_run = true;
+            }
+
+            if (menu.GetOutro() && menu.GetScene() == Scene::GAMEPLAY
+                && !outro_fade.is_running())
+            {
+                outro_fade.start();
+            }
+
+            if (outro_fade.update(clamped_dt))
+            {
+                // nothing right now
+                menu.SetScene(Scene::OUTRO);
+
+                intro_fade.reset();
+                intro_has_run = false;
+                outro_fade.reset();
             }
 
             // UPDATE
@@ -331,12 +353,26 @@ int main()
                         ));
                 }
 
+                if (menu.GetOutro())
+                {
+                    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(),
+                        ColorAlpha({ 9, 10, 15, 255 },
+                            outro_fade.count() / outro_fade.time()
+                        ));
+                }
+
                 //DrawFPS(50, 50);
                 EndDrawing();
             }
 
+
             //tooling_sys->delete_inactivity();
 
+        }
+        else if (menu.GetScene() == Scene::OUTRO)
+        {
+            menu.updateOutro(clamped_dt);
+            menu.drawOutro();
         }
     }
 

@@ -42,6 +42,8 @@ private:
 
     void HitEndpoint(Event& event);
 
+    void Reset(Event& event);
+
     struct walk_values
     {
         float time_to_accel;
@@ -102,7 +104,6 @@ private:
 
     Timer death_time;
     bool is_dead;
-    Timer end_time;
     bool is_end;
 
     // Spark stuff

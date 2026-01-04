@@ -3,6 +3,7 @@
 #include "raylib.h"
 
 #include "Timer.hpp"
+#include "Events.hpp"
 
 enum Button : int
 {
@@ -13,18 +14,26 @@ enum Button : int
 enum Scene : int
 {
     MAINMENU,
-    GAMEPLAY
+    GAMEPLAY,
+    OUTRO
 };
 
 class MainMenu
 {
 public:
     void init();
-    void update(float dt);
-    void draw();
+    void updateIntro(float dt);
+    void drawIntro();
+    void updateOutro(float dt);
+    void drawOutro();
 
     Scene GetScene() const;
+    void SetScene(Scene newScene);
+
+    bool GetOutro() const;
 private:
+    void SetOutro(Event& event);
+
     Texture2D title;
     Texture2D illus1;
     Texture2D illus2;
@@ -41,4 +50,5 @@ private:
 
     bool start_game;
     bool change_illus;
+    bool outro_running;
 };
