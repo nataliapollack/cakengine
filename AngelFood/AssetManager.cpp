@@ -4,9 +4,14 @@ void AssetManager::load_assets()
 {
     // playerr
     textures[HALO] = LoadTexture("art/HALO.png");
-    textures[PLAYER_IDLE] = LoadTexture("art/PLAYER_IDLE.png");
-    textures[PLAYER_FALL] = LoadTexture("art/PLAYER_FALL.png");
-
+    textures[PLAYER_IDLE] = LoadTexture("art/AngelSprite/Idle.png");
+    textures[PLAYER_FALL] = LoadTexture("art/AngelSprite/Fall.png");
+    textures[PLAYER_JUMP] = LoadTexture("art/AngelSprite/Jump.png");
+    textures[PLAYER_GLIDE] = LoadTexture("art/AngelSprite/Glide.png");
+    textures[PLAYER_WALK1] = LoadTexture("art/AngelSprite/Walk1.png");
+    textures[PLAYER_WALK2] = LoadTexture("art/AngelSprite/Walk2.png");
+    textures[PLAYER_HURT] = LoadTexture("art/AngelSprite/hurt.png");
+    textures[PLAYER_DEAD] = LoadTexture("art/AngelSprite/dead.png");
 
     textures[DAEDALUS_IDLE] = LoadTexture("art/placeholderDaedalus.png");
     textures[DAEDALUS_FLOAT] = LoadTexture("art/DaedalusFloat.png");

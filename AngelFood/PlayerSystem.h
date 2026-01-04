@@ -28,7 +28,7 @@ private:
 
     void fixedUpdate(float dt, Entity entity);
 
-    void WalkInput();
+    void WalkInput(Entity entity);
     void GlideInput(Entity entity);
     void JumpInput(Entity entity, float dt);
 
@@ -105,6 +105,9 @@ private:
     Timer death_time;
     bool is_dead;
     bool is_end;
+
+    Timer hurt_time;
+    bool is_hurt;
 
     // Spark stuff
     struct spark_values

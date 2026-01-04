@@ -161,7 +161,7 @@ void Tooling::serialize()
             if (gCoordinator.HasComponent<waypoint>(entity))
             {
                 auto& comp = gCoordinator.GetComponent<waypoint>(entity);
-                data << WAYPOINT << "\n";
+                data << WAYPOINT_COMP << "\n";
                 data << comp.index << "\n";
                 data << comp.should_stop << "\n";
             }
