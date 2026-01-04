@@ -145,6 +145,7 @@ namespace Events::Item {
     const EventId DROPPEDOFF = "Events::Item::DROPPEDOFF"_hash;
     const EventId CONFIRMED_PICKEDUP = "Events::Item::CONFIRMED_PICKEDUP"_hash;
     const EventId CONFIRMED_DROPPEDOFF = "Events::Item::CONFIRMED_DROPPEDOFF"_hash;
+    const EventId DROPPED_SPIKES = "Events::Item::DROPPED_SPIKES"_hash;
 }
 
 namespace Events::Item::PickedUp

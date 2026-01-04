@@ -298,7 +298,8 @@ int main()
                 // hard coded resett
                 if (IsKeyPressed(KEY_TWO))
                 {
-                    player_movement_sys->ResetPlayerPos();
+                    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+                    player_movement_sys->ResetPlayerPos(mouse_pos);
                 }
                 if (IsKeyPressed(KEY_MINUS))
                 {
@@ -344,7 +345,7 @@ int main()
                 }
 
                 spark_sys->draw();
-                // collision_sys->debug_draw_collisions();
+               // collision_sys->debug_draw_collisions();
 
               //   DrawCircle(0, 0, 10, BLUE);
                 camera_sys->EndCameraMode();

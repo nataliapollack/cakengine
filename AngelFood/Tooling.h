@@ -17,7 +17,8 @@ enum COMPONENTS_LIST
     ENVIRONMENT_RENDER,
     ANIMATE,
     PARTICLE_EMITTER,
-    WAYPOINT_COMP
+    WAYPOINT_COMP,
+    WAITING_GAME
 };
 
 class Tooling : public System
