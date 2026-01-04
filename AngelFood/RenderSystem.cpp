@@ -127,10 +127,10 @@ void BoxRenderSystem::draw()
             {
                 DrawRectangleRec(box, ColorAlpha(SKYBLUE, 0.9f));
             }
-            if (stats.type == EMITTER)
-            {
-                DrawRectangleRec(box, ColorAlpha(VIOLET, 0.9f));
-            }
+            //if (stats.type == EMITTER)
+            //{
+            //    DrawRectangleRec(box, ColorAlpha(VIOLET, 0.9f));
+            //}
             if (stats.type == ITEM)
             {
                 DrawRectangleRec(box, ColorAlpha(PINK, 0.9f));
@@ -139,6 +139,15 @@ void BoxRenderSystem::draw()
             {
                 DrawRectangleRec(box, ColorAlpha(PURPLE, 0.9f));
             }
+
+            //if (stats.type == ENDPOINT)
+            //{
+            //    DrawRectangleRec(box, ColorAlpha(GOLD, 0.9f));
+            //}
+            //if (stats.type == WAYPOINT)
+            //{
+            //    DrawRectangleRec(box, ColorAlpha(VIOLET, 0.9f));
+            //}
         }
     }
 }
