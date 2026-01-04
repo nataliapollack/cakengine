@@ -446,8 +446,8 @@ void PlayerSystem::PickedUpItem(Event& event)
     {
         auto& playuh = gCoordinator.GetComponent<player>(entity);
 
-        OBJECT_TYPE id = event.GetParam<OBJECT_TYPE>(
-            Events::Item::PickedUp::OBJTYPE);
+        Entity id = event.GetParam<Entity>(
+            Events::Item::PickedUp::ITEMID);
 
         auto& render_env = gCoordinator.GetComponent<render_environment>(id);
         // THIS IS BAD SORRY
@@ -483,6 +483,10 @@ void PlayerSystem::DroppedItem(Event& event)
         auto& collector = gCoordinator.GetComponent<collecting>(id);
         if (collector.item == playuh.holding)
         {
+            Event item(Events::Item::CONFIRMED_DROPPEDOFF);
+            item.SetParam(Events::Item::DroppedOff::OBJECTID, playuh.holding);
+            gCoordinator.SendEvent(item);
+
             if (collector.item == FRUIT)
             {
                 fruit_count--;
@@ -490,17 +494,10 @@ void PlayerSystem::DroppedItem(Event& event)
                 {
                     playuh.holding = NONE;
                 }
-
-                Event item(Events::Item::CONFIRMED_DROPPEDOFF);
-                item.SetParam(Events::Item::DroppedOff::ITEMID, playuh.holding);
-                gCoordinator.SendEvent(item);
             }
             else
             {
-                Event item(Events::Item::CONFIRMED_DROPPEDOFF);
-                item.SetParam(Events::Item::DroppedOff::ITEMID, playuh.holding);
                 playuh.holding = NONE;
-                gCoordinator.SendEvent(item);
             }
         }
     }

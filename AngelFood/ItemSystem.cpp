@@ -104,7 +104,7 @@ void CollectingSystem::init()
 
 void CollectingSystem::TriggerItemDroppedOff(Event& event)
 {
-    Entity item_id = event.GetParam<HOLDABLE_ITEMS>(Events::Item::DroppedOff::ITEMID);
+    HOLDABLE_ITEMS item_id = event.GetParam<HOLDABLE_ITEMS>(Events::Item::DroppedOff::OBJECTID);
     //  std::cout << item_id << "\n";
     for (auto& entity : entities_list)
     {
