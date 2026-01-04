@@ -15,7 +15,8 @@ const enum OBJECT_TYPE
     EMITTER, 
     NPC,
     WAYPOINT,
-    ENDPOINT
+    ENDPOINT,
+    WAITINGPOINT
 };
 
 enum HOLDABLE_ITEMS
@@ -131,6 +132,11 @@ enum ASSETS
     PLAYER_WALK2,
     PLAYER_HURT,
     PLAYER_DEAD,
+    BIRDHOUSE,
+    FARM1,
+    FARM2,
+    FARM3,
+    FINAL_ROOM,
     COUNT
 };
 
@@ -175,6 +181,7 @@ namespace Events::Collision {
     const EventId WAYPOINT = "Events::Collision::WAYPOINT"_hash;
     const ParamId WAYPOINT_DATA = "Events::Collision::WAYPOINT_DATA"_hash;
     const EventId ENDPOINT = "Events::Collision::ENDPOINT"_hash;
+    const EventId WAITINGGAME = "Events::Collision::WAITINGGAME"_hash;
 }
 
 namespace Events::Input

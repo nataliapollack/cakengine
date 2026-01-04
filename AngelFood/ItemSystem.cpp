@@ -20,6 +20,7 @@ extern Coordinator gCoordinator;
 void ItemSystem::init()
 {
     gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::CONFIRMED_PICKEDUP, ItemSystem::TriggerItemPickedUp));
+    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Collision::SPIKES, ItemSystem::TriggerItemDropped));
 }
 
 void ItemSystem::TriggerItemPickedUp(Event& event)
@@ -83,16 +84,16 @@ void ItemSystem::TriggerItemPickedUp(Event& event)
     }
 }
 
-void ItemSystem::TriggerItemDroppedOff(Event& event)
+void ItemSystem::TriggerItemDropped(Event& event)
 {
-    Entity item_id = event.GetParam<OBJECT_TYPE>(Events::Item::DroppedOff::ITEMID);
     for (auto& entity : entities_list)
     {
-        auto& staus = gCoordinator.GetComponent<status>(entity);
-        if (staus.type == item_id)
+        auto& stats = gCoordinator.GetComponent<status>(entity);
+        auto& staus = gCoordinator.GetComponent<collectable>(entity);
+        if (!stats.active && staus.picked_up)
         {
-            auto& set = gCoordinator.GetComponent<status>(entity);
-            set.active = false;
+            staus.picked_up = false;
+            stats.active = true;
         }
     }
 }
@@ -126,6 +127,20 @@ void CollectingSystem::TriggerItemDroppedOff(Event& event)
                 spark.SetParam(Events::Spark::Collected::LOCATIONX, tranform.pos.x);
                 spark.SetParam(Events::Spark::Collected::LOCATIONY, tranform.pos.y);
                 gCoordinator.SendEvent(spark);
+
+                auto& rend = gCoordinator.GetComponent<render_environment>(entity);
+                auto& anime = gCoordinator.GetComponent<animate>(entity);
+                if (staus.item == BIRD)
+                {
+                    rend.txt = KING_HAPPY1;
+                    anime.alt_asset = KING_HAPPY2;
+                }
+                if (staus.item == FRUIT)
+                {
+                    rend.txt = SHEEP_HAPPY1;
+                    anime.alt_asset = SHEEP_HAPPY2;
+                }
+                
             }
             return;
         }
@@ -235,4 +250,86 @@ void SparkSystem::TriggerSparkSpawned(Event& event)
     gCoordinator.AddComponent(new_spark, collidble{ Rectangle { x, y, (float)temp.width, (float)temp.height } });
 
     auto const& stats = gCoordinator.GetComponent<status>(new_spark);
+}
+
+void WaitingGameSystem::init()
+{
+    time_spent = 0.0f;
+    max_time_spent = 5.0f;
+    frame_counter = 0;
+    playing = false;
+    just_swapped = false;
+    delay_timer = 2.0f;
+    done = false;
+}
+
+void WaitingGameSystem::update()
+{
+    for (auto& entity : entities_list)
+    {
+        if (!done)
+        {
+            playing = false;
+            // swap to idle
+            if (just_swapped)
+            {
+                delay_timer -= (1 / 60.0f);
+            }
+            if (delay_timer <= 0.0f)
+            {
+                just_swapped = false;
+            }
+
+            if (max_time_spent <= time_spent)
+            {
+                done = true;
+            }
+
+            if (!just_swapped)
+            {
+                auto& rend = gCoordinator.GetComponent<render_environment>(entity);
+                auto& anime = gCoordinator.GetComponent<animate>(entity);
+                if (rend.txt == SNAKE_IDLE1)
+                {
+                    rend.txt = SNAKE_PLAY1;
+                    anime.alt_asset = SNAKE_PLAY2;
+                }
+                if (rend.txt == SNAKE_PLAY1)
+                {
+                    rend.txt = SNAKE_IDLE1;
+                    anime.alt_asset = SNAKE_IDLE2;
+                }
+
+                just_swapped = true;
+            }
+        }
+    }
+}
+
+void WaitingGameSystem::TriggerStartGame(Event &event)
+{
+    playing = true;
+    if (frame_counter >= 60 )
+    {  
+        frame_counter = 0;
+        time_spent++;
+    }
+    frame_counter++;
+
+    for (auto& entity : entities_list)
+    {
+        auto& rend = gCoordinator.GetComponent<render_environment>(entity);
+        auto& anime = gCoordinator.GetComponent<animate>(entity);
+        if (rend.txt == SNAKE_IDLE1)
+        {
+            rend.txt = SNAKE_PLAY1;
+            anime.alt_asset = SNAKE_PLAY2;
+        }
+        if (rend.txt == SNAKE_PLAY1)
+        {
+            rend.txt = SNAKE_IDLE1;
+            anime.alt_asset = SNAKE_IDLE2;
+        }
+    }
+    just_swapped = true;
 }

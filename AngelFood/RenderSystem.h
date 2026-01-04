@@ -33,6 +33,7 @@ public:
     void draw();
     void update();
     void ReorganizeObjects();
+
 private:
     std::vector<Entity> draw_order;
 

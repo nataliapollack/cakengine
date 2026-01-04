@@ -53,6 +53,7 @@ void register_components()
     gCoordinator.RegisterComponent<particle_emitter>();
 
     gCoordinator.RegisterComponent<waypoint>();
+    gCoordinator.RegisterComponent<waiting_game>();
 }
 
 void set_system_signatures()
@@ -121,6 +122,12 @@ void set_system_signatures()
     sig.set(gCoordinator.GetComponentType<waypoint>());
     sig.set(gCoordinator.GetComponentType<transform2D>());
     gCoordinator.SetSystemSignature<DaedalusSystem>(sig);
+
+
+    sig.reset();
+
+    sig.set(gCoordinator.GetComponentType<waiting_game>());
+    gCoordinator.SetSystemSignature<WaitingGameSystem>(sig);
 }
 
 
@@ -150,7 +157,7 @@ int main()
     auto tooling_sys = gCoordinator.RegisterSystem<Tooling>();
     auto particle_sys = gCoordinator.RegisterSystem<ParticleSystem>();
     auto spark_sys = gCoordinator.RegisterSystem<SparkSystem>();
-
+    auto waiting_sys = gCoordinator.RegisterSystem<WaitingGameSystem>();
     auto daedalus_sys = gCoordinator.RegisterSystem<DaedalusSystem>();
     tooling_sys->init();
 
@@ -207,6 +214,7 @@ int main()
 
 //    tooling_sys->serialize();
 
+   waiting_sys->init();
     render_sys->init();
     box_render_sys->init();
     player_movement_sys->init();
@@ -275,6 +283,7 @@ int main()
             {
                 if (!tooling_sys->GetToolStatus())
                 {
+                    waiting_sys->update();
                     player_movement_sys->update(clamped_dt);
                     collision_sys->CheckCollisions();
                     daedalus_sys->update(clamped_dt);
@@ -362,10 +371,7 @@ int main()
                 //DrawFPS(50, 50);
                 EndDrawing();
             }
-
-
             //tooling_sys->delete_inactivity();
-
         }
         else if (menu.GetScene() == Scene::OUTRO)
         {

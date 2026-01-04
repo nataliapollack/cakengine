@@ -129,6 +129,13 @@ void CollisionSystem::CheckCollisions()
 
                         gCoordinator.SendEvent(endpoint);
                     }
+
+                    if (stats_j.type == WAITINGPOINT)
+                    {
+                        Event waiting(Events::Collision::WAITINGGAME);
+
+                        gCoordinator.SendEvent(waiting);
+                    }
                 }
             }
         }

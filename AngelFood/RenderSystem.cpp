@@ -166,6 +166,7 @@ void EnvironmentRenderSystem::init()
     }
 
     ReorganizeObjects();
+
 }
 
 void EnvironmentRenderSystem::draw()

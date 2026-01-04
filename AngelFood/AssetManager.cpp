@@ -123,6 +123,13 @@ void AssetManager::load_assets()
     textures[CREDITS_BUTTON] = LoadTexture("art/MainMenu/Credits.png");
 
     textures[COVER] = LoadTexture("art/HiddenAreaBarrier.png");
+
+    // MORE ART
+    textures[BIRDHOUSE] = LoadTexture("art/birdhouses.png");
+    textures[FARM1] = LoadTexture("art/farm_back.png");
+    textures[FARM2] = LoadTexture("art/farm_fence.png");
+    textures[FARM3] = LoadTexture("art/farm_front.png");
+    textures[FINAL_ROOM] = LoadTexture("art/level2.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)

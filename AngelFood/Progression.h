@@ -31,3 +31,8 @@ struct Spark
     bool picked_up;
 
 };
+
+struct waiting_game
+{
+    float max_time;
+};
