@@ -98,6 +98,7 @@ void Tooling::serialize()
                 auto& comp = gCoordinator.GetComponent<collecting>(entity);
                 data << COLLECTING << "\n";
                 data << comp.item << "\n";
+                data << comp.amount_needed << "\n";
             }
             if (gCoordinator.HasComponent<render_environment>(entity))
             {
@@ -126,38 +127,38 @@ void Tooling::serialize()
                 data << comp.capacity << "\n";
                 data << comp.alive_count << "\n";
 
-                data << comp.offset.first.x << "\n";
-                data << comp.offset.first.y << "\n";
-                data << comp.offset.second.x << "\n";
-                data << comp.offset.second.y << "\n";
+            //    data << comp.offset.first.x << "\n";
+            //    data << comp.offset.first.y << "\n";
+            //    data << comp.offset.second.x << "\n";
+            //    data << comp.offset.second.y << "\n";
 
-                data << static_cast<int>(comp.color.r) << "\n";
-                data << static_cast<int>(comp.color.g) << "\n";
-                data << static_cast<int>(comp.color.b) << "\n";
-                data << static_cast<int>(comp.color.a) << "\n";
+            //    data << static_cast<int>(comp.color.r) << "\n";
+            //    data << static_cast<int>(comp.color.g) << "\n";
+            //    data << static_cast<int>(comp.color.b) << "\n";
+            //    data << static_cast<int>(comp.color.a) << "\n";
 
-                data << comp.initial_dir.x << "\n";
-                data << comp.initial_dir.y << "\n";
+            //    data << comp.initial_dir.x << "\n";
+            //    data << comp.initial_dir.y << "\n";
 
-                data << comp.max_angle_variation << "\n";
+            //    data << comp.max_angle_variation << "\n";
 
-                data << comp.initial_speed.first << "\n";
-                data << comp.initial_speed.second << "\n";
+            //    data << comp.initial_speed.first << "\n";
+            //    data << comp.initial_speed.second << "\n";
 
-                data << comp.initial_lifetime.first << "\n";
-                data << comp.initial_lifetime.second << "\n";
+            //    data << comp.initial_lifetime.first << "\n";
+            //    data << comp.initial_lifetime.second << "\n";
 
-                data << comp.initial_size.first << "\n";
-                data << comp.initial_size.second << "\n";
+            //    data << comp.initial_size.first << "\n";
+            //    data << comp.initial_size.second << "\n";
 
-                data << comp.num_per_emit << "\n";
-                data << comp.emitting << "\n";
-                data << comp.one_shot << "\n";
-                data << comp.texture_id << "\n";
+            //    data << comp.num_per_emit << "\n";
+            //    data << comp.emitting << "\n";
+            //    data << comp.one_shot << "\n";
+            //    data << comp.texture_id << "\n";
 
-                data << comp.time_between_emit.time() << "\n";
-                data << comp.type << "\n";
-            }
+            //    data << comp.time_between_emit.time() << "\n";
+            //    data << comp.type << "\n";
+            //}
             if (gCoordinator.HasComponent<waypoint>(entity))
             {
                 auto& comp = gCoordinator.GetComponent<waypoint>(entity);
@@ -300,8 +301,11 @@ void Tooling::deserialize()
                 std::getline(load_data,line); 
                 bool x = atoi(line.c_str());
 
+                std::getline(load_data, line);
+                int y = atoi(line.c_str());
+
                 gCoordinator.AddComponent(en,
-                    collecting{ (HOLDABLE_ITEMS)x });
+                    collecting{ (HOLDABLE_ITEMS)x, y });
 
                 std::getline(load_data,line); 
             }
@@ -839,22 +843,22 @@ void Tooling::check_inputs()
         int en = gCoordinator.CreateEntity();
 
         gCoordinator.AddComponent(en,
-            status{ true, true, ENVIRONMENT });
+            status{ true, true, ITEM });
 
         gCoordinator.AddComponent(en,
             transform2D{ mouse_pos.x, mouse_pos.y });
 
         gCoordinator.AddComponent(en,
-            render_environment{ true, false, false, BRANCH1, 0, 1.0f, 0.0f });
+            render_environment{ true, false, false, FRUIT1, 0, 1.0f, 0.0f });
 
-        //gCoordinator.AddComponent(en,
-        //    animate{ 3.0f, 0, FRUIT2});
+        gCoordinator.AddComponent(en,
+            animate{ 3.0f, 0, FRUIT2});
 
-        //gCoordinator.AddComponent(en,
-        //    collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 200, 300 } });
+        gCoordinator.AddComponent(en,
+            collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 200, 300 } });
 
-        //gCoordinator.AddComponent(en,
-        //    collectable{ false });
+        gCoordinator.AddComponent(en,
+            collectable{ false });
 
             current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
             current_en = en;
@@ -867,22 +871,45 @@ void Tooling::check_inputs()
         int en = gCoordinator.CreateEntity();
 
         gCoordinator.AddComponent(en,
-            status{ true, true, ENVIRONMENT });
+            status{ true, true, DROPOFF });
+
+        gCoordinator.AddComponent(en,
+            transform2D{ mouse_pos.x, mouse_pos.y });
+
+
+        gCoordinator.AddComponent(en,
+            box_render{ Vector2{100, 100}, false });
+
+        gCoordinator.AddComponent(en,
+            collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 100, 100 } });
+
+        gCoordinator.AddComponent(en,
+            collecting{ FRUIT, 2 });
+
+        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+        current_en = en;
+    }
+
+    if (IsKeyPressed(KEY_SEVEN))
+    {
+        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+
+        int en = gCoordinator.CreateEntity();
+
+        gCoordinator.AddComponent(en,
+            status{ true, true, PLAYER });
 
         gCoordinator.AddComponent(en,
             transform2D{ mouse_pos.x, mouse_pos.y });
 
         gCoordinator.AddComponent(en,
-            render_environment{ false, false, false, BRANCH1, 0, 1.0f, 0.0f });
+            render_environment{ false, false, false, PLAYER_IDLE, 1, 1.0f, 0.0f });
 
-        //gCoordinator.AddComponent(en,
-        //    box_render{ Vector2{100, 100}, false });
+        gCoordinator.AddComponent(en,
+            collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 100, 100 } });
 
-        //gCoordinator.AddComponent(en,
-        //    collidble{ Rectangle{mouse_pos.x, mouse_pos.y, 100, 100 } });
-
-        //gCoordinator.AddComponent(en,
-        //    collecting{ FRUIT, 2 });
+        gCoordinator.AddComponent(en,
+            collecting{ FRUIT, 2 });
 
         current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
         current_en = en;

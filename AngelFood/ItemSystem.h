@@ -30,7 +30,9 @@ public:
     void TriggerSparkCollected(Event& event);
     void TriggerSparkSpawned(Event& event);
 private:
+    bool growing;
     int spark_count;
     float speed;
+    float growth_mulitplier;
     int frame_counter;
 };

@@ -110,10 +110,8 @@ void CollisionSystem::CheckCollisions()
                     if (stats_j.type == SPARK)
                     {
                         Event spark(Events::Collision::SPARK);
-                        spark.SetParam(Events::Spark::Collected::SPARKID, i);
+                        spark.SetParam(Events::Spark::Collected::SPARKID, j);
                         gCoordinator.SendEvent(spark);
-
-                        stats_j.active = false;
                     }
 
                     if (stats_j.type == WAYPOINT)

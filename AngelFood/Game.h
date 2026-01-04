@@ -125,6 +125,8 @@ enum ASSETS
     BG_GLASS,
     COVER,
     DAEDALUS_FLOAT,
+    FARM,
+    HOUSES,
     COUNT
 };
 
@@ -145,11 +147,19 @@ namespace Events::Item::DroppedOff
 {
     const ParamId OBJECTID = "Events::Item::DroppedOff::OBJECTID"_hash;
     const ParamId ITEMID = "Events::Item::DroppedOff::ITEMID"_hash;
+    const ParamId AMOUNT = "Events::Item::DroppedOff::AMOUNT"_hash;
 }
 
 namespace Events::Spark::Collected
 {
     const ParamId SPARKID = "Events::Spark::Collected::SPARKID"_hash;
+    const ParamId LOCATIONY = "Events::Spark::Collected::LOCATIONY"_hash;
+    const ParamId LOCATIONX = "Events::Spark::Collected::LOCATIONX"_hash;
+}
+
+namespace Events::Spark
+{
+    const EventId SPAWN = "Events::Spark::SPAWN"_hash;
 }
 
 namespace Events::Collision {

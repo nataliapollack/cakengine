@@ -485,11 +485,12 @@ void PlayerSystem::DroppedItem(Event& event)
         {
             Event item(Events::Item::CONFIRMED_DROPPEDOFF);
             item.SetParam(Events::Item::DroppedOff::OBJECTID, playuh.holding);
+            item.SetParam(Events::Item::DroppedOff::AMOUNT, fruit_count);
             gCoordinator.SendEvent(item);
 
             if (collector.item == FRUIT)
             {
-                fruit_count--;
+                fruit_count = 0;
                 if (fruit_count == 0)
                 {
                     playuh.holding = NONE;

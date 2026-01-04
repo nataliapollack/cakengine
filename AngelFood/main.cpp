@@ -116,11 +116,6 @@ void set_system_signatures()
 
     sig.reset();
 
-    sig.set(gCoordinator.GetComponentType<spark>());
-    gCoordinator.SetSystemSignature<SparkSystem>(sig);
-
-    sig.reset();
-
     sig.set(gCoordinator.GetComponentType<waypoint>());
     sig.set(gCoordinator.GetComponentType<transform2D>());
     gCoordinator.SetSystemSignature<DaedalusSystem>(sig);
@@ -306,7 +301,9 @@ int main()
 
                 environment_render_sys->draw();
                 render_sys->draw();
-                box_render_sys->draw();
+
+                if (draw_boxes)
+                    box_render_sys->draw();
 
                 particle_sys->draw();
 
@@ -315,6 +312,7 @@ int main()
                     tooling_sys->draw();
                 }
 
+                spark_sys->draw();
                 // collision_sys->debug_draw_collisions();
 
               //   DrawCircle(0, 0, 10, BLUE);

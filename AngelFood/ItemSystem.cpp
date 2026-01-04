@@ -105,19 +105,27 @@ void CollectingSystem::init()
 void CollectingSystem::TriggerItemDroppedOff(Event& event)
 {
     HOLDABLE_ITEMS item_id = event.GetParam<HOLDABLE_ITEMS>(Events::Item::DroppedOff::OBJECTID);
+    int amount = event.GetParam<int>(Events::Item::DroppedOff::AMOUNT);
+
     //  std::cout << item_id << "\n";
     for (auto& entity : entities_list)
     {
         auto& staus = gCoordinator.GetComponent<collecting>(entity);
         if (staus.item == item_id)
         {
-            staus.amount_needed--;
+            staus.amount_needed -= amount;
             auto& set = gCoordinator.GetComponent<status>(entity);
+            auto& tranform = gCoordinator.GetComponent<transform2D>(entity);
             if (staus.amount_needed <= 0)
             {
                 set.active = false;
                 // spawn spark here :p
-                // swap npc state here
+                
+                // swap npc state here.. unless... we're the npc state ...
+                Event spark(Events::Spark::SPAWN);
+                spark.SetParam(Events::Spark::Collected::LOCATIONX, tranform.pos.x);
+                spark.SetParam(Events::Spark::Collected::LOCATIONY, tranform.pos.y);
+                gCoordinator.SendEvent(spark);
             }
             return;
         }
@@ -126,8 +134,12 @@ void CollectingSystem::TriggerItemDroppedOff(Event& event)
 
 void SparkSystem::init()
 {
+    growing = false;
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::SPARK, SparkSystem::TriggerSparkCollected));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Spark::SPAWN, SparkSystem::TriggerSparkSpawned));
 }
 
 void SparkSystem::update()
@@ -150,6 +162,17 @@ void SparkSystem::update()
                 }
             }
             sparky.frame_counter++;
+
+            if (growing)
+            {
+                growth_mulitplier += 0.015f;
+                
+                if (growth_mulitplier >= 1.0f)
+                {
+                    growth_mulitplier = 1.0f;
+                    growing = false;
+                }
+            }
         }
     }
 }
@@ -168,7 +191,7 @@ void SparkSystem::draw()
             Texture2D texture = gAssetMngr.GetAsset(rend.current_asset);
 
             Rectangle source = { 0, 0, texture.width, texture.height };
-            Vector2 dim = { texture.width * 0.55, texture.height * 0.55};
+            Vector2 dim = { texture.width * 0.55 * growth_mulitplier, texture.height * 0.55 * growth_mulitplier };
             Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
             Vector2 origin = { 0, 0 };
             DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
@@ -178,16 +201,19 @@ void SparkSystem::draw()
 
 void SparkSystem::TriggerSparkCollected(Event& event)
 {
-    spark_count++;
-
-    Entity item_id = event.GetParam<Entity>(Events::Spark::Collected::SPARKID);
-    //  std::cout << item_id << "\n";
-    for (auto& entity : entities_list)
+    if (!growing)
     {
-        auto& staus = gCoordinator.GetComponent<status>(entity);
-        if (entity == item_id)
+        spark_count++;
+
+        Entity item_id = event.GetParam<Entity>(Events::Spark::Collected::SPARKID);
+        //  std::cout << item_id << "\n";
+        for (auto& entity : entities_list)
         {
-            staus.active = false;
+            auto& staus = gCoordinator.GetComponent<status>(entity);
+            if (entity == item_id)
+            {
+                staus.active = false;
+            }
         }
     }
 }
@@ -195,4 +221,18 @@ void SparkSystem::TriggerSparkCollected(Event& event)
 void SparkSystem::TriggerSparkSpawned(Event& event)
 {
 
+    int new_spark = gCoordinator.CreateEntity();
+    growing = true;
+    growth_mulitplier = 0.0f;
+
+    float y = event.GetParam<float>(Events::Spark::Collected::LOCATIONY) - 20;
+    float x = event.GetParam<float>(Events::Spark::Collected::LOCATIONX);
+
+    gCoordinator.AddComponent(new_spark, transform2D{ Vector2{x, y} });
+    gCoordinator.AddComponent(new_spark, spark{ 0, SPARK1 });
+    gCoordinator.AddComponent(new_spark, status{ true, true,  SPARK });
+    Texture temp = gAssetMngr.GetAsset(SPARK1);
+    gCoordinator.AddComponent(new_spark, collidble{ Rectangle { x, y, (float)temp.width, (float)temp.height } });
+
+    auto const& stats = gCoordinator.GetComponent<status>(new_spark);
 }
