@@ -14,7 +14,7 @@ public:
     void PickedUpItem(Event& event);
     void DroppedItem(Event& event);
 
-    void ResetPlayerPos();
+    void ResetPlayerPos(Vector2 new_pos);
     void HitSpikes(Event& event);
     void HitSpawner(Event& event);
 

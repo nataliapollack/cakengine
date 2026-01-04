@@ -66,6 +66,10 @@ void PlayerSystem::update(float dt)
             if (death_time.update(dt))
             {
 
+                Event items(Events::Item::DROPPED_SPIKES);
+                gCoordinator.SendEvent(items);
+
+                auto& phy = gCoordinator.GetComponent<physics>(entity);
 
                 auto& col = gCoordinator.GetComponent<collidble>(entity);
                 col.box.height *= 2.0f;
@@ -425,11 +429,10 @@ void PlayerSystem::DroppedItem(Event& event)
         {
             Event item(Events::Item::CONFIRMED_DROPPEDOFF);
             item.SetParam(Events::Item::DroppedOff::OBJECTID, playuh.holding);
-            item.SetParam(Events::Item::DroppedOff::AMOUNT, fruit_count);
-            gCoordinator.SendEvent(item);
 
             if (collector.item == FRUIT)
             {
+                item.SetParam(Events::Item::DroppedOff::AMOUNT, fruit_count);
                 fruit_count = 0;
                 if (fruit_count == 0)
                 {
@@ -438,22 +441,26 @@ void PlayerSystem::DroppedItem(Event& event)
             }
             else
             {
+                item.SetParam(Events::Item::DroppedOff::AMOUNT, 1);
                 playuh.holding = NONE;
             }
+
+            gCoordinator.SendEvent(item);
         }
     }
 }
 
-void PlayerSystem::ResetPlayerPos()
+void PlayerSystem::ResetPlayerPos(Vector2 new_pos)
 {
     for (auto& entity : entities_list)
     {
         auto& transf = gCoordinator.GetComponent<transform2D>(entity);
         auto& phy = gCoordinator.GetComponent<physics>(entity);
 
+        transf.pos = new_pos;
         phy.f = Vector2{ 0,0 };
         phy.vel = Vector2{ 0,0 };
-        transf.pos = starting_pawn_pos;
+       // transf.pos = starting_pawn_pos;
     }
 }
 
@@ -665,5 +672,5 @@ void PlayerSystem::Reset(Event& event)
 
     }
 
-    ResetPlayerPos();
+    ResetPlayerPos(starting_pawn_pos);
 }

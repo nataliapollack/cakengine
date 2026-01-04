@@ -20,7 +20,7 @@ extern Coordinator gCoordinator;
 void ItemSystem::init()
 {
     gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::CONFIRMED_PICKEDUP, ItemSystem::TriggerItemPickedUp));
-    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Collision::SPIKES, ItemSystem::TriggerItemDropped));
+    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::DROPPED_SPIKES, ItemSystem::TriggerItemDropped));
 }
 
 void ItemSystem::TriggerItemPickedUp(Event& event)
@@ -119,7 +119,7 @@ void CollectingSystem::TriggerItemDroppedOff(Event& event)
             auto& tranform = gCoordinator.GetComponent<transform2D>(entity);
             if (staus.amount_needed <= 0)
             {
-                set.active = false;
+               //a set.active = false;
                 // spawn spark here :p
                 
                 // swap npc state here.. unless... we're the npc state ...
@@ -255,12 +255,14 @@ void SparkSystem::TriggerSparkSpawned(Event& event)
 void WaitingGameSystem::init()
 {
     time_spent = 0.0f;
-    max_time_spent = 5.0f;
+    max_time_spent = 10.0f;
     frame_counter = 0;
     playing = false;
     just_swapped = false;
     delay_timer = 2.0f;
     done = false;
+
+    gCoordinator.AddEventListener(METHOD_LISTENER(Events::Collision::WAITINGGAME, WaitingGameSystem::TriggerStartGame));
 }
 
 void WaitingGameSystem::update()
@@ -269,7 +271,6 @@ void WaitingGameSystem::update()
     {
         if (!done)
         {
-            playing = false;
             // swap to idle
             if (just_swapped)
             {
@@ -283,25 +284,27 @@ void WaitingGameSystem::update()
             if (max_time_spent <= time_spent)
             {
                 done = true;
+                auto& tranform = gCoordinator.GetComponent<transform2D>(entity);
+                {
+                    Event spark(Events::Spark::SPAWN);
+                    spark.SetParam(Events::Spark::Collected::LOCATIONX, tranform.pos.x);
+                    spark.SetParam(Events::Spark::Collected::LOCATIONY, tranform.pos.y);
+                    gCoordinator.SendEvent(spark);
+                }
             }
 
-            if (!just_swapped)
+            if (!just_swapped && !done && !playing)
             {
                 auto& rend = gCoordinator.GetComponent<render_environment>(entity);
                 auto& anime = gCoordinator.GetComponent<animate>(entity);
-                if (rend.txt == SNAKE_IDLE1)
+              //  if (rend.txt == SNAKE_IDLE1)
                 {
-                    rend.txt = SNAKE_PLAY1;
-                    anime.alt_asset = SNAKE_PLAY2;
-                }
-                if (rend.txt == SNAKE_PLAY1)
-                {
+                    anime.speed = 3.0f;
                     rend.txt = SNAKE_IDLE1;
                     anime.alt_asset = SNAKE_IDLE2;
                 }
-
-                just_swapped = true;
             }
+            playing = false;
         }
     }
 }
@@ -320,15 +323,10 @@ void WaitingGameSystem::TriggerStartGame(Event &event)
     {
         auto& rend = gCoordinator.GetComponent<render_environment>(entity);
         auto& anime = gCoordinator.GetComponent<animate>(entity);
-        if (rend.txt == SNAKE_IDLE1)
+        //if (rend.txt == SNAKE_PLAY1)
         {
             rend.txt = SNAKE_PLAY1;
             anime.alt_asset = SNAKE_PLAY2;
-        }
-        if (rend.txt == SNAKE_PLAY1)
-        {
-            rend.txt = SNAKE_IDLE1;
-            anime.alt_asset = SNAKE_IDLE2;
         }
     }
     just_swapped = true;
