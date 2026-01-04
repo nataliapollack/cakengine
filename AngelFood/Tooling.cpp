@@ -122,7 +122,7 @@ void Tooling::serialize()
             if (gCoordinator.HasComponent<particle_emitter>(entity))
             {
                 auto& comp = gCoordinator.GetComponent<particle_emitter>(entity);
-                data << EMITTER << "\n";
+                data << PARTICLE_EMITTER << "\n";
                 data << comp.capacity << "\n";
                 data << comp.alive_count << "\n";
 
@@ -178,255 +178,255 @@ void Tooling::deserialize()
 
     // have to get it started
     Entity en = gCoordinator.CreateEntity();
-    std::getline(load_data, line);
+    std::getline(load_data,line); 
 
     if (load_data.is_open())
     {
         while (std::getline(load_data, line))
-        {            
-            
+        {
             if (TRANSFORM == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float x = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float y = atof(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     transform2D{ Vector2 {x, y} });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
 
             }
             if (RENDER == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float x = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 int y = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     render{ x, (ASSETS)y });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (BOX_RENDER == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float x = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float y = atof(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool z = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     box_render{ x, y, z });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (COLLIDBLE == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float x = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float y = atof(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float w = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float h = atof(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     collidble{ Rectangle{x, y, w, h } });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (PHYSICS == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float x = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float y = atof(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float w = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float h = atof(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     physics{ Vector2{x, y}, Vector2{ w, h }});
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (STATUS == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool x = atoi(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool y = atoi(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 int z = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     status{ x, y, OBJECT_TYPE(z)});
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (PLAYERc == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool x = atoi(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 int y = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     player{ x, (HOLDABLE_ITEMS)y });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (COLLECTABLE == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool x = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     collectable{ x });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (COLLECTING == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool x = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     collecting{ (HOLDABLE_ITEMS)x });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (ENVIRONMENT_RENDER == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool x = atoi(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool y = atoi(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool z = atoi(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 int txt = atoi(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 int a = atoi(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float b = atof(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float c = atof(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     render_environment{x, y, z, (ASSETS)txt, a, b, c});
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (ANIMATE == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float a = atof(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 int b = atoi(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 int c = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     animate{ a, b, (ASSETS)c});
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
-            if (EMITTER == atoi(line.c_str()))
+            if (PARTICLE_EMITTER == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 size_t n = atoi(line.c_str());
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 size_t ac = atoi(line.c_str());
 
                 // offset
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float ofx = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float ofy = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float osx = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float osy = atof(line.c_str());
 
                 // color
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 unsigned char cr = atoi(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 unsigned char cg = atoi(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 unsigned char cb = atoi(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 unsigned char ca = atoi(line.c_str());
 
                 // inital dir
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float idx = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float idy = atof(line.c_str());
 
                 // angle variation
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float av = atof(line.c_str());
 
                 // initial speed
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float isfx = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float isfy = atof(line.c_str());
 
                 // initial lifetime
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float ilfx = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float ilfy = atof(line.c_str());
 
                 // initial size
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float izfx = atof(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float izfy = atof(line.c_str());
 
                 // num per emit
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 size_t ne = atoi(line.c_str());
 
                 // emit
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool e = atoi(line.c_str());
 
                 // one shot
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool os = atoi(line.c_str());
 
                 // texture id
+                std::getline(load_data,line); 
                 ASSETS tid = static_cast<ASSETS>(atoi(line.c_str()));
 
                 // timer
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 float tr = atof(line.c_str());
 
                 // type
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 int t = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
@@ -445,24 +445,24 @@ void Tooling::deserialize()
                         e,
                         os,
                         tid,
-                        tr,
+                        Timer(tr),
                         static_cast<emitter_type>(t),
                         {}
                     });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             if (WAYPOINT == atoi(line.c_str()))
             {
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 size_t idx = atoi(line.c_str());
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
                 bool ss = atoi(line.c_str());
 
                 gCoordinator.AddComponent(en,
                     waypoint{ idx, ss });
 
-                std::getline(load_data, line);
+                std::getline(load_data,line); 
             }
             
             if ("EN" == line)
@@ -905,90 +905,90 @@ void Tooling::check_inputs()
         only_walls = !only_walls;
     }
 
-    //static size_t count = 0;
-    //if (IsKeyPressed(KEY_EIGHT))
-    //{
-    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+    static size_t count = 0;
+    if (IsKeyPressed(KEY_EIGHT))
+    {
+        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-    //    int en = gCoordinator.CreateEntity();
+        int en = gCoordinator.CreateEntity();
 
-    //    gCoordinator.AddComponent(en,
-    //        status{ true, true, WAYPOINT });
+        gCoordinator.AddComponent(en,
+            status{ true, true, WAYPOINT });
 
-    //    gCoordinator.AddComponent(en,
-    //        transform2D{ mouse_pos.x, mouse_pos.y });
+        gCoordinator.AddComponent(en,
+            transform2D{ mouse_pos.x, mouse_pos.y });
 
-    //    gCoordinator.AddComponent(en,
-    //        box_render{ 50, 50 });
+        gCoordinator.AddComponent(en,
+            box_render{ 50, 50 });
 
-    //    gCoordinator.AddComponent(en,
-    //        waypoint{ count++ });
+        gCoordinator.AddComponent(en,
+            waypoint{ count++ });
 
-    //    float size = 750.0f;
+        float size = 750.0f;
 
-    //    gCoordinator.AddComponent(
-    //        en,
-    //        collidble{ Rectangle{mouse_pos.x - size / 2.0f,
-    //        mouse_pos.y - size / 2.0f,
-    //            size, size } });
+        gCoordinator.AddComponent(
+            en,
+            collidble{ Rectangle{mouse_pos.x - size / 2.0f,
+            mouse_pos.y - size / 2.0f,
+                size, size } });
 
-    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-    //    current_en = en;
-    //}
-    //if (IsKeyPressed(KEY_NINE))
-    //{
-    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+        current_en = en;
+    }
+    if (IsKeyPressed(KEY_NINE))
+    {
+        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-    //    int en = gCoordinator.CreateEntity();
+        int en = gCoordinator.CreateEntity();
 
-    //    gCoordinator.AddComponent(en,
-    //        status{ true, true, WAYPOINT });
+        gCoordinator.AddComponent(en,
+            status{ true, true, WAYPOINT });
 
-    //    gCoordinator.AddComponent(en,
-    //        transform2D{ mouse_pos.x, mouse_pos.y });
+        gCoordinator.AddComponent(en,
+            transform2D{ mouse_pos.x, mouse_pos.y });
 
-    //    gCoordinator.AddComponent(en,
-    //        box_render{ 50, 50 });
+        gCoordinator.AddComponent(en,
+            box_render{ 50, 50 });
 
-    //    gCoordinator.AddComponent(en,
-    //        waypoint{ count++, false });
+        gCoordinator.AddComponent(en,
+            waypoint{ count++, false });
 
-    //    float size = 750.0f;
+        float size = 750.0f;
 
-    //    gCoordinator.AddComponent(
-    //        en,
-    //        collidble{ Rectangle{mouse_pos.x - size / 2.0f,
-    //        mouse_pos.y - size / 2.0f,
-    //            size, size } });
+        gCoordinator.AddComponent(
+            en,
+            collidble{ Rectangle{mouse_pos.x - size / 2.0f,
+            mouse_pos.y - size / 2.0f,
+                size, size } });
 
-    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-    //    current_en = en;
-    //}
-    //if (IsKeyPressed(KEY_NINE))
-    //{
-    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+        current_en = en;
+    }
+    if (IsKeyPressed(KEY_NINE))
+    {
+        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-    //    int en = gCoordinator.CreateEntity();
+        int en = gCoordinator.CreateEntity();
 
-    //    float size = 100.0f;
+        float size = 100.0f;
 
-    //    gCoordinator.AddComponent(en,
-    //        status{ true, true, ENDPOINT });
+        gCoordinator.AddComponent(en,
+            status{ true, true, ENDPOINT });
 
-    //    gCoordinator.AddComponent(en,
-    //        transform2D{ mouse_pos.x, mouse_pos.y });
+        gCoordinator.AddComponent(en,
+            transform2D{ mouse_pos.x, mouse_pos.y });
 
-    //    gCoordinator.AddComponent(en,
-    //        box_render{ size, size });
+        gCoordinator.AddComponent(en,
+            box_render{ size, size });
 
-    //    gCoordinator.AddComponent(
-    //        en,
-    //        collidble{ Rectangle{mouse_pos.x,
-    //        mouse_pos.y, size, size} });
+        gCoordinator.AddComponent(
+            en,
+            collidble{ Rectangle{mouse_pos.x,
+            mouse_pos.y, size, size} });
 
-    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, size, size };
-    //    current_en = en;
-    //}
+        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, size, size };
+        current_en = en;
+    }
 }
 
 void Tooling::delete_inactivity()
