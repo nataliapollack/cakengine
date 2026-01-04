@@ -130,6 +130,10 @@ void AssetManager::load_assets()
     textures[FARM2] = LoadTexture("art/farm_fence.png");
     textures[FARM3] = LoadTexture("art/farm_front.png");
     textures[FINAL_ROOM] = LoadTexture("art/level2.png");
+
+    // custscene stuff
+    textures[CUTSCENE1] = LoadTexture("art/Cutscene/cutscene1.png");
+    textures[CUTSCENE2] = LoadTexture("art/Cutscene/cutscene2.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)

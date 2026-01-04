@@ -137,6 +137,8 @@ enum ASSETS
     FARM2,
     FARM3,
     FINAL_ROOM,
+    CUTSCENE1,
+    CUTSCENE2,
     COUNT
 };
 

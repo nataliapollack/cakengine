@@ -552,7 +552,7 @@ void PlayerSystem::StopInput(Event& event)
 void PlayerSystem::HitEndpoint(Event& event)
 {
     is_end = true;
-    current_state = DEAD;
+    current_state = FALL;
     m_walk.can_walk = false;
     m_walk.direction = 0.0f;
 }

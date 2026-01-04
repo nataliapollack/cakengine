@@ -70,6 +70,10 @@ void DaedalusSystem::init()
 			}
 		);
 	}
+
+	gCoordinator.AddEventListener(
+		METHOD_LISTENER(Events::Scene::RESET, DaedalusSystem::reset)
+	);
 }
 
 void DaedalusSystem::update(float dt)
@@ -163,4 +167,10 @@ void DaedalusSystem::SetNewPosition()
 		0, static_cast<int>(entities_list.size()));
 
 	move_timer.start();
+}
+
+void DaedalusSystem::reset(Event& event)
+{
+	curr_waypoint = 0;
+	move_timer.reset();
 }
