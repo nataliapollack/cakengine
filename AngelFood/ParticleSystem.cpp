@@ -56,7 +56,10 @@ void ParticleSystem::init_emitter(const Entity& entity)
 			getRandomFloat(emit.offset.first.x, emit.offset.second.x),
 			getRandomFloat(emit.offset.first.y, emit.offset.second.y)
 		};
+
 		Vector2 position = Vector2Add(transf.pos, offset);
+		if (emit.type == ET_FIREFLIES)
+			position -= transf.pos;
 
 		emit.particles.emplace_back(Particle{
 			position,
@@ -176,6 +179,7 @@ void ParticleSystem::draw()
 	for (auto& entity : entities_list)
 	{
 		auto& emit = gCoordinator.GetComponent<particle_emitter>(entity);
+		auto& transf = gCoordinator.GetComponent<transform2D>(entity);
 
 		if (emit.particles.size() < emit.capacity)
 			init_emitter(entity);
@@ -185,7 +189,7 @@ void ParticleSystem::draw()
 			auto& par = emit.particles.at(i);
 			// TODO: draw particle code
 
-			draw_functions.at(emit.type)(emit, par);
+			draw_functions.at(emit.type)(emit, transf, par);
 
 			//emit.color_curve(emit, par);
 
@@ -275,7 +279,7 @@ void ParticleSystem::init_draw_functions()
 {
 	draw_functions.insert({
 		ET_JUMP,
-		[](particle_emitter& emit, Particle& par)
+		[](particle_emitter& emit, transform2D& transf, Particle& par)
 		{
 			par.color.a = static_cast<float>(par.initial_alpha) *
 				(par.lifetime / par.initial_lifetime);
@@ -299,7 +303,7 @@ void ParticleSystem::init_draw_functions()
 
 	draw_functions.insert({
 		ET_FIREFLIES,
-		[](particle_emitter& emit, Particle& par)
+		[](particle_emitter& emit, transform2D& transf, Particle& par)
 		{
 			//if (emit.texture_id != ASSETS::COUNT)
 			//{
@@ -310,11 +314,13 @@ void ParticleSystem::init_draw_functions()
 			//}
 			//else
 			{
-				DrawCircle(par.position.x + par.size,
-					par.position.y + par.size,
+				DrawCircle(
+					par.position.x + par.size + transf.pos.x,
+					par.position.y + par.size + transf.pos.y,
 					par.size / 2.0f, par.color);
-				DrawCircleGradient(par.position.x + par.size,
-					par.position.y + par.size,
+				DrawCircleGradient(
+					par.position.x + par.size + transf.pos.x,
+					par.position.y + par.size + transf.pos.y,
 					par.size * 2.0f, 
 					ColorAlpha(YELLOW, 0.5f), ColorAlpha(YELLOW, 0.f));
 			}
@@ -323,7 +329,7 @@ void ParticleSystem::init_draw_functions()
 
 	draw_functions.insert({
 		ET_ITEM_PICKUP,
-		[](particle_emitter& emit, Particle& par)
+		[](particle_emitter& emit, transform2D& transf, Particle& par)
 		{
 			par.color.a = static_cast<float>(par.initial_alpha) *
 				(par.lifetime / par.initial_lifetime);

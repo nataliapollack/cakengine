@@ -5,6 +5,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 #include "ParticleEmitter.h"
+#include "Core.h"
 
 #include <unordered_map>
 #include <functional>
@@ -29,6 +30,6 @@ private:
 		update_functions;
 
 	std::unordered_map<emitter_type,
-		std::function<void(particle_emitter&, Particle&)>>
+		std::function<void(particle_emitter&, transform2D&, Particle&)>>
 		draw_functions;
 };
