@@ -182,3 +182,8 @@ namespace Events::Input
     const EventId START_DAEDALUS_FLIGHT = "Events::Input::START_DAEDALUS_FLIGHT"_hash;
     const EventId END_DAEDALUS_FLIGHT = "Events::Input::END_DAEDALUS_FLIGHT"_hash;
 }
+
+namespace Events::Scene
+{
+    const EventId RESET = "Events::Scene::RESET"_hash;
+}
