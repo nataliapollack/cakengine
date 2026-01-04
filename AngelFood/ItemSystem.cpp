@@ -204,7 +204,7 @@ void SparkSystem::draw()
             auto const& rend = gCoordinator.GetComponent<spark>(entity);
 
             Texture2D texture = gAssetMngr.GetAsset(rend.current_asset);
-
+            
             Rectangle source = { 0, 0, texture.width, texture.height };
             Vector2 dim = { texture.width * 0.55 * growth_mulitplier, texture.height * 0.55 * growth_mulitplier };
             Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
@@ -255,7 +255,7 @@ void SparkSystem::TriggerSparkSpawned(Event& event)
 void WaitingGameSystem::init()
 {
     time_spent = 0.0f;
-    max_time_spent = 10.0f;
+    max_time_spent = 7.0f;
     frame_counter = 0;
     playing = false;
     just_swapped = false;
@@ -297,7 +297,7 @@ void WaitingGameSystem::update()
             {
                 auto& rend = gCoordinator.GetComponent<render_environment>(entity);
                 auto& anime = gCoordinator.GetComponent<animate>(entity);
-              //  if (rend.txt == SNAKE_IDLE1)
+                if (rend.txt != SNAKE_IDLE1 && rend.txt != SNAKE_IDLE2)
                 {
                     anime.speed = 3.0f;
                     rend.txt = SNAKE_IDLE1;
@@ -323,7 +323,7 @@ void WaitingGameSystem::TriggerStartGame(Event &event)
     {
         auto& rend = gCoordinator.GetComponent<render_environment>(entity);
         auto& anime = gCoordinator.GetComponent<animate>(entity);
-        //if (rend.txt == SNAKE_PLAY1)
+        if (rend.txt != SNAKE_PLAY1 && rend.txt != SNAKE_PLAY2)
         {
             rend.txt = SNAKE_PLAY1;
             anime.alt_asset = SNAKE_PLAY2;
