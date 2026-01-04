@@ -19,103 +19,8 @@ constexpr float JUMP_SCALE = 0.03f;
 
 void PlayerSystem::init()
 {
-    current_state = IDLE;
-    starting_pawn_pos = Vector2{ -50, -50 };
-
-    m_walk =
-    {
-        0.25f,  // time to accel to max speed
-        0.15f,  // time to decel to zero
-        400.0f, // max speed
-        100.0f, // initial speed
-        0.0f,   // how long player has been walking
-        0.0f,   // direction player is walking
-        true    // can walk
-    };
-
-    m_jump =
-    {
-        Timer(0.35f),   // coyote time
-        Timer(0.1f),    // jump buffer time
-        2.1f / 2.f, // left/right movement multiplier
-        {},             // jump impulse (calculated later)
-        { 2.25f, 1.5f }, // jump heights
-        0.4f,           // jump time (used for tap vs hold jumping)
-        0.0f,           // tracks time since jump started
-        2,              // number of jumps
-        2,              // number of jumps used since last reset
-        1,              // cost of each jump
-        false,          // has input and needs to execute
-        false           // has started jump
-    };
-
-    m_glide =
-    {
-        Timer(1.5f), // length of glide
-        1.0f,        // max fall vel while gliding
-        2.1 / 1.8f,        // left/right movement multiplier
-        false,       // has started glide
-        false,       // able to glide (in air and moving down and has input)
-        true         // progression stuff...
-    };
-
-    gravity = 6000.0f / 2.f;
-    max_fall = 50.0f;
-
-    collision_forgiveness = 0.4f;
-    x_correction = 0.0f;
-
-    for (size_t i = 0; i < m_jump.jump_height.size(); ++i)
-    {
-        m_jump.jump_impulse[i] =
-            sqrtf(2.0f * gravity * JUMP_SCALE * m_jump.jump_height[i]);
-    }
-
-    death_time = Timer(1.0f);
-    is_dead = false;
-    is_end = false;
-
-    m_spark = {
-        5,
-        0
-    };
-
-    for (auto& entity : entities_list)
-    {
-        auto& coll = gCoordinator.GetComponent<collidble>(entity);
-
-        Vector2 base_offset{ coll.box.width / 2.0f, coll.box.height / 2.0f };
-
-        Vector2 min_offset{ base_offset.x - 20.0f, base_offset.y - 20.0f };
-        Vector2 max_offset{ base_offset.x + 20.0f, base_offset.y + 20.0f };
-
-        // Particle jump thing
-        if (!gCoordinator.HasComponent<particle_emitter>(entity))
-        {
-            gCoordinator.AddComponent(entity,
-                particle_emitter{
-                    32,         // capacity
-                    0,           // alive count
-                    { min_offset, max_offset },
-                    ColorAlpha(WHITE, 0.7f), // color
-                    Vector2Rotate(Vector2UnitY, DEG2RAD * -60.0f),
-                    120.0f, // init dir
-                    { 350.0f, 600.0f },      // init speed
-                    {0.50f, 1.0f},        // init lifetime
-                    {5.0f, 10.0f}, // init size
-                    2,          // num per emit
-                    false ,        // emitting
-                    true,       // one shot effect
-                    COUNT,
-                    Timer(0.0f), // time between emits
-                    ET_JUMP,
-                    {}
-                }
-            );
-        }
-
-    }
-
+    Event event(Events::Scene::RESET);
+    Reset(event);
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::HIT_WALL, PlayerSystem::HitWall));
@@ -598,7 +503,101 @@ void PlayerSystem::HitEndpoint(Event& event)
 void PlayerSystem::Reset(Event& event)
 {
     current_state = IDLE;
+    starting_pawn_pos = Vector2{ -50, -50 };
+
+    m_walk =
+    {
+        0.25f,  // time to accel to max speed
+        0.15f,  // time to decel to zero
+        400.0f, // max speed
+        100.0f, // initial speed
+        0.0f,   // how long player has been walking
+        0.0f,   // direction player is walking
+        true    // can walk
+    };
+
+    m_jump =
+    {
+        Timer(0.35f),   // coyote time
+        Timer(0.1f),    // jump buffer time
+        2.1f / 2.f, // left/right movement multiplier
+        {},             // jump impulse (calculated later)
+        { 2.25f, 1.5f }, // jump heights
+        0.4f,           // jump time (used for tap vs hold jumping)
+        0.0f,           // tracks time since jump started
+        2,              // number of jumps
+        2,              // number of jumps used since last reset
+        1,              // cost of each jump
+        false,          // has input and needs to execute
+        false           // has started jump
+    };
+
+    m_glide =
+    {
+        Timer(1.5f), // length of glide
+        1.0f,        // max fall vel while gliding
+        2.1 / 1.8f,        // left/right movement multiplier
+        false,       // has started glide
+        false,       // able to glide (in air and moving down and has input)
+        true         // progression stuff...
+    };
+
+    gravity = 6000.0f / 2.f;
+    max_fall = 50.0f;
+
+    collision_forgiveness = 0.4f;
+    x_correction = 0.0f;
+
+    for (size_t i = 0; i < m_jump.jump_height.size(); ++i)
+    {
+        m_jump.jump_impulse[i] =
+            sqrtf(2.0f * gravity * JUMP_SCALE * m_jump.jump_height[i]);
+    }
+
+    death_time = Timer(1.0f);
+    is_dead = false;
     is_end = false;
-    m_walk.can_walk = true;
+
+    m_spark = {
+        5,
+        0
+    };
+
+    for (auto& entity : entities_list)
+    {
+        auto& coll = gCoordinator.GetComponent<collidble>(entity);
+
+        Vector2 base_offset{ coll.box.width / 2.0f, coll.box.height / 2.0f };
+
+        Vector2 min_offset{ base_offset.x - 20.0f, base_offset.y - 20.0f };
+        Vector2 max_offset{ base_offset.x + 20.0f, base_offset.y + 20.0f };
+
+        // Particle jump thing
+        if (!gCoordinator.HasComponent<particle_emitter>(entity))
+        {
+            gCoordinator.AddComponent(entity,
+                particle_emitter{
+                    32,         // capacity
+                    0,           // alive count
+                    { min_offset, max_offset },
+                    ColorAlpha(WHITE, 0.7f), // color
+                    Vector2Rotate(Vector2UnitY, DEG2RAD * -60.0f),
+                    120.0f, // init dir
+                    { 350.0f, 600.0f },      // init speed
+                    {0.50f, 1.0f},        // init lifetime
+                    {5.0f, 10.0f}, // init size
+                    2,          // num per emit
+                    false ,        // emitting
+                    true,       // one shot effect
+                    COUNT,
+                    Timer(0.0f), // time between emits
+                    ET_JUMP,
+                    {}
+                }
+            );
+        }
+
+    }
+
     ResetPlayerPos();
 }
