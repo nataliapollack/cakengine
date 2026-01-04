@@ -162,7 +162,7 @@ void Tooling::serialize()
             if (gCoordinator.HasComponent<waypoint>(entity))
             {
                 auto& comp = gCoordinator.GetComponent<waypoint>(entity);
-                data << WAYPOINT << "\n";
+                data << WAYPOINT_COMP << "\n";
                 data << comp.index << "\n";
                 data << comp.should_stop << "\n";
             }
@@ -949,9 +949,9 @@ void Tooling::check_inputs()
             box_render{ 50, 50 });
 
         gCoordinator.AddComponent(en,
-            waypoint{ count++ });
+            waypoint{ count++, true });
 
-        float size = 750.0f;
+        float size = 2000.0f;
 
         gCoordinator.AddComponent(
             en,

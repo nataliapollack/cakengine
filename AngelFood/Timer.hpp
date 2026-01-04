@@ -48,6 +48,11 @@ public:
         return counter;
     }
 
+    void reset()
+    {
+        counter = 0.0f;
+    }
+
 private:
     float time_to_wait;
     float counter;

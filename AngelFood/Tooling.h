@@ -16,7 +16,8 @@ enum COMPONENTS_LIST
     COLLECTING,
     ENVIRONMENT_RENDER,
     ANIMATE,
-    PARTICLE_EMITTER
+    PARTICLE_EMITTER,
+    WAYPOINT_COMP
 };
 
 class Tooling : public System
