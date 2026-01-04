@@ -128,6 +128,12 @@ void set_system_signatures()
 
     sig.set(gCoordinator.GetComponentType<waiting_game>());
     gCoordinator.SetSystemSignature<WaitingGameSystem>(sig);
+
+
+    sig.reset();
+
+    sig.set(gCoordinator.GetComponentType<spark>());
+    gCoordinator.SetSystemSignature<SparkSystem>(sig);
 }
 
 
@@ -340,12 +346,13 @@ int main()
 
                 particle_sys->draw();
 
+                spark_sys->draw();
+
                 if (tooling_sys->GetToolStatus())
                 {
                     tooling_sys->draw();
                 }
 
-                spark_sys->draw();
                // collision_sys->debug_draw_collisions();
 
               //   DrawCircle(0, 0, 10, BLUE);
@@ -373,7 +380,7 @@ int main()
                 //DrawFPS(50, 50);
                 EndDrawing();
             }
-            //tooling_sys->delete_inactivity();
+            //tooling_sys->delete_inactivity();d
         }
         else if (menu.GetScene() == Scene::OUTRO)
         {

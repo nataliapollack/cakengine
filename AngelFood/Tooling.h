@@ -18,7 +18,8 @@ enum COMPONENTS_LIST
     ANIMATE,
     PARTICLE_EMITTER,
     WAYPOINT_COMP,
-    WAITING_GAME
+    WAITING_GAME,
+    SPARKY
 };
 
 class Tooling : public System

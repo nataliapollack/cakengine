@@ -171,6 +171,11 @@ void Tooling::serialize()
                 auto& comp = gCoordinator.GetComponent<waypoint>(entity);
                 data << WAITING_GAME << "\n";
             }
+            if (gCoordinator.HasComponent<spark>(entity))
+            {
+                auto& comp = gCoordinator.GetComponent<spark>(entity);
+                data << SPARKY << "\n";
+            }
         }
     }
 
@@ -477,6 +482,13 @@ void Tooling::deserialize()
             {
                 gCoordinator.AddComponent(en,
                     waiting_game{});
+
+                std::getline(load_data, line);
+            }
+            if (SPARKY == atoi(line.c_str()))
+            {
+                gCoordinator.AddComponent(en,
+                    spark{0, SPARK1});
 
                 std::getline(load_data, line);
             }
@@ -885,13 +897,20 @@ void Tooling::check_inputs()
         int en = gCoordinator.CreateEntity();
 
         gCoordinator.AddComponent(en,
-            status{ true, true, ITEM });
+            status{ true, true, SPARK });
 
         gCoordinator.AddComponent(en,
-            transform2D{ mouse_pos.x, mouse_pos.y });
+            transform2D{ Vector2{mouse_pos.x, mouse_pos.y} });
+
+        //gCoordinator.AddComponent(en,
+        //    render_environment{ false, false, false, BRANCH1, 1, 1.0f, 0.0f });\
 
         gCoordinator.AddComponent(en,
-            render_environment{ false, false, false, BRANCH1, 1, 1.0f, 0.0f });
+            spark{ 0, SPARK1 });
+
+        Texture temp = gAssetMngr.GetAsset(SPARK1);
+        gCoordinator.AddComponent(en, 
+            collidble{ Rectangle { mouse_pos.x, mouse_pos.y, (float)temp.width, (float)temp.height } });
 
         current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
         current_en = en;

@@ -206,7 +206,11 @@ void SparkSystem::draw()
             Texture2D texture = gAssetMngr.GetAsset(rend.current_asset);
             
             Rectangle source = { 0, 0, texture.width, texture.height };
-            Vector2 dim = { texture.width * 0.55 * growth_mulitplier, texture.height * 0.55 * growth_mulitplier };
+            Vector2 dim = { texture.width * 0.55, texture.height * 0.55 };
+            if (growing)
+            {
+                dim = { texture.width * 0.55f * growth_mulitplier, texture.height * 0.55f * growth_mulitplier };
+            }
             Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
             Vector2 origin = { 0, 0 };
             DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
