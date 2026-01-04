@@ -19,6 +19,10 @@ struct Particle
 	unsigned char initial_alpha;
 
 	bool active;
+
+	Timer blink_time;
+	Timer blink_fade;
+	bool dimming;
 };
 
 enum emitter_type : int

@@ -47,6 +47,13 @@ void ParticleSystem::init_emitter(const Entity& entity)
 		Vector2 dir = Vector2Rotate(emit.initial_dir, getRandomFloat(0.0f,
 			DEG2RAD * emit.max_angle_variation));
 
+		if (emit.type == ET_FIREFLIES)
+		{
+			emit.one_shot = false;
+			//emit.initial_lifetime.first = 5.0f;
+			//emit.initial_lifetime.second = 10.0f;
+		}
+
 		float lifetime = getRandomFloat(emit.initial_lifetime.first,
 			emit.initial_lifetime.second);
 
@@ -72,8 +79,12 @@ void ParticleSystem::init_emitter(const Entity& entity)
 			position,
 			lifetime,
 			emit.color.a,
-			is_active
+			is_active,
+			Timer(getRandomFloat(1.0f, 5.0f)),
+			Timer(getRandomFloat(1.0f, 2.5f)),
+			true
 		});
+		emit.particles.back().blink_time.start();
 	}
 }
 
@@ -121,6 +132,8 @@ void ParticleSystem::update(float dt)
 							emit.offset.first.y, emit.offset.second.y)
 					};
 					Vector2 position = Vector2Add(transf.pos, offset);
+					if (emit.type == ET_FIREFLIES)
+						position -= transf.pos;
 
 					auto& next_particle = p_list.at(emit.alive_count);
 					next_particle = Particle{
@@ -134,10 +147,14 @@ void ParticleSystem::update(float dt)
 						position,
 						lifetime,
 						emit.color.a,
+						true,
+						Timer(getRandomFloat(1.0f, 5.0f)),
+						Timer(getRandomFloat(1.0f, 2.5f)),
 						true
 					};
 					emit.alive_count += 1;
 					emit.time_between_emit.start();
+					next_particle.blink_time.start();
 				}
 				if (emit.one_shot)
 				{
@@ -259,6 +276,24 @@ void ParticleSystem::init_update_functions()
 
 				par.position = Vector2Add(par.position,
 					Vector2Scale(par.velocity, dt));
+
+				if (par.blink_time.update(dt))
+				{
+					par.dimming = true;
+					par.blink_fade.start();
+				}
+				if (par.blink_fade.update(dt))
+				{
+					if (par.dimming)
+					{
+						par.dimming = false;
+						par.blink_fade.start();
+					}
+					else
+					{
+						par.blink_time.start();
+					}
+				}
 		}
 		});
 
@@ -314,15 +349,22 @@ void ParticleSystem::init_draw_functions()
 			//}
 			//else
 			{
-				DrawCircle(
-					par.position.x + par.size + transf.pos.x,
-					par.position.y + par.size + transf.pos.y,
-					par.size / 2.0f, par.color);
+				float fade = (par.dimming) ? 
+					1.0f - (par.blink_fade.count() / par.blink_fade.time())
+					: par.blink_fade.count() / par.blink_fade.time();
+				par.color = { 252, 250, 169, 255 };
+
 				DrawCircleGradient(
 					par.position.x + par.size + transf.pos.x,
 					par.position.y + par.size + transf.pos.y,
 					par.size * 2.0f, 
-					ColorAlpha(YELLOW, 0.5f), ColorAlpha(YELLOW, 0.f));
+					ColorAlpha(par.color, 0.5f * fade), 
+					ColorAlpha(par.color, 0.f));
+
+				DrawCircle(
+					par.position.x + par.size + transf.pos.x,
+					par.position.y + par.size + transf.pos.y,
+					par.size * 0.25f, ColorAlpha(WHITE, fade));
 			}
 		}
 	});
