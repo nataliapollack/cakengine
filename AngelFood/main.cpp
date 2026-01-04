@@ -332,6 +332,7 @@ int main()
 
                 environment_render_sys->draw();
                 render_sys->draw();
+                daedalus_sys->draw();
 
                 if (draw_boxes)
                     box_render_sys->draw();

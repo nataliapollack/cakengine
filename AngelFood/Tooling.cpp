@@ -127,38 +127,38 @@ void Tooling::serialize()
                 data << comp.capacity << "\n";
                 data << comp.alive_count << "\n";
 
-            //    data << comp.offset.first.x << "\n";
-            //    data << comp.offset.first.y << "\n";
-            //    data << comp.offset.second.x << "\n";
-            //    data << comp.offset.second.y << "\n";
+                data << comp.offset.first.x << "\n";
+                data << comp.offset.first.y << "\n";
+                data << comp.offset.second.x << "\n";
+                data << comp.offset.second.y << "\n";
 
-            //    data << static_cast<int>(comp.color.r) << "\n";
-            //    data << static_cast<int>(comp.color.g) << "\n";
-            //    data << static_cast<int>(comp.color.b) << "\n";
-            //    data << static_cast<int>(comp.color.a) << "\n";
+                data << static_cast<int>(comp.color.r) << "\n";
+                data << static_cast<int>(comp.color.g) << "\n";
+                data << static_cast<int>(comp.color.b) << "\n";
+                data << static_cast<int>(comp.color.a) << "\n";
 
-            //    data << comp.initial_dir.x << "\n";
-            //    data << comp.initial_dir.y << "\n";
+                data << comp.initial_dir.x << "\n";
+                data << comp.initial_dir.y << "\n";
 
-            //    data << comp.max_angle_variation << "\n";
+                data << comp.max_angle_variation << "\n";
 
-            //    data << comp.initial_speed.first << "\n";
-            //    data << comp.initial_speed.second << "\n";
+                data << comp.initial_speed.first << "\n";
+                data << comp.initial_speed.second << "\n";
 
-            //    data << comp.initial_lifetime.first << "\n";
-            //    data << comp.initial_lifetime.second << "\n";
+                data << comp.initial_lifetime.first << "\n";
+                data << comp.initial_lifetime.second << "\n";
 
-            //    data << comp.initial_size.first << "\n";
-            //    data << comp.initial_size.second << "\n";
+                data << comp.initial_size.first << "\n";
+                data << comp.initial_size.second << "\n";
 
-            //    data << comp.num_per_emit << "\n";
-            //    data << comp.emitting << "\n";
-            //    data << comp.one_shot << "\n";
-            //    data << comp.texture_id << "\n";
+                data << comp.num_per_emit << "\n";
+                data << comp.emitting << "\n";
+                data << comp.one_shot << "\n";
+                data << comp.texture_id << "\n";
 
-            //    data << comp.time_between_emit.time() << "\n";
-            //    data << comp.type << "\n";
-            //}
+                data << comp.time_between_emit.time() << "\n";
+                data << comp.type << "\n";
+            }
             if (gCoordinator.HasComponent<waypoint>(entity))
             {
                 auto& comp = gCoordinator.GetComponent<waypoint>(entity);
@@ -195,7 +195,7 @@ void Tooling::deserialize()
                 gCoordinator.AddComponent(en,
                     transform2D{ Vector2 {x, y} });
 
-                std::getline(load_data,line); 
+               std::getline(load_data,line); 
 
             }
             if (RENDER == atoi(line.c_str()))
@@ -456,7 +456,7 @@ void Tooling::deserialize()
 
                 std::getline(load_data,line); 
             }
-            if (WAYPOINT == atoi(line.c_str()))
+            if (WAYPOINT_COMP == atoi(line.c_str()))
             {
                 std::getline(load_data,line); 
                 size_t idx = atoi(line.c_str());
@@ -951,7 +951,7 @@ void Tooling::check_inputs()
         gCoordinator.AddComponent(en,
             waypoint{ count++, true });
 
-        float size = 2000.0f;
+        float size = 1000.0f;
 
         gCoordinator.AddComponent(
             en,
@@ -962,35 +962,35 @@ void Tooling::check_inputs()
         current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
         current_en = en;
     }
-    if (IsKeyPressed(KEY_NINE))
-    {
-        Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+    //if (IsKeyPressed(KEY_NINE))
+    //{
+    //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
 
-        int en = gCoordinator.CreateEntity();
+    //    int en = gCoordinator.CreateEntity();
 
-        gCoordinator.AddComponent(en,
-            status{ true, true, WAYPOINT });
+    //    gCoordinator.AddComponent(en,
+    //        status{ true, true, WAYPOINT });
 
-        gCoordinator.AddComponent(en,
-            transform2D{ mouse_pos.x, mouse_pos.y });
+    //    gCoordinator.AddComponent(en,
+    //        transform2D{ mouse_pos.x, mouse_pos.y });
 
-        gCoordinator.AddComponent(en,
-            box_render{ 50, 50 });
+    //    gCoordinator.AddComponent(en,
+    //        box_render{ 50, 50 });
 
-        gCoordinator.AddComponent(en,
-            waypoint{ count++, false });
+    //    gCoordinator.AddComponent(en,
+    //        waypoint{ count++, false });
 
-        float size = 750.0f;
+    //    float size = 750.0f;
 
-        gCoordinator.AddComponent(
-            en,
-            collidble{ Rectangle{mouse_pos.x - size / 2.0f,
-            mouse_pos.y - size / 2.0f,
-                size, size } });
+    //    gCoordinator.AddComponent(
+    //        en,
+    //        collidble{ Rectangle{mouse_pos.x - size / 2.0f,
+    //        mouse_pos.y - size / 2.0f,
+    //            size, size } });
 
-        current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
-        current_en = en;
-    }
+    //    current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
+    //    current_en = en;
+    //}
     if (IsKeyPressed(KEY_NINE))
     {
         Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
