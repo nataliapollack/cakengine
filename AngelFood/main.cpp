@@ -26,6 +26,7 @@
 #include "Game.h"
 #include "Events.hpp"
 #include "TextManager.h"
+#include "AudioManager.h"
 
 Coordinator gCoordinator;
 AssetManager gAssetMngr;
@@ -150,6 +151,10 @@ int main()
     gCoordinator.init();
     gAssetMngr.load_assets();
 
+    Audio audio_sys;
+
+    audio_sys.load();
+
     register_components();
 
     /*** Systems Creation ******************************************************************/
@@ -174,7 +179,6 @@ int main()
 
    tooling_sys->deserialize();
 
-
    waiting_sys->init();
     render_sys->init();
     box_render_sys->init();
@@ -191,6 +195,7 @@ int main()
     menu.init();
 
     txting_sys.init();
+    audio_sys.init();
 
     Timer intro_fade(0.5f);
     bool intro_has_run = false;
@@ -219,7 +224,10 @@ int main()
         else if (menu.GetScene() == Scene::GAMEPLAY)
         {
             if (!intro_has_run && !intro_fade.is_running())
+            {
                 intro_fade.start();
+                audio_sys.PlayMusic(0);
+            }
 
             if (intro_fade.update(clamped_dt))
             {
@@ -240,6 +248,8 @@ int main()
                 intro_fade.reset();
                 intro_has_run = false;
                 outro_fade.reset();
+
+                
             }
 
             // UPDATE
@@ -259,6 +269,8 @@ int main()
             tooling_sys->update();
             environment_render_sys->update();
             spark_sys->update();
+
+            audio_sys.update();
 
                 // hard coded resett
                 if (IsKeyPressed(KEY_TWO))
@@ -293,8 +305,6 @@ int main()
                 rlRotatef(90, 1, 0, 0);
                 DrawGrid(500, 100);
                 rlPopMatrix();
-
-
 
                 environment_render_sys->draw();
                 render_sys->draw();
@@ -352,6 +362,7 @@ int main()
     // DE-INITIALIZATION
 
     gAssetMngr.unload();
+    audio_sys.unload();
 
     CloseAudioDevice();
     CloseWindow();

@@ -16,7 +16,8 @@ const enum OBJECT_TYPE
     NPC,
     WAYPOINT,
     ENDPOINT,
-    WAITINGPOINT
+    WAITINGPOINT,
+    LEVEL2_START,
 };
 
 enum HOLDABLE_ITEMS
@@ -140,7 +141,23 @@ enum ASSETS
     CUTSCENE1,
     CUTSCENE2,
     CUTSCENE3,
+    BUBBLEBIRD,
+    BUBBLEFRUIT,
     COUNT
+};
+
+enum AUDIO
+{
+    SNAKE_SONG,
+    SPARK_SPAWN,
+    SPARK_COLLECT,
+    STEP1,
+    STEP2,
+    JUMP_SFX,
+    GLIDE_SFX,
+    HURT_SFX,
+    ITEM_COLLECT,
+    AUDIO_COUNT
 };
 
 namespace Events::Item {
@@ -204,4 +221,12 @@ namespace Events::Text
     const EventId WALK = "Events::Text::WALK"_hash;
     const EventId DOUBLE = "Events::Text::DOUBLE"_hash;
     const EventId CREDITS = "Events::Text::CREDITS"_hash;
+}
+
+namespace Events::Audio
+{
+    const EventId TRIGGEREDSFX = "Events::Audio::TRIGGEREDSFX"_hash;
+    const EventId STOPSFX = "Events::Audio::STOPSFX"_hash;
+    const EventId STARTMUSIC = "Events::Audio::STARTMUSIC"_hash;
+    const ParamId ASSET = "Events::Audio::ASSET"_hash;
 }
