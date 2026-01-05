@@ -11,6 +11,7 @@ public:
     void TriggerItemPickedUp(Event& event);
     void TriggerItemDropped(Event& event);
 private:
+
 };
 
 // the sheep and da king bird
@@ -19,6 +20,9 @@ class CollectingSystem : public System
 public:
     void init();
     void TriggerItemDroppedOff(Event& event);
+private:
+    Vector2 positions[4];
+    int position_counter;
 };
 
 class SparkSystem : public System

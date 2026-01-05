@@ -354,12 +354,12 @@ int main()
                 }
 
                // collision_sys->debug_draw_collisions();
-
+                Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
               //   DrawCircle(0, 0, 10, BLUE);
                 camera_sys->EndCameraMode();
 
 
-                DrawText(TextFormat("dt %f", clamped_dt), 20, 20, 40, RED);
+                DrawText(TextFormat("x %f, y %f", mouse_pos.x, mouse_pos.y), 20, 20, 40, RED);
 
                 if (!intro_has_run)
                 {

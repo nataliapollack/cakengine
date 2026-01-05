@@ -71,6 +71,7 @@ void ItemSystem::TriggerItemPickedUp(Event& event)
         {
             auto& stats = gCoordinator.GetComponent<status>(entity);
             auto& staus = gCoordinator.GetComponent<collectable>(entity);
+
             staus.picked_up = true;
             stats.active = false;
 
@@ -101,6 +102,12 @@ void ItemSystem::TriggerItemDropped(Event& event)
 void CollectingSystem::init()
 {
     gCoordinator.AddEventListener(METHOD_LISTENER(Events::Item::CONFIRMED_DROPPEDOFF, CollectingSystem::TriggerItemDroppedOff));
+
+    position_counter = 0;
+    positions[0] = Vector2{ -5450, 410 };
+    positions[1] = Vector2{ -5350, 410 };
+    positions[2] = Vector2{ -5250, 410 };
+    positions[3] = Vector2{ -6250, -2540 };
 }
 
 void CollectingSystem::TriggerItemDroppedOff(Event& event)
@@ -117,6 +124,7 @@ void CollectingSystem::TriggerItemDroppedOff(Event& event)
             staus.amount_needed -= amount;
             auto& set = gCoordinator.GetComponent<status>(entity);
             auto& tranform = gCoordinator.GetComponent<transform2D>(entity);
+
             if (staus.amount_needed <= 0)
             {
                //a set.active = false;
@@ -142,6 +150,29 @@ void CollectingSystem::TriggerItemDroppedOff(Event& event)
                 }
                 
             }
+
+            if (staus.item == FRUIT)
+            {
+                int dropped_ec = gCoordinator.CreateEntity();
+                gCoordinator.AddComponent(dropped_ec, transform2D{ Vector2{positions[position_counter].x, positions[position_counter].y} });
+                position_counter++;
+
+                gCoordinator.AddComponent(dropped_ec, render_environment{ true, false, false, FRUIT1, 1, 0.75, 0.0f });
+                gCoordinator.AddComponent(dropped_ec, status{ true, true,  ENVIRONMENT });
+                gCoordinator.AddComponent(dropped_ec, animate{ 5.0f,  0,  FRUIT2 });
+            }
+            else
+            {
+                int dropped_ec = gCoordinator.CreateEntity();
+                gCoordinator.AddComponent(dropped_ec, transform2D{ positions[3] });
+                position_counter++;
+
+                gCoordinator.AddComponent(dropped_ec, render_environment{ true, false, false, BIRD_IDLE1, 1, 0.75, 0.0f });
+                gCoordinator.AddComponent(dropped_ec, status{ true, true,  ENVIRONMENT });
+                gCoordinator.AddComponent(dropped_ec, animate{ 5.0f,  0,  BIRD_IDLE2 });
+            }
+
+
             return;
         }
     }

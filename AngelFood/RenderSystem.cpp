@@ -4,6 +4,7 @@
 #include "Core.h"
 #include "Player.h"
 #include "Game.h"
+#include "Progression.h"
 
 #include "AssetManager.h"
 
@@ -232,10 +233,13 @@ void EnvironmentRenderSystem::draw()
                     halo_pos.y -= (texture.height / 2.0f);
                 }
 
-                Rectangle source = { 0, 0, halo_texture.width, halo_texture.height };
-                Rectangle dest = { halo_pos.x, halo_pos.y, halo_texture.width * 0.75f, halo_texture.height * 0.75f };
-                Vector2 origin = { 0, 0 };
-                DrawTexturePro(halo_texture, source, dest, origin, 0.0f, WHITE);
+                if (rend.txt != PLAYER_DEAD || rend.txt != PLAYER_HURT)
+                {
+                    Rectangle source = { 0, 0, halo_texture.width, halo_texture.height };
+                    Rectangle dest = { halo_pos.x, halo_pos.y, halo_texture.width * 0.75f, halo_texture.height * 0.75f };
+                    Vector2 origin = { 0, 0 };
+                    DrawTexturePro(halo_texture, source, dest, origin, 0.0f, WHITE);
+                }
             }
         }
     }
