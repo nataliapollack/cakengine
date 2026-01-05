@@ -12,7 +12,7 @@ void CameraSystem::init()
     gCamera = { 0 };
     gCamera.rotation = 0.0f;
     gCamera.zoom = 0.60;
-    state = FREEROAM;
+    state = FOLLOW_PLAYER;
     transition = false;
     obtained_entity = false;
     current_entity = 0;
@@ -45,15 +45,15 @@ float easeOut(float x)
 void CameraSystem::update(float dt)
 {
 
-    if (IsKeyPressed(KEY_R))
-    {
-     state = FREEROAM;
-        
-    }
-    if (IsKeyPressed(KEY_P))
-    {
-        state = FOLLOW_PLAYER;
-    }
+    //if (IsKeyPressed(KEY_R))
+    //{
+    // state = FREEROAM;
+    //    
+    //}
+    //if (IsKeyPressed(KEY_P))
+    //{
+    //    state = FOLLOW_PLAYER;
+    //}
 
     gCamera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 
@@ -81,28 +81,28 @@ void CameraSystem::update(float dt)
     }
     else
     {
-        if (IsKeyDown(KEY_A))
-        {
-            gCamera.target.x -= 50;
-        }
-        if (IsKeyDown(KEY_D))
-        {
-            gCamera.target.x += 50;
-        }
-        if (IsKeyDown(KEY_W))
-        {
-            gCamera.target.y -= 50;
-        }
-        if (IsKeyDown(KEY_S))
-        {
-            gCamera.target.y += 50;
-        }
+        //if (IsKeyDown(KEY_A))
+        //{
+        //    gCamera.target.x -= 50;
+        //}
+        //if (IsKeyDown(KEY_D))
+        //{
+        //    gCamera.target.x += 50;
+        //}
+        //if (IsKeyDown(KEY_W))
+        //{
+        //    gCamera.target.y -= 50;
+        //}
+        //if (IsKeyDown(KEY_S))
+        //{
+        //    gCamera.target.y += 50;
+        //}
     }
 
     if (gCamera.rotation > 40) gCamera.rotation = 40;
     else if (gCamera.rotation < -40) gCamera.rotation = -40;
 
-    gCamera.zoom = expf(logf(gCamera.zoom) + ((float)GetMouseWheelMove() * 0.1f));
+    //gCamera.zoom = expf(logf(gCamera.zoom) + ((float)GetMouseWheelMove() * 0.1f));
 
     if (IsKeyPressed(KEY_I))
     {

@@ -304,7 +304,7 @@ int main()
                     ClearBackground(BLACK);
                 }
 
-                //DrawFPS(-50, -50);
+                DrawFPS(-50, -50);
                 camera_sys->BeginCameraMode();
 
 
