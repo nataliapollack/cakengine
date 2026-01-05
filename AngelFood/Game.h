@@ -225,6 +225,7 @@ namespace Events::Text
     const EventId WALK = "Events::Text::WALK"_hash;
     const EventId DOUBLE = "Events::Text::DOUBLE"_hash;
     const EventId CREDITS = "Events::Text::CREDITS"_hash;
+    const EventId END_CREDITS = "Events::Text::END_CREDITS"_hash;
 }
 
 namespace Events::Audio

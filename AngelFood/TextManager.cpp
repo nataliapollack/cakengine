@@ -21,6 +21,10 @@ void TextManager::init()
     current_string[2] = "...flap your wings by hitting space...";
     current_string[3] = "...double jump now unlocked...";
 
+    credit_str = std::string{
+        "Songbirdie - Coding\nKotuon - Coding\nDurianwater - Art\nZho- Art, SFX\nBizzle - Music, SFX"
+    };
+
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Text::WALK,
             TextManager::TriggerWalkingTutorial));
@@ -28,6 +32,13 @@ void TextManager::init()
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Text::DOUBLE,
             TextManager::TriggerWalkingTutorial));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Text::CREDITS,
+            TextManager::TriggerCredits));
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Text::END_CREDITS,
+            TextManager::TriggerCredits));
 }
 
 void TextManager::update()
@@ -48,6 +59,7 @@ void TextManager::update()
         }
         frame_counter++;
     }
+
 }
 
 void TextManager::draw()
@@ -55,7 +67,12 @@ void TextManager::draw()
     if (currently_showing)
     {
         DrawTextEx(text_font, current_string[string_counter].c_str(), 
-            Vector2{150, 500}, 48.0f, 5.0f, WHITE);
+            Vector2{75, 500}, 48.0f, 5.0f, WHITE);
+    }
+    else if (credits)
+    {
+        DrawTextEx(text_font, credit_str.c_str(),
+            Vector2{ 250, 150 }, 48.0f, 5.0f, WHITE);
     }
 }
 
@@ -74,6 +91,11 @@ void TextManager::TriggerDoubleJumpTutorial(Event& event)
 void TextManager::TriggerCredits(Event& event)
 {
     credits = true;
+}
+
+void TextManager::EndCredits(Event& event)
+{
+    credits = false;
 }
 
 void TextManager::unload()
