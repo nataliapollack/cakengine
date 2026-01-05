@@ -275,20 +275,20 @@ int main()
                 }
 
             camera_sys->update(clamped_dt);
-            tooling_sys->update();
+          //  tooling_sys->update();
             environment_render_sys->update();
             spark_sys->update(clamped_dt);
 
                 // hard coded resett
-                if (IsKeyPressed(KEY_TWO))
-                {
-                    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
-                    player_movement_sys->ResetPlayerPos(mouse_pos);
-                }
-                if (IsKeyPressed(KEY_MINUS))
-                {
-                    draw_boxes = !draw_boxes;
-                }
+                //if (IsKeyPressed(KEY_TWO))
+                //{
+                //    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+                //    player_movement_sys->ResetPlayerPos(mouse_pos);
+                //}
+                //if (IsKeyPressed(KEY_MINUS))
+                //{
+                //    draw_boxes = !draw_boxes;
+                //}
             }
 
             // DRAW
@@ -304,7 +304,7 @@ int main()
                     ClearBackground(BLACK);
                 }
 
-                DrawFPS(-50, -50);
+                //DrawFPS(-50, -50);
                 camera_sys->BeginCameraMode();
 
 
@@ -318,17 +318,17 @@ int main()
                 render_sys->draw();
                 daedalus_sys->draw();
 
-                if (draw_boxes)
-                    box_render_sys->draw();
+                //if (draw_boxes)
+                //    box_render_sys->draw();
 
                 particle_sys->draw();
 
                 spark_sys->draw();
 
-                if (tooling_sys->GetToolStatus())
-                {
-                    tooling_sys->draw();
-                }
+                //if (tooling_sys->GetToolStatus())
+                //{
+                //    tooling_sys->draw();
+                //}
 
                // collision_sys->debug_draw_collisions();
               //   DrawCircle(0, 0, 10, BLUE);
