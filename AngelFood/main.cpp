@@ -274,7 +274,7 @@ int main()
                     particle_sys->update(clamped_dt);
                 }
 
-            camera_sys->update();
+            camera_sys->update(clamped_dt);
             tooling_sys->update();
             environment_render_sys->update();
             spark_sys->update(clamped_dt);
