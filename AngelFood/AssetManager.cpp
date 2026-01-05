@@ -1,12 +1,22 @@
 #include "AssetManager.h"
+//#include <chrono>
+//#include <iostream>
 
 void AssetManager::load_assets()
 {
+    //using namespace std::chrono;
+
+    //auto start = high_resolution_clock::now();
     // playerr
     textures[HALO] = LoadTexture("art/HALO.png");
     textures[PLAYER_IDLE] = LoadTexture("art/AngelSprite/Idle.png");
     textures[PLAYER_FALL] = LoadTexture("art/AngelSprite/Fall.png");
     textures[PLAYER_JUMP] = LoadTexture("art/AngelSprite/Jump.png");
+    //auto stop = high_resolution_clock::now();
+
+    //auto duration = duration_cast<microseconds>(stop - start);
+    //std::cout << duration.count() << "\n";
+
     textures[PLAYER_GLIDE] = LoadTexture("art/AngelSprite/Glide.png");
     textures[PLAYER_WALK1] = LoadTexture("art/AngelSprite/Walk1.png");
     textures[PLAYER_WALK2] = LoadTexture("art/AngelSprite/Walk2.png");
@@ -104,8 +114,8 @@ void AssetManager::load_assets()
     textures[FRUIT2]= LoadTexture("art/fruit_0001.png");
     textures[KING_HAPPY1] = LoadTexture("art/bird_happy_0000.png");
     textures[KING_HAPPY2] = LoadTexture("art/bird_happy_0001.png");
-    textures[BIRD_HAPPY1] = LoadTexture("art/minibird_happy_0000.png");
-    textures[BIRD_HAPPY2] = LoadTexture("art/minibird_happy_0001.png");
+    textures[BIRD_HAPPY1] = LoadTexture("art/miniBird_happy_0000.png");
+    textures[BIRD_HAPPY2] = LoadTexture("art/miniBird_happy_0001.png");
     textures[SHEEP_HAPPY1] = LoadTexture("art/sheep_happy_0000.png");
     textures[SHEEP_HAPPY2] = LoadTexture("art/sheep_happy_0001.png");
     textures[SNAKE_PLAY1] = LoadTexture("art/snake_Playing_0000.png");

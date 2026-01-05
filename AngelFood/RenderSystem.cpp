@@ -233,7 +233,7 @@ void EnvironmentRenderSystem::draw()
                     halo_pos.y -= ((float)texture.height / 2.0f);
                 }
 
-                if (rend.txt != PLAYER_DEAD || rend.txt != PLAYER_HURT)
+                if (rend.txt != PLAYER_DEAD && rend.txt != PLAYER_HURT)
                 {
                     Rectangle source = { 0, 0, (float)halo_texture.width, (float)halo_texture.height };
                     Rectangle dest = { halo_pos.x, halo_pos.y, halo_texture.width * 0.75f, halo_texture.height * 0.75f };
