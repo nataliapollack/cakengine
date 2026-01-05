@@ -207,6 +207,7 @@ namespace Events::Collision {
     const EventId ENDPOINT = "Events::Collision::ENDPOINT"_hash;
     const EventId WAITINGGAME = "Events::Collision::WAITINGGAME"_hash;
     const EventId UPDATECAM = "Events::Collision::UPDATECAM"_hash;
+    const ParamId UPDATECAM_ID = "Events::Collision::UPDATECAM_ID"_hash;
 }
 
 namespace Events::Input

@@ -13,15 +13,36 @@ void CameraSystem::init()
     gCamera.rotation = 0.0f;
     gCamera.zoom = 0.60;
     state = FOLLOW_PLAYER;
-
+    transition = false;
     obtained_entity = false;
-    
+    current_entity = 0;
+
+    timer = 2.0f;
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::UPDATECAM,
             CameraSystem::SetCurrentEn));
 }
 
-void CameraSystem::update()
+
+//function easeOutQuad(x: number) : number{
+//return 1 - (1 - x) * (1 - x);
+//}
+
+float lerp(float t, float old_x, float new_x)
+{
+    return old_x * (1 - t) + (new_x * t);
+}
+
+float easeOut(float x)
+{
+    return (1 - (1 - x) * (1 - x));
+}
+
+//{
+//    return (1 - (1 - x) * (1 - x));
+//}
+
+void CameraSystem::update(float dt)
 {
 
     gCamera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
@@ -30,36 +51,24 @@ void CameraSystem::update()
     {
         if (obtained_entity)
         {
-            auto& transf = gCoordinator.GetComponent<camera_info>(current_entity);
-            //Camera target follows player
-            gCamera.target = Vector2{ transf.x, transf.y };
-            gCamera.zoom = transf.zoom;
-            obtained_entity = false;
-        }
+            float t = easeOut(1.0f - (timer / 2.0f));
 
-        if (IsKeyPressed(KEY_A))
-        {
-            state = FREEROAM;
-            gCamera.target.x -= 10;
-        }
-        if (IsKeyPressed(KEY_D))
-        {
-            state = FREEROAM;
-            gCamera.target.x += 10;
-        }
-        if (IsKeyPressed(KEY_W))
-        {
-            state = FREEROAM;
-            gCamera.target.y -= 10;
-        }
-        if (IsKeyPressed(KEY_S))
-        {
-            state = FREEROAM;
-            gCamera.target.y += 10;
-        }
+            gCamera.target = Vector2
+            {
+                lerp(t, old_point.x, new_point.x),
+                lerp(t, old_point.y, new_point.y)
+            };
 
+            gCamera.zoom = lerp(t, old_zoom, new_zoom);
+
+            timer -= dt;
+            if (timer <= 0)
+            {
+                timer = 2.0f;
+                obtained_entity = false;
+            }
+        }
     }
-
     else
     {
         if (IsKeyDown(KEY_A))
@@ -105,6 +114,19 @@ void CameraSystem::EndCameraMode()
 
 void CameraSystem::SetCurrentEn(Event& event)
 {
-    obtained_entity = true;
-    current_entity = event.GetParam<Entity>(Events::Collision::UPDATECAM);
+    Entity ec = event.GetParam<Entity>(Events::Collision::UPDATECAM_ID);
+
+    if (ec != current_entity)
+    {
+        transition = true;
+        obtained_entity = true;
+        current_entity = ec;
+        old_point = gCamera.target;
+        old_zoom = gCamera.zoom;
+
+        auto& transf = gCoordinator.GetComponent<camera_info>(current_entity);
+        //Camera target follows player
+        new_point = Vector2{ transf.x, transf.y };
+        new_zoom = transf.zoom;
+    }
 }

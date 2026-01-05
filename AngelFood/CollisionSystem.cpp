@@ -143,6 +143,13 @@ void CollisionSystem::CheckCollisions()
                         waiting.SetParam(Events::Audio::ASSET, (int)1);
                         gCoordinator.SendEvent(waiting);
                     }
+
+                    if (stats_j.type == CAMERA_UPDATE)
+                    {
+                        Event waiting(Events::Collision::UPDATECAM);
+                        waiting.SetParam(Events::Collision::UPDATECAM_ID, j);
+                        gCoordinator.SendEvent(waiting);
+                    }
                 }
             }
         }

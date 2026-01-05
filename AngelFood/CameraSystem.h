@@ -13,7 +13,7 @@ class CameraSystem : public System
 {
 public:
     void init();
-    void update();
+    void update(float dt);
 
     void BeginCameraMode();
     void EndCameraMode();
@@ -21,7 +21,14 @@ public:
 
 private:
     bool obtained_entity;
+    bool transition;
    // Camera2D camera;
     CAMERA_STATES state;
     Entity current_entity;
+
+    Vector2 old_point;
+    Vector2 new_point;
+    float old_zoom;
+    float new_zoom;
+    float timer;
 };
