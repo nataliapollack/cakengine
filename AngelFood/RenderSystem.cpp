@@ -263,7 +263,7 @@ void EnvironmentRenderSystem::draw()
                 }
 
                 Rectangle source = { 0, 0, (float)texture_size.width, (float)texture_size.height };
-                Vector2 dim2 = { (float)texture_size.width *1.5, (float)texture_size.height *1.5};
+                Vector2 dim2 = { (float)texture_size.width * 1.5f, (float)texture_size.height * 1.5f};
 
                 float x = transform.pos.x + (dim.x) - 25;
                 float y = transform.pos.y - dim2.y / 2.0f;

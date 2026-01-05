@@ -1,4 +1,4 @@
-#version 330
+#version 300 es
 
 // Input vertex attributes
 in vec3 vertexPosition;
@@ -26,8 +26,8 @@ void main()
     int x = gl_InstanceID % width;
     int y = gl_InstanceID / width;
 
-    position.x += x * 50.0f;
-    position.y += y * 50.0f;
+    position.x += float(x) * 50.0f;
+    position.y += float(y) * 50.0f;
 
     gl_Position = mvp * vec4(position, 1.0);
 }

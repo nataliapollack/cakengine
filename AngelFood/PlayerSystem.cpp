@@ -74,6 +74,9 @@ void PlayerSystem::update(float dt)
                 auto& col = gCoordinator.GetComponent<collidble>(entity);
                 col.box.height *= 2.0f;
 
+                auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+                transf.pos.y -= 10.0f;
+
                 is_dead = false;
             }
         }

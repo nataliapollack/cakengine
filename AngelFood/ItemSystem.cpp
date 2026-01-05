@@ -182,7 +182,7 @@ void SparkSystem::init()
 {
     growing = false;
 
-    spawn_time = Timer(3.0f);
+    spawn_time = Timer(6.0f);
     spawn_time.start();
 
     gCoordinator.AddEventListener(
