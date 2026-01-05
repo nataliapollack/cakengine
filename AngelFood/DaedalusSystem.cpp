@@ -136,9 +136,9 @@ void DaedalusSystem::draw()
 	if (move_timer.is_running())
 		texture = gAssetMngr.GetAsset(DAEDALUS_FLOAT);
 
-	Rectangle source{ 0, 0, texture.width, texture.height };
+	Rectangle source{ 0, 0, (float)texture.width, (float)texture.height };
 	Rectangle dest{ daedalus_position.x, daedalus_position.y,
-		texture.width, texture.height };
+		(float)texture.width, (float)texture.height };
 
 	DrawTexturePro(texture, source, dest, Vector2Zero(), 0.0f, WHITE);
 }
