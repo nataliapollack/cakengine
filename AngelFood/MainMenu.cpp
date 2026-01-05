@@ -90,6 +90,8 @@ void MainMenu::updateIntro(float dt)
         if (start_time.update(dt))
         {
             curr_scene = Scene::GAMEPLAY;
+            Event cred(Events::Text::END_CREDITS);
+            gCoordinator.SendEvent(cred);
         }
     }
 }
@@ -216,8 +218,8 @@ void MainMenu::updateOutro(float dt)
         final_time.start();
         final = true;
 
-        Event cred(Events::Text::CREDITS);
-        gCoordinator.SendEvent(cred);
+        //Event cred(Events::Text::CREDITS);
+        //gCoordinator.SendEvent(cred);
     }
 
     if (final_time.update(dt))
