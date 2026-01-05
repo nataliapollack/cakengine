@@ -18,7 +18,7 @@ extern AssetManager gAssetMngr;
 
 void DaedalusSystem::init()
 {
-	move_timer = Timer(1.0f);
+	move_timer = Timer(5.0f);
 	curr_waypoint = -1;
 
 	if (entities_list.size() > 0)
