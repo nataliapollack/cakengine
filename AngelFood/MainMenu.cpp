@@ -63,6 +63,13 @@ void MainMenu::updateIntro(float dt)
         {
             curr_button = Button::START;
         }
+        if (IsKeyReleased(KEY_ENTER))
+        {
+            curr_scene = Scene::CREDITS_SCENE;
+            Event cred(Events::Text::CREDITS);
+            gCoordinator.SendEvent(cred);
+            return;
+        }
     }
 
     if (start_game)
@@ -208,6 +215,9 @@ void MainMenu::updateOutro(float dt)
     {
         final_time.start();
         final = true;
+
+        Event cred(Events::Text::CREDITS);
+        gCoordinator.SendEvent(cred);
     }
 
     if (final_time.update(dt))
@@ -227,10 +237,13 @@ void MainMenu::updateOutro(float dt)
 
         Event reset(Events::Scene::RESET);
         gCoordinator.SendEvent(reset);
+
+        Event cred(Events::Text::END_CREDITS);
+        gCoordinator.SendEvent(cred);
     }
 }
 
-void MainMenu::drawOutro()
+void MainMenu::drawOutro(TextManager& txtManager)
 {
     // DRAW
     ClearBackground({ 9, 10, 15, 255 });
@@ -270,8 +283,12 @@ void MainMenu::drawOutro()
 
         Rectangle dest{ 0.0f, 0.0f, (float)cut3.width, (float)cut3.height };
 
+
         DrawTexturePro(cut3, source, dest,
             Vector2Zero(), 0.0f, ColorAlpha(WHITE, fade));
+
+        //txtManager.draw();
+
     }
 
     EndDrawing();

@@ -4,6 +4,7 @@
 
 #include "Timer.hpp"
 #include "Events.hpp"
+#include "TextManager.h"
 
 enum Button : int
 {
@@ -15,7 +16,8 @@ enum Scene : int
 {
     MAINMENU,
     GAMEPLAY,
-    OUTRO
+    OUTRO,
+    CREDITS_SCENE
 };
 
 class MainMenu
@@ -25,7 +27,7 @@ public:
     void updateIntro(float dt);
     void drawIntro();
     void updateOutro(float dt);
-    void drawOutro();
+    void drawOutro(TextManager& txtManager);
 
     Scene GetScene() const;
     void SetScene(Scene newScene);

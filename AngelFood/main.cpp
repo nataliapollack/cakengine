@@ -362,7 +362,23 @@ int main()
         else if (menu.GetScene() == Scene::OUTRO)
         {
             menu.updateOutro(clamped_dt);
-            menu.drawOutro();
+            menu.drawOutro(txting_sys);
+        }
+        else if (menu.GetScene() == Scene::CREDITS_SCENE)
+        {
+            if (IsKeyReleased(KEY_ENTER))
+            {
+                menu.SetScene(Scene::MAINMENU);
+                Event cred(Events::Text::END_CREDITS);
+                gCoordinator.SendEvent(cred);
+            }
+
+            ClearBackground({ 9, 10, 15, 255 });
+            BeginDrawing();
+
+            txting_sys.draw();
+
+            EndDrawing();
         }
     }
 
