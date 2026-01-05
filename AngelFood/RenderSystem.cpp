@@ -247,21 +247,32 @@ void EnvironmentRenderSystem::draw()
             }
 
             // literally just draw the dialog box
-            //if (stats.type == DROPOFF)
-            //{
-            //    Texture2D texture = gAssetMngr.GetAsset(rend.txt);
-            //    Texture2D texture = gAssetMngr.GetAsset(rend.txt);
+            if (stats.type == DROPOFF)
+            {
+                auto const& collecti = gCoordinator.GetComponent<collecting>(draw_order[i]);
 
-            //    Rectangle source = { 0, 0, (float)texture.width, (float)texture.height };
-            //    Vector2 dim2 = { (float)texture.width * 0.5f, (float)texture.height * 0.5f };
+                Texture2D texture_size = gAssetMngr.GetAsset(rend.txt);
 
-            //    float x = transform.pos.x + (dim.x / 2.0f) - (dim2.x / 2.0f);
-            //    float y = transform.pos.y - dim2.y + 5;
-            //    Rectangle dest = { x, y, dim2.x, dim2.y };
-            //    Vector2 origin = { 0, 0 };
-            //    DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
-            //    halo_pos.y -= ((float)texture.height / 2.0f);
-            //}
+                if (collecti.item == FRUIT)
+                {
+                    texture_size = gAssetMngr.GetAsset(BUBBLEFRUIT);
+                }
+                else
+                {
+                    texture_size = gAssetMngr.GetAsset(BUBBLEBIRD);
+                }
+
+                Rectangle source = { 0, 0, (float)texture_size.width, (float)texture_size.height };
+                Vector2 dim2 = { (float)texture_size.width *1.5, (float)texture_size.height *1.5};
+
+                float x = transform.pos.x + (dim.x) - 25;
+                float y = transform.pos.y - dim2.y / 2.0f;
+
+                Rectangle dest = { x, y, dim2.x, dim2.y };
+                Vector2 origin = { 0, 0 };
+
+                DrawTexturePro(texture_size, source, dest, origin, 0.0f, WHITE);
+            }
         }
     }
 
