@@ -4,6 +4,8 @@
 #include "raymath.h"
 #include <algorithm> 
 
+
+
 // systems
 #include "RenderSystem.h"
 #include "PlayerSystem.h"
@@ -143,13 +145,17 @@ void set_system_signatures()
 int main()
 {
     /*** Window Initialization *************************************************************/
-    InitWindow(900, 600, "ICA");
+    Image icon = LoadImage("art/icon2.png");
+    SetWindowIcon(icon);
+    InitWindow(900, 600, "iCa");
+
     SetTargetFPS(60);
 
     InitAudioDevice();
 
     gCoordinator.init();
     gAssetMngr.load_assets();
+
 
     Audio audio_sys;
 
@@ -212,10 +218,13 @@ int main()
        // float clamped_dt = std::clamp(deltaTime, 1.0f / 60.0f, 1.0f / 60.0f);
 
         //float clamped_dt = 0.03;
+        audio_sys.update();
 
         if (menu.GetScene() == Scene::MAINMENU)
         {
             // UPDATE
+            audio_sys.PlayMusic(2);
+
             menu.updateIntro(clamped_dt);
 
             // DRAW
@@ -269,8 +278,6 @@ int main()
             tooling_sys->update();
             environment_render_sys->update();
             spark_sys->update(clamped_dt);
-
-            audio_sys.update();
 
                 // hard coded resett
                 if (IsKeyPressed(KEY_TWO))
@@ -363,7 +370,7 @@ int main()
 
     gAssetMngr.unload();
     audio_sys.unload();
-
+    UnloadImage(icon);
     CloseAudioDevice();
     CloseWindow();
 }

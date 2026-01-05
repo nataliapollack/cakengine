@@ -11,6 +11,7 @@ void Audio::load()
     current_theme = 0;
     themes[0] = LoadMusicStream("audio/Ica Piano 2.mp3");
     themes[1] = LoadMusicStream("audio/Ica Credits.mp3");
+    themes[2] = LoadMusicStream("audio/Ica Menu Edited.wav");
 
     sounds[SNAKE_SONG] = LoadSound("audio/Snekkoo.wav");
 
@@ -59,13 +60,16 @@ void Audio::TriggerAudioStopSFX(Event& event)
 
 void Audio::PlayMusic(int theme)
 {
-    if (IsMusicStreamPlaying(themes[current_theme]))
+    if (current_theme != theme)
     {
-        StopMusicStream(themes[current_theme]);
-    }
-    current_theme = theme;
+        if (IsMusicStreamPlaying(themes[current_theme]))
+        {
+            StopMusicStream(themes[current_theme]);
+        }
+        current_theme = theme;
 
-    PlayMusicStream(themes[current_theme]);
+        PlayMusicStream(themes[current_theme]);
+    }
 }
 
 void Audio::TriggerMusicShift(Event& event)
