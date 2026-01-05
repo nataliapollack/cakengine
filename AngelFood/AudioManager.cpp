@@ -21,8 +21,8 @@ void Audio::load()
 
     sounds[SNAKE_SONG] = LoadSound("audio/Snekkoo.wav");
 
-    sounds[SPARK_COLLECT] = LoadSound("audio/Snekkoo.wav");
-    sounds[SPARK_SPAWN] = LoadSound("audio/Snekkoo.wav");
+    sounds[SPARK_COLLECT] = LoadSound("audio/Spark Collect.wav");
+    sounds[SPARK_SPAWN] = LoadSound("audio/Spark Spawn.wav");
 
     sounds[STEP1] = LoadSound("audio/Footstep 1.wav");
     sounds[STEP2] = LoadSound("audio/Footstep 2.wav");

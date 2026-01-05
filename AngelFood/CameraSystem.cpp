@@ -12,7 +12,7 @@ void CameraSystem::init()
     gCamera = { 0 };
     gCamera.rotation = 0.0f;
     gCamera.zoom = 0.60;
-    state = FOLLOW_PLAYER;
+    state = FREEROAM;
     transition = false;
     obtained_entity = false;
     current_entity = 0;
@@ -44,6 +44,16 @@ float easeOut(float x)
 
 void CameraSystem::update(float dt)
 {
+
+    if (IsKeyPressed(KEY_R))
+    {
+     state = FREEROAM;
+        
+    }
+    if (IsKeyPressed(KEY_P))
+    {
+        state = FOLLOW_PLAYER;
+    }
 
     gCamera.offset = Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 

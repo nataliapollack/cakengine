@@ -334,7 +334,7 @@ int main()
               //   DrawCircle(0, 0, 10, BLUE);
                 camera_sys->EndCameraMode();
 
-                txting_sys.draw();
+                //txting_sys.draw();
 
                 //Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
             //    DrawText(TextFormat("x %f, y %f", mouse_pos.x, mouse_pos.y), 20, 20, 40, RED);

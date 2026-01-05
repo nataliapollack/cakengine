@@ -794,11 +794,11 @@ void Tooling::update()
                         camera_info{ stats.zoom, stats.x, stats.y});
                 }
 
-                if (IsKeyPressed(KEY_R))
-                {
-                   // Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
-                    gCamera.target = Vector2{ stats.x, stats.y };
-                }
+                //if (IsKeyPressed(KEY_R))
+                //{
+                //   // Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+                //    gCamera.target = Vector2{ stats.x, stats.y };
+                //}
             }
 
             //if (gCoordinator.HasComponent<box_render>(current_en))
