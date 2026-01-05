@@ -13,6 +13,7 @@ void TextManager::init()
 
     frame_counter = 0;
     currently_showing = false;
+    credits = false;
 
     text_font = LoadFont("art/WalterTurncoat-Regular.ttf");
 
@@ -22,7 +23,7 @@ void TextManager::init()
     current_string[3] = "...double jump now unlocked...";
 
     credit_str = std::string{
-        "Songbirdie - Coding\nKotuon - Coding\nDurianwater - Art\nZho- Art, SFX\nBizzle - Music, SFX"
+        "Songbirdie - Coding\nKotuon - Coding\nDurianwater - Art\nZho- Art, SFX\nBizzle - Music, SFX\n\n[ SPACE ]"
     };
 
     gCoordinator.AddEventListener(
@@ -38,7 +39,7 @@ void TextManager::init()
             TextManager::TriggerCredits));
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Text::END_CREDITS,
-            TextManager::TriggerCredits));
+            TextManager::EndCredits));
 }
 
 void TextManager::update()
@@ -69,7 +70,7 @@ void TextManager::draw()
         DrawTextEx(text_font, current_string[string_counter].c_str(), 
             Vector2{75, 500}, 48.0f, 5.0f, WHITE);
     }
-    else if (credits)
+    if (credits)
     {
         DrawTextEx(text_font, credit_str.c_str(),
             Vector2{ 250, 150 }, 48.0f, 5.0f, WHITE);

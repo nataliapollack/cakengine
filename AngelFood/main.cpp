@@ -366,7 +366,7 @@ int main()
         }
         else if (menu.GetScene() == Scene::CREDITS_SCENE)
         {
-            if (IsKeyReleased(KEY_ENTER))
+            if (IsKeyReleased(KEY_SPACE))
             {
                 menu.SetScene(Scene::MAINMENU);
                 Event cred(Events::Text::END_CREDITS);
