@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetManager.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="DaedalusSystem.cpp" />
@@ -142,9 +143,11 @@
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Tooling.cpp" />
+    <ClCompile Include="TextManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.h" />
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Core.h" />
@@ -160,6 +163,7 @@
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="Tooling.h" />
+    <ClInclude Include="TextManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\particle2d.vs" />

@@ -25,6 +25,7 @@
 #include "MainMenu.h"
 #include "Game.h"
 #include "Events.hpp"
+#include "TextManager.h"
 
 Coordinator gCoordinator;
 AssetManager gAssetMngr;
@@ -169,56 +170,10 @@ int main()
 
     set_system_signatures();
 
+    TextManager txting_sys;
+
    tooling_sys->deserialize();
 
-    ////// object placer heree until i rlly like add some way to do player state mngr...
-    //  {
-     //      player
-        //int ec = gCoordinator.CreateEntity();
-        //{
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        render{ 0.5f, PLAYER_IDLE });
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        transform2D{ Vector2 {200.0f, 100.0f} });
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        player{ true, NONE });
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        collidble{ Rectangle{200, 300, 100, 100 } });
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        status{ true, true, PLAYER });
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        physics{ Vector2{0.0f, 0.0f}, Vector2{0.0f, 0.0f} }
-        //    );
-        //}
-           //spark testing
-        //int ec = gCoordinator.CreateEntity();
-        //{
-        //    float w = GetScreenWidth();
-        //    float y = GetScreenHeight();
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        box_render{ w, 100 });
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        transform2D{ Vector2 {0, 500} });
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        collidble{ Rectangle{0, y - 100, w, 100 } });
-        //    gCoordinator.AddComponent(
-        //        ec,
-        //        status{ true, true, WALL });
-        //}
-
-    //  tooling_sys->serialize();
-    //  }
-
-//    tooling_sys->serialize();
 
    waiting_sys->init();
     render_sys->init();
@@ -234,6 +189,8 @@ int main()
 
     MainMenu menu;
     menu.init();
+
+    txting_sys.init();
 
     Timer intro_fade(0.5f);
     bool intro_has_run = false;
@@ -287,6 +244,8 @@ int main()
 
             // UPDATE
             {
+                txting_sys.update();
+
                 if (!tooling_sys->GetToolStatus())
                 {
                     waiting_sys->update();
@@ -354,12 +313,13 @@ int main()
                 }
 
                // collision_sys->debug_draw_collisions();
-                Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
               //   DrawCircle(0, 0, 10, BLUE);
                 camera_sys->EndCameraMode();
 
+                txting_sys.draw();
 
-                DrawText(TextFormat("x %f, y %f", mouse_pos.x, mouse_pos.y), 20, 20, 40, RED);
+                //Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+            //    DrawText(TextFormat("x %f, y %f", mouse_pos.x, mouse_pos.y), 20, 20, 40, RED);
 
                 if (!intro_has_run)
                 {

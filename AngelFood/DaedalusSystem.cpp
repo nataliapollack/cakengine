@@ -120,6 +120,9 @@ void DaedalusSystem::update(float dt)
 					{
 						Event flight_end(Events::Input::END_DAEDALUS_FLIGHT);
 						gCoordinator.SendEvent(flight_end);
+
+						Event tutorial(Events::Text::WALK);
+						gCoordinator.SendEvent(tutorial);
 					}
 				}
 			}

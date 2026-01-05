@@ -198,3 +198,10 @@ namespace Events::Scene
 {
     const EventId RESET = "Events::Scene::RESET"_hash;
 }
+
+namespace Events::Text
+{
+    const EventId WALK = "Events::Text::WALK"_hash;
+    const EventId DOUBLE = "Events::Text::DOUBLE"_hash;
+    const EventId CREDITS = "Events::Text::CREDITS"_hash;
+}

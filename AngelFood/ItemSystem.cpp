@@ -107,7 +107,7 @@ void CollectingSystem::init()
     positions[0] = Vector2{ -5450, 410 };
     positions[1] = Vector2{ -5350, 410 };
     positions[2] = Vector2{ -5250, 410 };
-    positions[3] = Vector2{ -6250, -2540 };
+    positions[3] = Vector2{ -6350, -2540 };
 }
 
 void CollectingSystem::TriggerItemDroppedOff(Event& event)
@@ -167,9 +167,9 @@ void CollectingSystem::TriggerItemDroppedOff(Event& event)
                 gCoordinator.AddComponent(dropped_ec, transform2D{ positions[3] });
                 position_counter++;
 
-                gCoordinator.AddComponent(dropped_ec, render_environment{ true, false, false, BIRD_IDLE1, 1, 0.75, 0.0f });
+                gCoordinator.AddComponent(dropped_ec, render_environment{ true, false, false, BIRD_HAPPY1, 1, 0.75, 0.0f });
                 gCoordinator.AddComponent(dropped_ec, status{ true, true,  ENVIRONMENT });
-                gCoordinator.AddComponent(dropped_ec, animate{ 5.0f,  0,  BIRD_IDLE2 });
+                gCoordinator.AddComponent(dropped_ec, animate{ 5.0f,  0,  BIRD_HAPPY2 });
             }
 
 
