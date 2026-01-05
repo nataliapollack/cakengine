@@ -616,7 +616,7 @@ void PlayerSystem::Reset(Event& event)
         { 2.25f, 1.5f }, // jump heights
         0.4f,           // jump time (used for tap vs hold jumping)
         0.0f,           // tracks time since jump started
-        2,              // number of jumps
+        1,              // number of jumps
         2,              // number of jumps used since last reset
         1,              // cost of each jump
         false,          // has input and needs to execute
