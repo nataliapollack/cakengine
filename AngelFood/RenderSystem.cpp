@@ -144,6 +144,10 @@ void BoxRenderSystem::draw()
             {
                 DrawRectangleRec(box, ColorAlpha(RED, 0.9f));
             }
+            if (stats.type == CAMERA_UPDATE)
+            {
+                DrawRectangleRec(box, ColorAlpha(BLUE, 0.9f));
+            }
 
             //if (stats.type == ENDPOINT)
             //{

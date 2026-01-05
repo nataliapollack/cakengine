@@ -58,6 +58,7 @@ void register_components()
 
     gCoordinator.RegisterComponent<waypoint>();
     gCoordinator.RegisterComponent<waiting_game>();
+    gCoordinator.RegisterComponent<camera_info>();
 }
 
 void set_system_signatures()
@@ -87,7 +88,7 @@ void set_system_signatures()
 
     sig.reset();
 
-    sig.set(gCoordinator.GetComponentType<player>());
+    sig.set(gCoordinator.GetComponentType<camera_info>());
     gCoordinator.SetSystemSignature<CameraSystem>(sig);
 
     sig.reset();
@@ -126,7 +127,6 @@ void set_system_signatures()
     sig.set(gCoordinator.GetComponentType<waypoint>());
     sig.set(gCoordinator.GetComponentType<transform2D>());
     gCoordinator.SetSystemSignature<DaedalusSystem>(sig);
-
 
     sig.reset();
 
@@ -301,18 +301,18 @@ int main()
                 }
                 else
                 {
-                    ClearBackground(DARKBLUE);
+                    ClearBackground(BLACK);
                 }
 
                 DrawFPS(50, 50);
                 camera_sys->BeginCameraMode();
 
 
-                rlPushMatrix();
-                rlTranslatef(0, 25 * 50, 0);
-                rlRotatef(90, 1, 0, 0);
-                DrawGrid(500, 100);
-                rlPopMatrix();
+                //rlPushMatrix();
+                //rlTranslatef(0, 25 * 50, 0);
+                //rlRotatef(90, 1, 0, 0);
+                //DrawGrid(500, 100);
+                //rlPopMatrix();
 
                 environment_render_sys->draw();
                 render_sys->draw();

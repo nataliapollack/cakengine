@@ -1,6 +1,7 @@
 #pragma once
 #include "System.hpp"
 #include "raylib.h"
+#include "Events.hpp"
 
 enum CAMERA_STATES
 {
@@ -16,8 +17,11 @@ public:
 
     void BeginCameraMode();
     void EndCameraMode();
+    void SetCurrentEn(Event &event);
 
 private:
+    bool obtained_entity;
    // Camera2D camera;
     CAMERA_STATES state;
+    Entity current_entity;
 };
