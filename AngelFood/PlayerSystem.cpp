@@ -244,9 +244,7 @@ void PlayerSystem::JumpInput(Entity entity, float dt)
         m_jump.should_jump = true;
         m_jump.jump_buffering.start();
 
-        Event audio(Events::Audio::TRIGGEREDSFX);
-        audio.SetParam(Events::Audio::ASSET, JUMP_SFX);
-        gCoordinator.SendEvent(audio);
+
     }
 
     if (m_jump.should_jump && m_jump.jump_counter > 0)
@@ -254,6 +252,10 @@ void PlayerSystem::JumpInput(Entity entity, float dt)
         emit.emitting = true;
 
         m_jump.should_jump = false;
+
+        Event audio(Events::Audio::TRIGGEREDSFX);
+        audio.SetParam(Events::Audio::ASSET, JUMP_SFX);
+        gCoordinator.SendEvent(audio);
 
         vel.y = -m_jump.jump_impulse.at(
             m_jump.jump_charges - m_jump.jump_counter ) * ((float)60/(float)GetFPS());
