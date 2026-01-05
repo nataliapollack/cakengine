@@ -29,7 +29,8 @@ enum emitter_type : int
 {
 	ET_JUMP,
 	ET_FIREFLIES,
-	ET_ITEM_PICKUP
+	ET_ITEM_PICKUP,
+	ET_SPARK_PICKUP
 };
 
 struct particle_emitter

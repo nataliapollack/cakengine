@@ -267,6 +267,41 @@ void SparkSystem::TriggerSparkCollected(Event& event)
             if (entity == item_id)
             {
                 staus.active = false;
+
+                auto& coll = gCoordinator.GetComponent<collidble>(entity);
+
+                Vector2 base_offset{ coll.box.width * 0.25f ,
+                    coll.box.height * 0.25f };
+
+                float offset = 5.0f;
+
+                Vector2 min_offset{ base_offset.x - offset,
+                    base_offset.y - offset };
+                Vector2 max_offset{ base_offset.x + offset,
+                    base_offset.y + offset };
+
+                gCoordinator.AddComponent<particle_emitter>(entity,
+                    particle_emitter
+                    {
+                        64,         // capacity
+                        0,           // alive count
+                        { min_offset, max_offset },
+                        ColorAlpha({ 248, 196, 129 }, 0.7f), // color
+                        Vector2Rotate(Vector2Scale(Vector2UnitY, -1.0f),
+                            DEG2RAD * -45.0f), // init dir
+                        360.0f,
+                        { 400.0f, 800.0f },      // init speed
+                        { 0.05f, 0.25f },        // init lifetime
+                        { 2.0f, 6.0f }, // init size
+                        64,          // num per emit
+                        true ,        // emitting
+                        true,       // one shot effect
+                        COUNT,
+                        Timer(0.0f), // time between emits
+                        ET_SPARK_PICKUP,
+                        {}
+                    }
+                );
             }
         }
     }

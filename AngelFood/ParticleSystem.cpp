@@ -306,6 +306,15 @@ void ParticleSystem::init_update_functions()
 			par.position = Vector2Add(par.position,
 				Vector2Scale(par.velocity, dt));
 		}
+	});
+
+	update_functions.insert({
+	ET_SPARK_PICKUP,
+	[](particle_emitter& emit, Particle& par, float dt)
+	{
+		par.position = Vector2Add(par.position,
+			Vector2Scale(par.velocity, dt));
+	}
 		});
 }
 
@@ -391,4 +400,27 @@ void ParticleSystem::init_draw_functions()
 			}
 		}
 	});
+
+	draw_functions.insert({
+		ET_SPARK_PICKUP,
+		[](particle_emitter& emit, transform2D& transf, Particle& par)
+		{
+			par.color.a = static_cast<float>(par.initial_alpha) *
+				(par.lifetime / par.initial_lifetime);
+
+			//if (emit.texture_id != ASSETS::COUNT)
+			//{
+			//	Texture2D texture = gAssetMngr.GetAsset(emit.texture_id);
+			//	// Draw texture
+			//	DrawTexture(texture, par.position.x - texture.width / 2.0f,
+			//		par.position.y - texture.height / 2.0f, WHITE);
+			//}
+			//else
+			{
+				DrawCircle(par.position.x + par.size,
+					par.position.y + par.size,
+					par.size, par.color);
+			}
+		}
+		});
 }
