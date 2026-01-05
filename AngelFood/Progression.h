@@ -12,6 +12,14 @@ struct collecting
     int amount_needed;
 };
 
+
+struct camera_info
+{
+    float zoom;
+    float x;
+    float y;
+};
+
 struct spike
 {
 };

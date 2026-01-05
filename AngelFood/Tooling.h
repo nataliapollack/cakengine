@@ -19,7 +19,8 @@ enum COMPONENTS_LIST
     PARTICLE_EMITTER,
     WAYPOINT_COMP,
     WAITING_GAME,
-    SPARKY
+    SPARKY,
+    CAMERA_ONE
 };
 
 class Tooling : public System

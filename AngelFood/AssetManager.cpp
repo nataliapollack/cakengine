@@ -148,6 +148,8 @@ void AssetManager::load_assets()
 
     textures[BUBBLEBIRD] = LoadTexture("art/BirdSpeechbubble.png");
     textures[BUBBLEFRUIT] = LoadTexture("art/SheepSpeechbubble.png");
+
+    textures[DISAPPEARING] = LoadTexture("art/blackbox.png");
 }
 
 Texture2D AssetManager::GetAsset(int asset)

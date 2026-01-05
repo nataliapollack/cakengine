@@ -176,6 +176,14 @@ void Tooling::serialize()
                 auto& comp = gCoordinator.GetComponent<spark>(entity);
                 data << SPARKY << "\n";
             }
+            if (gCoordinator.HasComponent<camera_info>(entity))
+            {
+                auto& comp = gCoordinator.GetComponent<camera_info>(entity);
+                data << CAMERA_ONE << "\n";
+                data << comp.zoom << "\n";
+                data << comp.x << "\n";
+                data << comp.y << "\n";
+            }
         }
     }
 
@@ -492,6 +500,21 @@ void Tooling::deserialize()
 
                 std::getline(load_data, line);
             }
+            if (CAMERA_ONE == atoi(line.c_str()))
+            {
+                std::getline(load_data, line);
+                float idx = atof(line.c_str());
+
+                std::getline(load_data, line);
+                float x = atof(line.c_str());
+                std::getline(load_data, line);
+                float y = atof(line.c_str());
+
+                gCoordinator.AddComponent(en,
+                    camera_info{ idx, x, y });
+
+                std::getline(load_data, line);
+            }
 
             //if ("EN" == line)
             if (line.compare(comp) == 0)
@@ -703,19 +726,60 @@ void Tooling::update()
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) mouseMoveRect = false;
 
-            if (gCoordinator.HasComponent<box_render>(current_en))
+
+            if (gCoordinator.HasComponent<camera_info>(current_en))
             {
+                auto& stats = gCoordinator.GetComponent<camera_info>(current_en);
+                auto& col = gCoordinator.GetComponent<collidble>(current_en);
+
+                stats.zoom = gCamera.zoom;
+                if (IsKeyPressed(KEY_UP))
+                {
+                    stats.y -= 10.0f;
+                }
+                if (IsKeyPressed(KEY_DOWN))
+                {
+                    stats.y += 10.0f;
+                }
+
+                if (IsKeyPressed(KEY_LEFT))
+                {
+                    stats.x -= 10.0f;
+                }
+                if (IsKeyPressed(KEY_RIGHT))
+                {
+                    stats.x += 10.0f;
+                }
+
+                if (IsKeyPressed(KEY_LEFT_BRACKET))
+                {
+                    col.box.height += 50.0f;
+                }
+                if (IsKeyPressed(KEY_RIGHT_BRACKET))
+                {
+                    col.box.height -= 50.0f;
+                }
+
+                if (IsKeyPressed(KEY_SEMICOLON))
+                {
+                    col.box.width += 50.0f;
+                }
+                if (IsKeyPressed(KEY_APOSTROPHE))
+                {
+                    col.box.width -= 50.0f;
+                }
+
                 if (IsKeyPressed(KEY_SPACE))
                 {
                     auto& transform = gCoordinator.GetComponent<transform2D>(current_en);
-                    auto& stats = gCoordinator.GetComponent<status>(current_en);
+                    auto& stats2 = gCoordinator.GetComponent<status>(current_en);
                     auto& box = gCoordinator.GetComponent<box_render>(current_en);
                     auto& col = gCoordinator.GetComponent<collidble>(current_en);
 
                     int copy = gCoordinator.CreateEntity();
 
                     gCoordinator.AddComponent(copy,
-                        status{ stats.active, true, WALL });
+                        status{ stats2.active, true, CAMERA_UPDATE });
 
                     gCoordinator.AddComponent(copy,
                         transform2D{ transform.pos });
@@ -725,8 +789,22 @@ void Tooling::update()
 
                     gCoordinator.AddComponent(copy,
                         collidble{ col.box });
+
+                    gCoordinator.AddComponent(copy,
+                        camera_info{ stats.zoom, stats.x, stats.y});
+                }
+
+                if (IsKeyPressed(KEY_R))
+                {
+                   // Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
+                    gCamera.target = Vector2{ stats.x, stats.y };
                 }
             }
+
+            //if (gCoordinator.HasComponent<box_render>(current_en))
+            //{
+
+            //}
 
             if (gCoordinator.HasComponent<render_environment>(current_en))
             {
@@ -734,37 +812,37 @@ void Tooling::update()
                 auto& stats = gCoordinator.GetComponent<status>(current_en);
                 ASSETS texture = rend.txt;
 
-                if (IsKeyPressed(KEY_LEFT))
-                {
-                    if (ROOM15 < rend.txt)
-                    {
-                        rend.txt = (ASSETS)((int)rend.txt - 1);
-                        if (rend.txt == ROOM15)
-                        {
-                            rend.txt = BG_GLASS;
-                        }
-                        if (rend.txt == CREDITS_BUTTON)
-                        {
-                            rend.txt = VINE4;
-                        }
-                    }
-                }
-                if (IsKeyPressed(KEY_RIGHT))
-                {
-                    if (ROOM15 < rend.txt)
-                    {
-                        rend.txt = (ASSETS)((int)rend.txt + 1);
+                //if (IsKeyPressed(KEY_LEFT))
+                //{
+                //    if (ROOM15 < rend.txt)
+                //    {
+                //        rend.txt = (ASSETS)((int)rend.txt - 1);
+                //        if (rend.txt == ROOM15)
+                //        {
+                //            rend.txt = BG_GLASS;
+                //        }
+                //        if (rend.txt == CREDITS_BUTTON)
+                //        {
+                //            rend.txt = VINE4;
+                //        }
+                //    }
+                //}
+                //if (IsKeyPressed(KEY_RIGHT))
+                //{
+                //    if (ROOM15 < rend.txt)
+                //    {
+                //        rend.txt = (ASSETS)((int)rend.txt + 1);
 
-                        if (rend.txt == FRUIT1)
-                        {
-                            rend.txt = BG_GLASS;
-                        }
-                        if (rend.txt == COUNT)
-                        {
-                            rend.txt = BRANCH1;
-                        }
-                    }
-                }
+                //        if (rend.txt == FRUIT1)
+                //        {
+                //            rend.txt = BG_GLASS;
+                //        }
+                //        if (rend.txt == COUNT)
+                //        {
+                //            rend.txt = BRANCH1;
+                //        }
+                //    }
+                //}
                 if (IsKeyPressed(KEY_DOWN))
                 {
                     rend.depth -= 1;
@@ -780,39 +858,39 @@ void Tooling::update()
                     rend.depth = 0;
                 }
 
-                if (IsKeyPressed(KEY_C))
-                {
-                    rend.flip_hor = !rend.flip_hor;
-                }
-                if (IsKeyPressed(KEY_Z))
-                {
-                    rend.flip_ver = !rend.flip_ver;
-                }
-                if (IsKeyDown(KEY_X))
-                {
-                    rend.rotation += 5.0f;
-                }
-                if (IsKeyDown(KEY_V))
-                {
-                    rend.rotation -= 5.0f;
-                }
+                //if (IsKeyPressed(KEY_C))
+                //{
+                //    rend.flip_hor = !rend.flip_hor;
+                //}
+                //if (IsKeyPressed(KEY_Z))
+                //{
+                //    rend.flip_ver = !rend.flip_ver;
+                //}
+                //if (IsKeyDown(KEY_X))
+                //{
+                //    rend.rotation += 5.0f;
+                //}
+                //if (IsKeyDown(KEY_V))
+                //{
+                //    rend.rotation -= 5.0f;
+                //}
 
-                if (IsKeyPressed(KEY_SPACE))
-                {
-                    auto& transform = gCoordinator.GetComponent<transform2D>(current_en);
-                    Texture2D txt = gAssetMngr.GetAsset(rend.txt);
-                    int copy = gCoordinator.CreateEntity();
+                //if (IsKeyPressed(KEY_SPACE))
+                //{
+                //    auto& transform = gCoordinator.GetComponent<transform2D>(current_en);
+                //    Texture2D txt = gAssetMngr.GetAsset(rend.txt);
+                //    int copy = gCoordinator.CreateEntity();
 
-                    gCoordinator.AddComponent(copy,
-                        status{ stats.active, true, ENVIRONMENT });
+                //    gCoordinator.AddComponent(copy,
+                //        status{ stats.active, true, ENVIRONMENT });
 
-                    gCoordinator.AddComponent(copy,
-                        transform2D{ transform.pos });
+                //    gCoordinator.AddComponent(copy,
+                //        transform2D{ transform.pos });
 
-                    gCoordinator.AddComponent(copy,
-                        render_environment{ rend.animate, rend.flip_ver, rend.flip_hor,
-                        rend.txt, rend.depth, rend.size, rend.rotation });
-                }
+                //    gCoordinator.AddComponent(copy,
+                //        render_environment{ rend.animate, rend.flip_ver, rend.flip_hor,
+                //        rend.txt, rend.depth, rend.size, rend.rotation });
+                //}
 
                 if (IsKeyPressed(KEY_LEFT_BRACKET))
                 {
@@ -856,6 +934,13 @@ void Tooling::draw()
     if (mouseMoveRect)
     {
         DrawRectangleRec(current_rec, ColorAlpha(PINK, 0.5));
+
+        if (gCoordinator.HasComponent<camera_info>(current_en))
+        {
+            auto& stats = gCoordinator.GetComponent<camera_info>(current_en);
+
+            DrawCircle(stats.x, stats.y, 5.0f, PINK);
+        }
     }
 }
 
@@ -873,7 +958,7 @@ void Tooling::check_inputs()
         int en = gCoordinator.CreateEntity();
 
         gCoordinator.AddComponent(en,
-            status{ true, true, LEVEL2_START });
+            status{ true, true, CAMERA_UPDATE });
 
         gCoordinator.AddComponent(en,
             transform2D{ mouse_pos.x, mouse_pos.y });
@@ -882,12 +967,14 @@ void Tooling::check_inputs()
             box_render{ Vector2{100, 100}, false });
 
         gCoordinator.AddComponent(en,
+            camera_info{ gCamera.zoom, mouse_pos.x, mouse_pos.y });
+
+        gCoordinator.AddComponent(en,
             collidble{ mouse_pos.x, mouse_pos.y, 100, 100 });
 
         current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
         current_en = en;
     }
-
     if (IsKeyPressed(KEY_FOUR))
     {
         Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), gCamera);
@@ -895,20 +982,17 @@ void Tooling::check_inputs()
         int en = gCoordinator.CreateEntity();
 
         gCoordinator.AddComponent(en,
-            status{ true, true, SPARK });
+            status{ true, true, DISAPPEARING_DOOR });
 
         gCoordinator.AddComponent(en,
-            transform2D{ Vector2{mouse_pos.x, mouse_pos.y} });
-
-        //gCoordinator.AddComponent(en,
-        //    render_environment{ false, false, false, BRANCH1, 1, 1.0f, 0.0f });\
+            transform2D{ mouse_pos.x, mouse_pos.y });
 
         gCoordinator.AddComponent(en,
-            spark{ 0, SPARK1 });
+            render_environment{ false, false, false, DISAPPEARING, 5, 1.0f, 0.0f });
 
-        Texture temp = gAssetMngr.GetAsset(SPARK1);
-        gCoordinator.AddComponent(en, 
-            collidble{ Rectangle { mouse_pos.x, mouse_pos.y, (float)temp.width, (float)temp.height } });
+        Texture2D txt = gAssetMngr.GetAsset(DISAPPEARING);
+        gCoordinator.AddComponent(en,
+            collidble{ mouse_pos.x, mouse_pos.y, (float)txt.width, (float)txt.height });
 
         current_rec = Rectangle{ mouse_pos.x, mouse_pos.y, 500, 500 };
         current_en = en;

@@ -18,6 +18,8 @@ const enum OBJECT_TYPE
     ENDPOINT,
     WAITINGPOINT,
     LEVEL2_START,
+    CAMERA_UPDATE,
+    DISAPPEARING_DOOR,
 };
 
 enum HOLDABLE_ITEMS
@@ -143,6 +145,7 @@ enum ASSETS
     CUTSCENE3,
     BUBBLEBIRD,
     BUBBLEFRUIT,
+    DISAPPEARING,
     COUNT
 };
 
@@ -203,6 +206,7 @@ namespace Events::Collision {
     const ParamId WAYPOINT_DATA = "Events::Collision::WAYPOINT_DATA"_hash;
     const EventId ENDPOINT = "Events::Collision::ENDPOINT"_hash;
     const EventId WAITINGGAME = "Events::Collision::WAITINGGAME"_hash;
+    const EventId UPDATECAM = "Events::Collision::UPDATECAM"_hash;
 }
 
 namespace Events::Input
