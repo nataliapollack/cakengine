@@ -3,6 +3,8 @@
 
 #include "Game.h"
 
+#include <iostream>
+
 extern Coordinator gCoordinator;
 
 void TextManager::init()
@@ -18,6 +20,14 @@ void TextManager::init()
     current_string[1] = "...glide holding shift mid-air...";
     current_string[2] = "...flap your wings by hitting space...";
     current_string[3] = "...double jump now unlocked...";
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Text::WALK,
+            TextManager::TriggerWalkingTutorial));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Text::DOUBLE,
+            TextManager::TriggerWalkingTutorial));
 }
 
 void TextManager::update()
@@ -44,7 +54,8 @@ void TextManager::draw()
 {
     if (currently_showing)
     {
-        DrawTextEx(text_font, current_string[string_counter].c_str(), Vector2{500, 700}, 20.0f, 5.0f, WHITE);
+        DrawTextEx(text_font, current_string[string_counter].c_str(), 
+            Vector2{150, 500}, 48.0f, 5.0f, WHITE);
     }
 }
 

@@ -18,7 +18,7 @@ extern AssetManager gAssetMngr;
 
 void DaedalusSystem::init()
 {
-	move_timer = Timer(15.0f);
+	move_timer = Timer(5.0f);
 	curr_waypoint = -1;
 
 	if (entities_list.size() > 0)
@@ -131,8 +131,16 @@ void DaedalusSystem::update(float dt)
 						Event flight_end(Events::Input::END_DAEDALUS_FLIGHT);
 						gCoordinator.SendEvent(flight_end);
 
-						Event tutorial(Events::Text::WALK);
-						gCoordinator.SendEvent(tutorial);
+						if (curr_waypoint == 2)
+						{
+							Event tutorial(Events::Text::WALK);
+							gCoordinator.SendEvent(tutorial);
+						}
+						else if (curr_waypoint == 3)
+						{
+							Event tutorial(Events::Text::DOUBLE);
+							gCoordinator.SendEvent(tutorial);
+						}
 					}
 				}
 			}
