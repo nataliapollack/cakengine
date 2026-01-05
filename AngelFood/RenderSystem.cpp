@@ -40,8 +40,8 @@ void RenderSystem::draw()
             Texture2D texture= gAssetMngr.GetAsset(rend.txt);
 
             // std::cout << stats.type << std::endl;
-             Rectangle source = { 0, 0, texture.width, texture.height };
-            Vector2 dim = { texture.width * rend.size, texture.height * rend.size };
+             Rectangle source = { 0, 0, (float)texture.width, (float)texture.height };
+            Vector2 dim = { (float)texture.width * rend.size, (float)texture.height * rend.size };
             Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
             Vector2 origin = { 0, 0 };
             DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
@@ -130,7 +130,7 @@ void BoxRenderSystem::draw()
             }
             //if (stats.type == EMITTER)
             //{
-            //    DrawRectangleRec(box, ColorAlpha(VIOLET, 0.9f));
+            //    DrawRectangleRec(box, ColorAlpha(VIOLET, 0.5f));
             //}
             if (stats.type == ITEM)
             {
@@ -198,7 +198,7 @@ void EnvironmentRenderSystem::draw()
             Texture2D texture = gAssetMngr.GetAsset(rend.txt);
 
             // std::cout << stats.type << std::endl;
-            Rectangle source = { 0, 0, texture.width, texture.height };
+            Rectangle source = { 0, 0, (float)texture.width, (float)texture.height };
             if (rend.flip_hor)
             {
                 source.width *= -1;
@@ -207,7 +207,7 @@ void EnvironmentRenderSystem::draw()
             {
                 source.height *= -1;
             }
-            Vector2 dim = { texture.width * rend.size, texture.height * rend.size};
+            Vector2 dim = { (float)texture.width * rend.size, (float)texture.height * rend.size};
             Rectangle dest = { transform.pos.x, transform.pos.y, dim.x, dim.y };
             Vector2 origin = { 0, 0 };
             DrawTexturePro(texture, source, dest, origin, rend.rotation, WHITE);
@@ -223,19 +223,19 @@ void EnvironmentRenderSystem::draw()
                 {
                     Texture2D texture = gAssetMngr.GetAsset(playuh.holding);
 
-                    Rectangle source = { 0, 0, texture.width, texture.height };
-                    Vector2 dim2 = { texture.width * 0.5, texture.height * 0.5 };
+                    Rectangle source = { 0, 0, (float)texture.width, (float)texture.height };
+                    Vector2 dim2 = { (float)texture.width * 0.5f, (float)texture.height * 0.5f };
                     float x = transform.pos.x + (dim.x / 2.0f) - (dim2.x / 2.0f);
                     float y = transform.pos.y - dim2.y + 5;
                     Rectangle dest = { x, y, dim2.x, dim2.y };
                     Vector2 origin = { 0, 0 };
                     DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
-                    halo_pos.y -= (texture.height / 2.0f);
+                    halo_pos.y -= ((float)texture.height / 2.0f);
                 }
 
-                if (rend.txt != PLAYER_DEAD || rend.txt != PLAYER_HURT)
+                if (rend.txt != PLAYER_DEAD && rend.txt != PLAYER_HURT)
                 {
-                    Rectangle source = { 0, 0, halo_texture.width, halo_texture.height };
+                    Rectangle source = { 0, 0, (float)halo_texture.width, (float)halo_texture.height };
                     Rectangle dest = { halo_pos.x, halo_pos.y, halo_texture.width * 0.75f, halo_texture.height * 0.75f };
                     Vector2 origin = { 0, 0 };
                     DrawTexturePro(halo_texture, source, dest, origin, 0.0f, WHITE);

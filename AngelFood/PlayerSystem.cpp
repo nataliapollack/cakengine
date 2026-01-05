@@ -252,7 +252,7 @@ void PlayerSystem::JumpInput(Entity entity, float dt)
         m_jump.should_jump = false;
 
         vel.y = -m_jump.jump_impulse.at(
-            m_jump.jump_charges - m_jump.jump_counter );
+            m_jump.jump_charges - m_jump.jump_counter ) * ((float)60/(float)GetFPS());
         m_jump.jump_counter -= m_jump.jump_cost;
         m_jump.jump_cost = 1;
 

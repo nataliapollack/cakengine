@@ -108,7 +108,7 @@ void MainMenu::drawIntro()
         float title_width = title.width * scale;
         float title_height = title.height * scale;
 
-        Rectangle source{ 0, 0, title.width, title.height };
+        Rectangle source{ 0, 0, (float)title.width, (float)title.height };
 
         Rectangle dest{ (width - title_width) * 0.5f, upper_border,
             title_width, title_height };
@@ -125,7 +125,7 @@ void MainMenu::drawIntro()
         float illus_height = illus.height * scale;
 
         Rectangle source{ 0, 0,
-            illus.width, illus.height };
+            (float)illus.width, (float)illus.height };
 
         Rectangle dest{
             (width - illus_width) * 0.52f,
@@ -151,12 +151,12 @@ void MainMenu::drawIntro()
             select_scale;
 
         Rectangle source{ 0, 0,
-            start.width, start.height };
+            (float)start.width, (float)start.height };
 
         Rectangle dest{
             (width - start_width) * 0.2f,
             upper_border + title.height * 0.8f * scale +
-            illus1.height * scale * 1.2,
+            illus1.height * scale * 1.2f,
             start_width, start_height };
 
         Color color = (curr_button == Button::START) ?
@@ -181,12 +181,12 @@ void MainMenu::drawIntro()
             select_scale;
 
         Rectangle source{ 0, 0,
-            credits.width, credits.height };
+            (float)credits.width, (float)credits.height };
 
         Rectangle dest{
             (width - credits_width) * 0.8f,
             upper_border + title.height * 0.8f * scale +
-            illus1.height * scale * 1.2,
+            illus1.height * scale * 1.2f,
             credits_width, credits_height };
 
         Color color = (curr_button == Button::CREDITS) ?
@@ -242,9 +242,9 @@ void MainMenu::drawOutro()
     float percent = (outro_time.count() / outro_time.time());
     if (!final && percent < 0.5f)
     {
-        Rectangle source{ 0, 0, cut1.width, cut1.height };
+        Rectangle source{ 0, 0, (float)cut1.width, (float)cut1.height };
 
-        Rectangle dest{ 0.0f, 0.0f, cut1.width, cut1.height };
+        Rectangle dest{ 0.0f, 0.0f, (float)cut1.width, (float)cut1.height };
 
         DrawTexturePro(cut1, source, dest,
             Vector2Zero(), 0.0f, ColorAlpha(WHITE, 1.0f));
@@ -253,9 +253,9 @@ void MainMenu::drawOutro()
     {
         float fade = (percent > 0.9f) ? 10.0f * (1.0f - percent) : 1.0f;
 
-        Rectangle source{ 0, 0, cut2.width, cut2.height };
+        Rectangle source{ 0, 0, (float)cut2.width, (float)cut2.height };
 
-        Rectangle dest{ 0.0f, 0.0f, cut2.width, cut2.height };
+        Rectangle dest{ 0.0f, 0.0f, (float)cut2.width, (float)cut2.height };
 
         DrawTexturePro(cut2, source, dest,
             Vector2Zero(), 0.0f, ColorAlpha(WHITE, fade));
@@ -266,9 +266,9 @@ void MainMenu::drawOutro()
         float fade = (percent > 0.9f) ? 10.0f * (1.0f - percent) : 1.0f;
         fade = (percent < 0.1f) ? percent * 10.0f : fade;
 
-        Rectangle source{ 0, 0, cut3.width, cut3.height };
+        Rectangle source{ 0, 0, (float)cut3.width, (float)cut3.height };
 
-        Rectangle dest{ 0.0f, 0.0f, cut3.width, cut3.height };
+        Rectangle dest{ 0.0f, 0.0f, (float)cut3.width, (float)cut3.height };
 
         DrawTexturePro(cut3, source, dest,
             Vector2Zero(), 0.0f, ColorAlpha(WHITE, fade));

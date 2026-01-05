@@ -1,12 +1,22 @@
 #include "AssetManager.h"
+//#include <chrono>
+//#include <iostream>
 
 void AssetManager::load_assets()
 {
+    //using namespace std::chrono;
+
+    //auto start = high_resolution_clock::now();
     // playerr
     textures[HALO] = LoadTexture("art/HALO.png");
     textures[PLAYER_IDLE] = LoadTexture("art/AngelSprite/Idle.png");
     textures[PLAYER_FALL] = LoadTexture("art/AngelSprite/Fall.png");
     textures[PLAYER_JUMP] = LoadTexture("art/AngelSprite/Jump.png");
+    //auto stop = high_resolution_clock::now();
+
+    //auto duration = duration_cast<microseconds>(stop - start);
+    //std::cout << duration.count() << "\n";
+
     textures[PLAYER_GLIDE] = LoadTexture("art/AngelSprite/Glide.png");
     textures[PLAYER_WALK1] = LoadTexture("art/AngelSprite/Walk1.png");
     textures[PLAYER_WALK2] = LoadTexture("art/AngelSprite/Walk2.png");
