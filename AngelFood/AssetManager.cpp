@@ -114,8 +114,8 @@ void AssetManager::load_assets()
     textures[FRUIT2]= LoadTexture("art/fruit_0001.png");
     textures[KING_HAPPY1] = LoadTexture("art/bird_happy_0000.png");
     textures[KING_HAPPY2] = LoadTexture("art/bird_happy_0001.png");
-    textures[BIRD_HAPPY1] = LoadTexture("art/miniBird_happy_0000.png");
-    textures[BIRD_HAPPY2] = LoadTexture("art/miniBird_happy_0001.png");
+    textures[BIRD_HAPPY1] = LoadTexture("art/minibird_happy_0000.png");
+    textures[BIRD_HAPPY2] = LoadTexture("art/minibird_happy_0001.png");
     textures[SHEEP_HAPPY1] = LoadTexture("art/sheep_happy_0000.png");
     textures[SHEEP_HAPPY2] = LoadTexture("art/sheep_happy_0001.png");
     textures[SNAKE_PLAY1] = LoadTexture("art/snake_Playing_0000.png");
