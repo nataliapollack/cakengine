@@ -2,6 +2,7 @@
 #include "System.hpp"
 #include "Events.hpp"
 #include "raylib.h"
+#include "Timer.hpp"
 
 class ItemSystem : public System
 {
@@ -29,7 +30,7 @@ class SparkSystem : public System
 {
 public:
     void init();
-    void update();
+    void update(float dt);
     void draw();
 
     void TriggerSparkCollected(Event& event);
@@ -40,6 +41,9 @@ private:
     float speed;
     float growth_mulitplier;
     int frame_counter;
+
+    Timer spawn_time;
+    bool finished_spawn;
 };
 
 

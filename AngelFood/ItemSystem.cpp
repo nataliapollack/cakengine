@@ -181,6 +181,9 @@ void CollectingSystem::TriggerItemDroppedOff(Event& event)
 void SparkSystem::init()
 {
     growing = false;
+
+    spawn_time = Timer(3.0f);
+
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::SPARK, SparkSystem::TriggerSparkCollected));
 
@@ -188,7 +191,7 @@ void SparkSystem::init()
         METHOD_LISTENER(Events::Spark::SPAWN, SparkSystem::TriggerSparkSpawned));
 }
 
-void SparkSystem::update()
+void SparkSystem::update(float dt)
 {
     for (auto& entity : entities_list)
     {
@@ -217,6 +220,13 @@ void SparkSystem::update()
                 {
                     growth_mulitplier = 1.0f;
                     growing = false;
+                }
+            }
+            else
+            {
+                if (spawn_time.update(dt))
+                {
+                    finished_spawn = true;
                 }
             }
         }
@@ -260,7 +270,7 @@ void SparkSystem::TriggerSparkCollected(Event& event)
         for (auto& entity : entities_list)
         {
             auto& staus = gCoordinator.GetComponent<status>(entity);
-            if (entity == item_id)
+            if (finished_spawn && entity == item_id)
             {
                 staus.active = false;
 
@@ -309,6 +319,9 @@ void SparkSystem::TriggerSparkSpawned(Event& event)
     int new_spark = gCoordinator.CreateEntity();
     growing = true;
     growth_mulitplier = 0.0f;
+
+    finished_spawn = false;
+    spawn_time.start();
 
     float y = event.GetParam<float>(Events::Spark::Collected::LOCATIONY) - 20;
     float x = event.GetParam<float>(Events::Spark::Collected::LOCATIONX);
