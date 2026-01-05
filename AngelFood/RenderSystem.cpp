@@ -140,6 +140,10 @@ void BoxRenderSystem::draw()
             {
                 DrawRectangleRec(box, ColorAlpha(PURPLE, 0.9f));
             }
+            if (stats.type == LEVEL2_START)
+            {
+                DrawRectangleRec(box, ColorAlpha(RED, 0.9f));
+            }
 
             //if (stats.type == ENDPOINT)
             //{
@@ -241,6 +245,23 @@ void EnvironmentRenderSystem::draw()
                     DrawTexturePro(halo_texture, source, dest, origin, 0.0f, WHITE);
                 }
             }
+
+            // literally just draw the dialog box
+            //if (stats.type == DROPOFF)
+            //{
+            //    Texture2D texture = gAssetMngr.GetAsset(rend.txt);
+            //    Texture2D texture = gAssetMngr.GetAsset(rend.txt);
+
+            //    Rectangle source = { 0, 0, (float)texture.width, (float)texture.height };
+            //    Vector2 dim2 = { (float)texture.width * 0.5f, (float)texture.height * 0.5f };
+
+            //    float x = transform.pos.x + (dim.x / 2.0f) - (dim2.x / 2.0f);
+            //    float y = transform.pos.y - dim2.y + 5;
+            //    Rectangle dest = { x, y, dim2.x, dim2.y };
+            //    Vector2 origin = { 0, 0 };
+            //    DrawTexturePro(texture, source, dest, origin, 0.0f, WHITE);
+            //    halo_pos.y -= ((float)texture.height / 2.0f);
+            //}
         }
     }
 

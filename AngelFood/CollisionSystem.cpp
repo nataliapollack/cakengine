@@ -136,6 +136,13 @@ void CollisionSystem::CheckCollisions()
 
                         gCoordinator.SendEvent(waiting);
                     }
+
+                    if (stats_j.type == LEVEL2_START)
+                    {
+                        Event waiting(Events::Audio::STARTMUSIC);
+                        waiting.SetParam(Events::Audio::ASSET, (int)1);
+                        gCoordinator.SendEvent(waiting);
+                    }
                 }
             }
         }

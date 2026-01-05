@@ -243,6 +243,10 @@ void PlayerSystem::JumpInput(Entity entity, float dt)
     {
         m_jump.should_jump = true;
         m_jump.jump_buffering.start();
+
+        Event audio(Events::Audio::TRIGGEREDSFX);
+        audio.SetParam(Events::Audio::ASSET, JUMP_SFX);
+        gCoordinator.SendEvent(audio);
     }
 
     if (m_jump.should_jump && m_jump.jump_counter > 0)
@@ -293,6 +297,17 @@ void PlayerSystem::GlideInput(Entity entity)
     if (IsKeyReleased(KEY_LEFT_SHIFT) && m_glide.glide_time.is_running())
     {
         m_glide.glide_time.stop();
+
+        Event audio(Events::Audio::STOPSFX);
+        audio.SetParam(Events::Audio::ASSET, GLIDE_SFX);
+        gCoordinator.SendEvent(audio);
+    }
+
+    if (IsKeyDown(KEY_LEFT_SHIFT) && !playuh.on_ground)
+    {
+        Event audio(Events::Audio::TRIGGEREDSFX);
+        audio.SetParam(Events::Audio::ASSET, GLIDE_SFX);
+        gCoordinator.SendEvent(audio);
     }
 }
 
@@ -524,6 +539,18 @@ void PlayerSystem::update_state()
                 anime.frame_counter = 0;
 
                 first = !first;
+
+                
+                Event audio(Events::Audio::STOPSFX);
+                if (first)
+                {      
+                    audio.SetParam(Events::Audio::ASSET, STEP1);
+                }
+                else
+                {
+                    audio.SetParam(Events::Audio::ASSET, STEP2);
+                }
+                gCoordinator.SendEvent(audio);
             }
             anime.frame_counter++;
             

@@ -873,13 +873,10 @@ void Tooling::check_inputs()
         int en = gCoordinator.CreateEntity();
 
         gCoordinator.AddComponent(en,
-            status{ true, true, WALL });
+            status{ true, true, LEVEL2_START });
 
         gCoordinator.AddComponent(en,
             transform2D{ mouse_pos.x, mouse_pos.y });
-
-        //gCoordinator.AddComponent(en,
-        //    render_environment{ false, false, false, FRUIT1, 0, 0.5f, 0.0f });
 
         gCoordinator.AddComponent(en,
             box_render{ Vector2{100, 100}, false });

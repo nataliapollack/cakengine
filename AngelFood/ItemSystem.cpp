@@ -255,6 +255,10 @@ void SparkSystem::TriggerSparkCollected(Event& event)
     {
         spark_count++;
 
+        Event audio(Events::Audio::TRIGGEREDSFX);
+        audio.SetParam(Events::Audio::ASSET, SPARK_COLLECT);
+        gCoordinator.SendEvent(audio);
+
         Entity item_id = event.GetParam<Entity>(Events::Spark::Collected::SPARKID);
         //  std::cout << item_id << "\n";
         for (auto& entity : entities_list)
@@ -274,6 +278,10 @@ void SparkSystem::TriggerSparkSpawned(Event& event)
     int new_spark = gCoordinator.CreateEntity();
     growing = true;
     growth_mulitplier = 0.0f;
+
+    Event audio(Events::Audio::TRIGGEREDSFX);
+    audio.SetParam(Events::Audio::ASSET, SPARK_SPAWN);
+    gCoordinator.SendEvent(audio);
 
     float y = event.GetParam<float>(Events::Spark::Collected::LOCATIONY) - 20;
     float x = event.GetParam<float>(Events::Spark::Collected::LOCATIONX);
@@ -337,6 +345,10 @@ void WaitingGameSystem::update()
                     anime.speed = 3.0f;
                     rend.txt = SNAKE_IDLE1;
                     anime.alt_asset = SNAKE_IDLE2;
+
+                    Event audio(Events::Audio::STOPSFX);
+                    audio.SetParam(Events::Audio::ASSET, SNAKE_SONG);
+                    gCoordinator.SendEvent(audio);
                 }
             }
             playing = false;
@@ -362,6 +374,10 @@ void WaitingGameSystem::TriggerStartGame(Event &event)
         {
             rend.txt = SNAKE_PLAY1;
             anime.alt_asset = SNAKE_PLAY2;
+
+            Event audio(Events::Audio::TRIGGEREDSFX);
+            audio.SetParam(Events::Audio::ASSET, SNAKE_SONG);
+            gCoordinator.SendEvent(audio);
         }
     }
     just_swapped = true;
