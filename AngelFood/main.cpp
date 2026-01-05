@@ -218,7 +218,7 @@ int main()
        // float clamped_dt = std::clamp(deltaTime, 1.0f / 60.0f, 1.0f / 60.0f);
 
         //float clamped_dt = 0.03;
-        audio_sys.update();
+        audio_sys.update(clamped_dt);
 
         if (menu.GetScene() == Scene::MAINMENU)
         {
@@ -304,7 +304,7 @@ int main()
                     ClearBackground(BLACK);
                 }
 
-                DrawFPS(50, 50);
+                DrawFPS(-50, -50);
                 camera_sys->BeginCameraMode();
 
 
