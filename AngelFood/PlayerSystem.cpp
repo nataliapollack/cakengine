@@ -40,12 +40,12 @@ void PlayerSystem::init()
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::SPARK, PlayerSystem::HitSpark));
 
-    gCoordinator.AddEventListener(
-        METHOD_LISTENER(Events::Input::START_DAEDALUS_FLIGHT,
-            PlayerSystem::StopInput));
-    gCoordinator.AddEventListener(
-        METHOD_LISTENER(Events::Input::END_DAEDALUS_FLIGHT,
-            PlayerSystem::StartInput));
+    //gCoordinator.AddEventListener(
+    //    METHOD_LISTENER(Events::Input::START_DAEDALUS_FLIGHT,
+    //        PlayerSystem::StopInput));
+    //gCoordinator.AddEventListener(
+    //    METHOD_LISTENER(Events::Input::END_DAEDALUS_FLIGHT,
+    //        PlayerSystem::StartInput));
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::ENDPOINT, PlayerSystem::HitEndpoint)
