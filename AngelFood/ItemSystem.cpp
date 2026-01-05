@@ -183,6 +183,7 @@ void SparkSystem::init()
     growing = false;
 
     spawn_time = Timer(3.0f);
+    spawn_time.start();
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Collision::SPARK, SparkSystem::TriggerSparkCollected));
