@@ -268,7 +268,7 @@ int main()
             camera_sys->update();
             tooling_sys->update();
             environment_render_sys->update();
-            spark_sys->update();
+            spark_sys->update(clamped_dt);
 
             audio_sys.update();
 
@@ -297,6 +297,7 @@ int main()
                     ClearBackground(DARKBLUE);
                 }
 
+                DrawFPS(50, 50);
                 camera_sys->BeginCameraMode();
 
 
@@ -347,7 +348,6 @@ int main()
                         ));
                 }
 
-                //DrawFPS(50, 50);
                 EndDrawing();
             }
             //tooling_sys->delete_inactivity();d
