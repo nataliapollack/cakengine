@@ -36,6 +36,6 @@ public:
 
 private:
     std::vector<Entity> draw_order;
-
+    int current_spawned_amount;
 
 };
