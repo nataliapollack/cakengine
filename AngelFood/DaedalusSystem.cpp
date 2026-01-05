@@ -18,14 +18,22 @@ extern AssetManager gAssetMngr;
 
 void DaedalusSystem::init()
 {
-	move_timer = Timer(5.0f);
+	move_timer = Timer(15.0f);
 	curr_waypoint = -1;
 
 	if (entities_list.size() > 0)
+	{
 		curr_waypoint = 0;
+	}
 
 	for (auto& entity : entities_list)
 	{
+		auto& way = gCoordinator.GetComponent<waypoint>(entity);
+		if (way.index == curr_waypoint)
+		{
+			auto& transf = gCoordinator.GetComponent<transform2D>(entity);
+			daedalus_position = transf.pos;
+		}
 	}
 
 	gCoordinator.AddEventListener(
@@ -46,8 +54,8 @@ void DaedalusSystem::init()
 
 		Vector2 base_offset{ texture.width / 2.0f, texture.height / 2.0f };
 
-		Vector2 min_offset{ base_offset.x - 20.0f, base_offset.y - 20.0f };
-		Vector2 max_offset{ base_offset.x + 20.0f, base_offset.y + 20.0f };
+		Vector2 min_offset{ base_offset.x - 5.0f, base_offset.y - 5.0f };
+		Vector2 max_offset{ base_offset.x + 5.0f, base_offset.y + 5.0f };
 
 		gCoordinator.AddComponent(emitter,
 			particle_emitter{
@@ -91,6 +99,7 @@ void DaedalusSystem::update(float dt)
 			if (curr_waypoint == 0)
 			{
 				daedalus_position = transf.pos;
+				last_position = transf.pos;
 			}
 			else
 			{
@@ -102,13 +111,14 @@ void DaedalusSystem::update(float dt)
 						(percent > 0.75f && percent < 0.8f))
 					{
 						auto& emit = gCoordinator.GetComponent<particle_emitter>(emitter);
-						auto& transf = gCoordinator.GetComponent<transform2D>(emitter);
-						transf.pos = daedalus_position;
+
 						emit.emitting = true;
 					}
 
 					daedalus_position =
-						Vector2Lerp(last_position, transf.pos, percent);
+						Vector2Lerp(last_position, transf.pos, percent);	
+					auto& emitter_transform = gCoordinator.GetComponent<transform2D>(emitter);
+					emitter_transform.pos = daedalus_position;
 				}
 				else
 				{
@@ -164,7 +174,19 @@ void DaedalusSystem::PlayerInRange(Event& event)
 
 void DaedalusSystem::SetNewPosition()
 {
-	last_position = daedalus_position;
+	//last_position = daedalus_position;
+
+	for (auto& entity : entities_list)
+	{
+		auto& way = gCoordinator.GetComponent<waypoint>(entity);
+
+		if (way.index == curr_waypoint)
+		{
+			auto& t = gCoordinator.GetComponent<transform2D>(entity);
+			last_position = t.pos;
+			daedalus_position = t.pos;
+		}
+	}
 
 	curr_waypoint = std::clamp(curr_waypoint + 1,
 		0, static_cast<int>(entities_list.size()));
