@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Carrot", "Carrot\Carrot.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AngelFood", "AngelFood\AngelFood.vcxproj", "{71A01A5B-E047-4137-AAC5-47A42EEC9159}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lava", "Lava\Lava.vcxproj", "{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -67,6 +69,14 @@ Global
 		{71A01A5B-E047-4137-AAC5-47A42EEC9159}.Release|x64.Build.0 = Release|x64
 		{71A01A5B-E047-4137-AAC5-47A42EEC9159}.Release|x86.ActiveCfg = Release|Win32
 		{71A01A5B-E047-4137-AAC5-47A42EEC9159}.Release|x86.Build.0 = Release|Win32
+		{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}.Debug|x64.ActiveCfg = Debug|x64
+		{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}.Debug|x64.Build.0 = Debug|x64
+		{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}.Debug|x86.ActiveCfg = Debug|Win32
+		{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}.Debug|x86.Build.0 = Debug|Win32
+		{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}.Release|x64.ActiveCfg = Release|x64
+		{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}.Release|x64.Build.0 = Release|x64
+		{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}.Release|x86.ActiveCfg = Release|Win32
+		{11C4629D-5C54-4CB7-9CE5-32175F9DB69F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
