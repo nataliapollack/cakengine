@@ -416,3 +416,7 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+.idea/.idea.cake-ngine/.idea/.name
+.idea/.idea.cake-ngine/.idea/encodings.xml
+.idea/.idea.cake-ngine/.idea/indexLayout.xml
+.idea/.idea.cake-ngine/.idea/vcs.xml
