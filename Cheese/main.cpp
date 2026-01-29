@@ -3,7 +3,7 @@
 
 #include "Coordinator.hpp"
 #include "RenderSystem.h"
-#include "PlayerMovementSystem.h"
+#include "PlayerSystem.h"
 #include "LevelManager.h"
 
 
@@ -12,15 +12,15 @@ Coordinator gCoordinator;
 int main(void)
 {
     LevelManager mgnr;
-    InitWindow(900, 600, "THE TUTORING SHOW");
+    InitWindow(900, 600, "The Graveyard Shift");
     SetTargetFPS(60);
 
-    // wow this is bad, make a serializer / deserializer to load this shit in the init or something nat
     gCoordinator.init();
 
     mgnr.register_components();
 
-    auto movement_system = gCoordinator.RegisterSystem<PlayerMovementSystem>();
+
+    auto player_system = gCoordinator.RegisterSystem<PlayerSystem>();
     auto render_sys = gCoordinator.RegisterSystem<RenderSystem>();
 
 
@@ -34,16 +34,19 @@ int main(void)
         float deltaTime = GetFrameTime();
 
         // UPDATE CALLS
-        movement_system->update(deltaTime);
+        player_system->update(deltaTime);
 
         // DRAW CALLS
         
-        ClearBackground(WHITE);
-        // temp tb  h 
+        ClearBackground(BLACK);
+
         BeginDrawing();
 
         render_sys->draw();
 
         EndDrawing();
     }
+
+   // CloseAudioDevice();
+    CloseWindow();
 }

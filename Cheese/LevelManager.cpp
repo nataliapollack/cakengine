@@ -2,59 +2,50 @@
 #include "LevelManager.h"
 
 #include "Player.h"
-#include "Render.h"
-#include "Transform.h"
-
+#include "Core.h"
 
 #include "RenderSystem.h"
-#include "PlayerMovementSystem.h"
+#include "PlayerSystem.h"
 
 extern Coordinator gCoordinator;
 
 
 void LevelManager::register_components()
 {
-    gCoordinator.RegisterComponent<Transform2D>();
-    gCoordinator.RegisterComponent<Player>();
-    gCoordinator.RegisterComponent<RenderBox>();
+    gCoordinator.RegisterComponent<transform25D>();
+    gCoordinator.RegisterComponent<player>();
+    gCoordinator.RegisterComponent<render>();
 }
 
 
 void LevelManager::set_signatures()
 {
     Signature sig;
-    sig.set(gCoordinator.GetComponentType<Player>());
-    sig.set(gCoordinator.GetComponentType<Transform2D>());
-    gCoordinator.SetSystemSignature<PlayerMovementSystem>(sig);
+
+    sig.set(gCoordinator.GetComponentType<player>());
+    sig.set(gCoordinator.GetComponentType<transform25D>());
+    gCoordinator.SetSystemSignature<PlayerSystem>(sig);
 
     sig.reset();
-
-    sig.set(gCoordinator.GetComponentType<Transform2D>());
-    sig.set(gCoordinator.GetComponentType<RenderBox>());
-    gCoordinator.SetSystemSignature<PlayerMovementSystem>(sig);
 }
 
+// until serialization is done
 void LevelManager::place_objs()
 {
-    Entity player_en = gCoordinator.CreateEntity();
+    Entity en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
-        player_en,
-        RenderBox{ 50, 50, WHITE }
+        en,
+        render{ Vector2{100.0f, 100.0f },  WHITE }
     );
 
     gCoordinator.AddComponent(
-        player_en,
-        Transform2D{ Vector2 {200.0f, 200.0f } }
+        en,
+        transform25D{ Vector2 {200.0f, 200.0f } }
     );
 
     gCoordinator.AddComponent(
-        player_en,
-        Player{}
+        en,
+        player{}
     );
 
-    Entity bqackground = gCoordinator.CreateEntity();
-    gCoordinator.AddComponent(
-        bqackground,
-        RenderBox{ (float)GetScreenWidth(), (float)GetScreenHeight(), DARKBLUE}
-    );
 }

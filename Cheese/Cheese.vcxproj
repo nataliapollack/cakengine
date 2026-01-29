@@ -107,13 +107,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;..\staticLib\include;..\staticLib;D:\User Folders\Desktop\personal\cake-ngine\Cheese;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;..\staticLib\include;..\staticLib;..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>raylib.lib;winmm.lib;gdi32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\User Folders\Desktop\personal\cake-ngine\libs;D:\User Folders\Desktop\personal\cake-ngine\Cheese\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\libs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -124,29 +124,36 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;..\staticLib\include;..\staticLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;..\staticLib\include;..\staticLib;..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>raylib.lib;winmm.lib;gdi32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\User Folders\Desktop\personal\cake-ngine\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\libs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GraveSystem.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PlayerMovementSystem.cpp" />
+    <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
+    <ClCompile Include="Tooling.cpp" />
+    <ClCompile Include="UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Grave.h" />
+    <ClInclude Include="GraveSystem.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="Render.h" />
-    <ClInclude Include="PlayerMovementSystem.h" />
+    <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="RenderSystem.h" />
+    <ClInclude Include="Tooling.h" />
+    <ClInclude Include="UIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cake-lib\cake-lib.vcxproj">

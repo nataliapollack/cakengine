@@ -2,11 +2,7 @@
 
 struct Grave
 {
-    float money_val;
-};
-
-struct GraveUI
-{
     const char* sentence;
+    float money_val;
     int matched_char;
 };
