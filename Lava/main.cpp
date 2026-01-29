@@ -23,6 +23,7 @@ int main()
 {
     /*** Window Initialization *************************************************************/
     InitWindow(900, 600, "AGNUS");
+    SetTargetFPS(60);
 
     gCoordinator.init();
 
