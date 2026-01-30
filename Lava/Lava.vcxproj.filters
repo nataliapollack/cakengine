@@ -54,6 +54,15 @@
     <ClCompile Include="CycleManager.cpp">
       <Filter>Source Files\managers</Filter>
     </ClCompile>
+    <ClCompile Include="Tooling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="DoorSystem.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingSystem.h">
@@ -82,6 +91,18 @@
     </ClInclude>
     <ClInclude Include="CycleManager.h">
       <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Tooling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSystem.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorSystem.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>Resource Files\components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

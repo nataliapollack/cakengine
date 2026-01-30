@@ -132,18 +132,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetManager.cpp" />
+    <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="CycleManager.cpp" />
+    <ClCompile Include="DoorSystem.cpp" />
     <ClCompile Include="EnergyManager.cpp" />
     <ClCompile Include="Lava.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
+    <ClCompile Include="Tooling.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.hpp" />
+    <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="CycleManager.h" />
+    <ClInclude Include="Door.h" />
+    <ClInclude Include="DoorSystem.h" />
     <ClInclude Include="ScreenManager.h" />
+    <ClInclude Include="Tooling.h" />
     <ClInclude Include="Viewport3D.hpp" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="EnergyManager.h" />
