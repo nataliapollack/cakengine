@@ -8,6 +8,7 @@ public:
     public sprite enemySprite;
     public int enemyHealth = 5;
     public float enemySpeed = 10f;
+    public gameObject enemyPrefab = transform, sprite, hp int holder
 
     [Header("Base Vars")]
     public vector2 targetLocation;
@@ -20,6 +21,7 @@ public:
     public float spawnTimer
     public vector2 spawnA;
     public vector2 spawnB;
+    public float spawnOffset;
     private gameObject[] enemyList;
     
     
@@ -40,11 +42,21 @@ public:
             --spawnDelay vs delta.time
         else
             instantiate enemy prefab and add it to the enemyList[]
+
+        //Random spawning
+        vec2 spawnLocation;
             
-            //Play audio queue for spawning an enemy
+        if (random 50/50)
+            SpawnA + spawnOffset;
+        else
+            SpawnB + spawnOffset;
+                
+        translate enemy prefab to spawn
             
-            //reset spawn delay to spawnTimer so we have consistent delays between spawns
-            spawnDelay = spawnTimer;
+        //Play audio queue for spawning an enemy
+            
+        //reset spawn delay to spawnTimer so we have consistent delays between spawns
+        spawnDelay = spawnTimer;
     }
 
 
