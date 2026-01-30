@@ -9,7 +9,9 @@ class RenderSystem : public System
 {
 public:
     void init();
+    void shutdown();
 
+    void render_viewports();
     void draw();
 
 private:
