@@ -13,6 +13,8 @@
 #include "RenderingSystem.h"
 #include "PlayerMovement.h"
 
+// managers
+#include "EnergyManager.h"
 
 void temp_place_objs();
 void register_components();
@@ -25,20 +27,29 @@ int main()
 {
     /*** Window Initialization *************************************************************/
     InitWindow(900, 600, "AGNUS");
+    SetTargetFPS(60);
 
     gCoordinator.init();
 
     register_components();
 
+    // systems
     auto player_movement_sys = gCoordinator.RegisterSystem<PlayerMovementSystem>();
     auto render_sys = gCoordinator.RegisterSystem<RenderSystem>();
+
+
+    // managerss
+    EnergyManager enery_mngr;
 
     set_system_signatures();
 
     temp_place_objs();
 
+    // inits
     render_sys->init();
-    
+
+    enery_mngr.init();
+
     while (!WindowShouldClose())
     {
         // update
@@ -53,9 +64,11 @@ int main()
 
             BeginDrawing();
 
-            ClearBackground(RED);
+            ClearBackground(BLACK);
 
             render_sys->draw();
+
+            enery_mngr.DrawEnergyLevels();
 
             EndDrawing();
         }

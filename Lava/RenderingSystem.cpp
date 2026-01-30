@@ -38,7 +38,6 @@ static bool SortByDepth(uint32_t const& L, uint32_t const& R)
     return transformL.pos.y < transformR.pos.y;
 }
 
-
 void RenderSystem::ReorganizeObjects()
 {
     std::sort(draw_order.begin(), draw_order.end(), SortByDepth);

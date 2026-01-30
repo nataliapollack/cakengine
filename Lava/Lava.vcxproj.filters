@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -22,6 +22,12 @@
     <Filter Include="Resource Files\components">
       <UniqueIdentifier>{dd5795c0-39e0-4c28-8d83-e5cca46460a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\managers">
+      <UniqueIdentifier>{7f09ff9b-359e-4059-9190-11d18a977a92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\managers">
+      <UniqueIdentifier>{7e8edfca-2472-4ebe-9d53-49bc2f9d6728}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,6 +42,9 @@
     <ClCompile Include="PlayerMovement.cpp">
       <Filter>Source Files\systems</Filter>
     </ClCompile>
+    <ClCompile Include="EnergyManager.cpp">
+      <Filter>Source Files\managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingSystem.h">
@@ -49,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Resource Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnergyManager.h">
+      <Filter>Header Files\managers</Filter>
     </ClInclude>
     <ClInclude Include="Viewport3D.hpp">
       <Filter>Resource Files\components</Filter>
