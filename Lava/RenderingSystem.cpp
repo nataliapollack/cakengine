@@ -2,9 +2,16 @@
 #include "Coordinator.hpp"
 
 #include "Core.h"
+#include "Viewport3D.hpp"
+
 #include <algorithm>
+#include <ranges>
 
 extern Coordinator gCoordinator;
+
+static inline bool IsViewport(Entity entity) {
+    return gCoordinator.HasComponent<viewport3D>(entity);
+}
 
 void RenderSystem::init()
 {
@@ -16,8 +23,14 @@ void RenderSystem::init()
     // ReorganizeObjects();
 }
 
+void RenderSystem::shutdown() {
+    for (Entity en : std::views::filter(draw_order, IsViewport)) {
+        auto& fb = gCoordinator.GetComponent<viewport3D>(en).framebuffer;
+        UnloadRenderTexture(fb);
+    }
+}
 
-bool SortByDepth(uint32_t const& L, uint32_t const& R)
+static bool SortByDepth(uint32_t const& L, uint32_t const& R)
 {
     auto const& transformL = gCoordinator.GetComponent<transform2D>(L);
     auto const& transformR = gCoordinator.GetComponent<transform2D>(R);
@@ -31,6 +44,22 @@ void RenderSystem::ReorganizeObjects()
     std::sort(draw_order.begin(), draw_order.end(), SortByDepth);
 }
 
+void RenderSystem::render_viewports() {
+    for (Entity en : std::views::filter(draw_order, IsViewport)) {
+        auto& viewport = gCoordinator.GetComponent<viewport3D>(en);
+        auto& model = gCoordinator.GetComponent<model_view>(en);
+        
+        BeginTextureMode(viewport.framebuffer);
+        ClearBackground(BLANK);
+
+        BeginMode3D(viewport.view);
+        DrawModel(*model.model, model.offset, model.scale, model.color);
+        EndMode3D();
+
+        EndTextureMode();
+    }
+}
+
 void RenderSystem::draw()
 {
     for (int i = 0; i < draw_order.size(); i++)
@@ -38,6 +67,15 @@ void RenderSystem::draw()
         auto const& transform = gCoordinator.GetComponent<transform2D>(draw_order[i]);
         auto const& rend = gCoordinator.GetComponent<render_box>(draw_order[i]);
 
-        DrawRectangle(transform.pos.x, transform.pos.y, rend.size.x, rend.size.y, rend.col);
+        if (gCoordinator.HasComponent<viewport3D>(draw_order[i])) {
+            auto& viewport = gCoordinator.GetComponent<viewport3D>(draw_order[i]);
+            DrawTextureRec(viewport.framebuffer.texture,
+                           Rectangle{ 0, 0, rend.size.x, -rend.size.y },
+                           Vector2{ transform.pos.x, transform.pos.y },
+                           rend.col);
+        }
+        else {
+            DrawRectangle(transform.pos.x, transform.pos.y, rend.size.x, rend.size.y, rend.col);
+        }
     }
 }
