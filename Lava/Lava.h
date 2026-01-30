@@ -24,7 +24,13 @@ namespace Events::Energy {
     const ParamId ENERGY_TICK = "Events::Energy::ENERGY_TICK"_hash;
 }
 
+namespace Events::Health {
+    const EventId HEALTH_DMG = "Events::Health::HEALTH_DMG"_hash;
+}
+
 namespace Events::Game {
     const EventId START = "Events::Game::START"_hash;
     const EventId END = "Events::Game::END"_hash;
+    const EventId SCREEN_CHANGE = "Events::Game::SCREEN_CHANGE"_hash;
+    const ParamId SCREEN_ID = "Events::Game::SCREEN_ID"_hash;
 }

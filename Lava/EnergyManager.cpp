@@ -15,13 +15,25 @@ void EnergyManager::init()
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Energy::ENERGY_UP, EnergyManager::ChargeEnergy));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Health::HEALTH_DMG, EnergyManager::ChargeEnergy));
 }
 
 void EnergyManager::TakeEnergyDmg(Event& event)
 {
     int dmg_tick =  event.GetParam<int>(Events::Energy::ENERGY_TICK);
 
-    TotalEnergyLeft -= dmg_tick;
+
+    if (TotalEnergyLeft <= 0)
+    {
+        TotalEnergyLeft = 0;
+        TotalHealthLeft -= HEALTH_TICK;
+    }
+    else
+    {
+        TotalEnergyLeft -= dmg_tick;
+    }
 }
 
 void EnergyManager::ChargeEnergy(Event& event)
@@ -33,7 +45,7 @@ void EnergyManager::ChargeEnergy(Event& event)
 
 void EnergyManager::CheckEnergyLevels()
 {
-    if (TotalEnergyLeft <= 0)
+    if (TotalHealthLeft <= 0)
     {
         Event game(Events::Game::END);
         gCoordinator.SendEvent(game);
@@ -44,4 +56,9 @@ void EnergyManager::DrawEnergyLevels()
 {
     DrawRectangle(5, 5, 160, 40, GRAY);
     DrawRectangle(10, 10, 150 * (TotalEnergyLeft / 100), 30, GREEN);
+}
+
+void EnergyManager::TakeHealthDmg(Event& event)
+{
+    TotalHealthLeft -= HEALTH_TICK;
 }

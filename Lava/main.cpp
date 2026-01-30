@@ -14,6 +14,7 @@
 
 // managers
 #include "EnergyManager.h"
+#include "ScreenManager.h"
 
 void temp_place_objs();
 void register_components();
@@ -38,6 +39,7 @@ int main()
 
     // managerss
     EnergyManager enery_mngr;
+    ScreenManager screen_mngr;
 
     set_system_signatures();
 
@@ -47,25 +49,54 @@ int main()
     render_sys->init();
 
     enery_mngr.init();
+    screen_mngr.init();
+
+
+    //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
+    screen_mngr.SetScreen(GAME);
 
     while (!WindowShouldClose())
     {
         // update
         float deltaTime = 1.0f / 60.0f;
 
-        player_movement_sys->move_player(deltaTime);
+        if (screen_mngr.GetScreen() == GAME)
+        {
+            player_movement_sys->move_player(deltaTime);
+        }
 
         //draw
         {
             BeginDrawing();
 
-            ClearBackground(BLACK);
+            if (screen_mngr.GetScreen() == GAME)
+            {                
+                ClearBackground(BLACK);
 
-            render_sys->draw();
+                render_sys->draw();
 
-            enery_mngr.DrawEnergyLevels();
+                enery_mngr.DrawEnergyLevels();
+
+            }
+            if (screen_mngr.GetScreen() == MAZE)
+            {
+                ClearBackground(BLUE);
+            }
+            if (screen_mngr.GetScreen() == AUDIO_FREQ)
+            {
+                ClearBackground(RED);
+            }
+            if (screen_mngr.GetScreen() == SOLAR_TILE)
+            {
+                ClearBackground(GREEN);
+            }
+            if (screen_mngr.GetScreen() == CAMERAS)
+            {
+                ClearBackground(DARKGREEN);
+            }
 
             EndDrawing();
+
         }
     }
 
