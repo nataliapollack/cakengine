@@ -50,5 +50,8 @@
     <ClInclude Include="Player.h">
       <Filter>Resource Files\components</Filter>
     </ClInclude>
+    <ClInclude Include="Viewport3D.hpp">
+      <Filter>Resource Files\components</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
