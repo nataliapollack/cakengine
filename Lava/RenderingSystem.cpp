@@ -16,7 +16,6 @@ void RenderSystem::init()
     // ReorganizeObjects();
 }
 
-
 bool SortByDepth(uint32_t const& L, uint32_t const& R)
 {
     auto const& transformL = gCoordinator.GetComponent<transform2D>(L);
@@ -24,7 +23,6 @@ bool SortByDepth(uint32_t const& L, uint32_t const& R)
 
     return transformL.pos.y < transformR.pos.y;
 }
-
 
 void RenderSystem::ReorganizeObjects()
 {
