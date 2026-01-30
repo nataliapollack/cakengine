@@ -1,3 +1,4 @@
+#pragma once
 #include "ScreenManager.h"
 #include "Coordinator.hpp"
 

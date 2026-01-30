@@ -1,4 +1,5 @@
 // this is the Game.h file
+#pragma once
 
 #include "Events.hpp"
 

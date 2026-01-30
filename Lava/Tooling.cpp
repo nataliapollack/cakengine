@@ -1,3 +1,4 @@
+#pragma once
 #include "Tooling.h"
 
 #include "Coordinator.hpp"
