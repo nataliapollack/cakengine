@@ -10,12 +10,14 @@ enum OBJECT_TYPE
     ENERGY_SCREEN,
     SOLAR_SCREEN,
     ENVIRONMENT_OBJ,
-    MAZE_SCREEN
+    MAZE_SCREEN,
+    WALL
 };
 
 namespace Events::Collision {
-    const EventId HIT_WALL = "Events::Collision::COLLIDED"_hash;
     const ParamId COLLISION_DATA = "Events::Collision::IMPULSE_FORCE"_hash;
+    const EventId HIT_WALL = "Events::Collision::COLLIDED"_hash;
+    const EventId HIT_DOOR = "Events::Collision::HIT_DOOR"_hash;
 }
 
 namespace Events::Energy {

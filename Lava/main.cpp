@@ -4,6 +4,9 @@
 #include "raymath.h"
 #include <algorithm> 
 
+#include "Tooling.h"
+
+// temp while we still place objs here
 // components
 #include "Core.h"
 #include "Player.h"
@@ -12,6 +15,7 @@
 // systems
 #include "RenderingSystem.h"
 #include "PlayerMovement.h"
+#include "CollisionSystem.h"
 
 // managers
 #include "EnergyManager.h"
@@ -19,8 +23,6 @@
 #include "CycleManager.h"
 
 void temp_place_objs();
-void register_components();
-void set_system_signatures();
 
 Coordinator gCoordinator;
 Model gTeapotModel_temp; // TODO: REMOVE
@@ -33,24 +35,27 @@ int main()
 
     gCoordinator.init();
 
-    register_components();
+    Tooling tools;
+
+    tools.register_components();
 
     // systems
     auto player_movement_sys = gCoordinator.RegisterSystem<PlayerMovementSystem>();
     auto render_sys = gCoordinator.RegisterSystem<RenderSystem>();
-
+    auto collision_sys = gCoordinator.RegisterSystem<CollisionSystem>();
 
     // managerss
     EnergyManager enery_mngr;
     ScreenManager screen_mngr;
     CycleManager cycle_mngr;
 
-    set_system_signatures();
+    tools.set_system_signatures();
 
     temp_place_objs();
 
     // inits
     render_sys->init();
+    player_movement_sys->init();
 
     enery_mngr.init();
     screen_mngr.init();
@@ -58,7 +63,7 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(GAME);
+    screen_mngr.SetScreen(OUTSIDE);
 
     while (!WindowShouldClose())
     {
@@ -66,9 +71,10 @@ int main()
         float deltaTime = 1.0f / 60.0f;
 
         cycle_mngr.UpdateTimer(deltaTime);
-        if (screen_mngr.GetScreen() == GAME)
+        if (screen_mngr.GetScreen() == OUTSIDE || screen_mngr.GetScreen() == INSIDE)
         {
             player_movement_sys->move_player(deltaTime);
+            collision_sys->CheckCollisions();
         }
 
         //draw
@@ -78,9 +84,13 @@ int main()
 
             BeginDrawing();
 
-            if (screen_mngr.GetScreen() == GAME)
+            if (screen_mngr.GetScreen() == OUTSIDE)
+            {
+                ClearBackground(GRAY);
+            }
+            if (screen_mngr.GetScreen() == OUTSIDE)
             {                
-                ClearBackground(BLACK);
+                ClearBackground(DARKGRAY);
 
                 render_sys->draw();
 
@@ -133,12 +143,12 @@ void temp_place_objs()
 
     gCoordinator.AddComponent(
         en,
-        status{true, PLAYER }
+        status{true, true, OUTSIDE, PLAYER }
     );
 
     gCoordinator.AddComponent(
         en,
-        player{20.0f}
+        player{ Vector2{20.0f, 20.0f} }
     );
 
     // 3D ENTITY BILLBOARD TEST
@@ -170,26 +180,4 @@ void temp_place_objs()
         teapot,
         render_box{ { 200, 200 }, WHITE }
     );
-}
-
-void register_components()
-{
-    gCoordinator.RegisterComponent<transform2D>();
-    gCoordinator.RegisterComponent<player>();
-    gCoordinator.RegisterComponent<render_box>();
-    gCoordinator.RegisterComponent<status>();
-    gCoordinator.RegisterComponent<collidble>();
-
-    gCoordinator.RegisterComponent<viewport3D>();
-    // TODO: TEMP! REPLACE WITH ASSET REF WHEN ASSET MANAGER IMPLEMENTED
-    gCoordinator.RegisterComponent<model_view>();
-}
-
-void set_system_signatures()
-{
-    Signature sig;
-    sig.set(gCoordinator.GetComponentType<player>());
-    gCoordinator.SetSystemSignature<PlayerMovementSystem>(sig);
-
-    sig.reset();
 }

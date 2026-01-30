@@ -26,5 +26,11 @@ struct status
     // we make it as clean in render system 
     bool dirty;
 
+    // should we be checking collision for this obj & drawing it
+    bool active;
+
+    // what room are we in
+    int room;
+
     OBJECT_TYPE type;
 };

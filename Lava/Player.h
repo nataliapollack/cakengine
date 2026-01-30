@@ -2,5 +2,5 @@
 
 struct player
 {
-    float speed;
+    Vector2 speed;
 };

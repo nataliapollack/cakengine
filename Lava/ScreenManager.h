@@ -4,11 +4,13 @@
 enum SCREENS
 {
     MENU,
-    GAME,
+    INSIDE,
+    OUTSIDE,
     AUDIO_FREQ,
     MAZE,
     SOLAR_TILE,
     CAMERAS,
+    CREDITS,
 };
 
 class ScreenManager
