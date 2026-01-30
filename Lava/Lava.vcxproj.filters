@@ -48,6 +48,12 @@
     <ClCompile Include="AssetManager.cpp">
       <Filter>Source Files\managers</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenManager.cpp">
+      <Filter>Source Files\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="CycleManager.cpp">
+      <Filter>Source Files\managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingSystem.h">
@@ -69,6 +75,12 @@
       <Filter>Resource Files\components</Filter>
     </ClInclude>
     <ClInclude Include="AssetManager.hpp">
+      <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenManager.h">
+      <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="CycleManager.h">
       <Filter>Header Files\managers</Filter>
     </ClInclude>
   </ItemGroup>

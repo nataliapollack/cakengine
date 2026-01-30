@@ -16,6 +16,7 @@
 // managers
 #include "EnergyManager.h"
 #include "ScreenManager.h"
+#include "CycleManager.h"
 
 void temp_place_objs();
 void register_components();
@@ -42,6 +43,7 @@ int main()
     // managerss
     EnergyManager enery_mngr;
     ScreenManager screen_mngr;
+    CycleManager cycle_mngr;
 
     set_system_signatures();
 
@@ -52,6 +54,7 @@ int main()
 
     enery_mngr.init();
     screen_mngr.init();
+    cycle_mngr.init();
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
@@ -62,6 +65,7 @@ int main()
         // update
         float deltaTime = 1.0f / 60.0f;
 
+        cycle_mngr.UpdateTimer(deltaTime);
         if (screen_mngr.GetScreen() == GAME)
         {
             player_movement_sys->move_player(deltaTime);
@@ -82,10 +86,12 @@ int main()
 
                 enery_mngr.DrawEnergyLevels();
 
+                cycle_mngr.draw();
+
             }
             if (screen_mngr.GetScreen() == MAZE)
             {
-                ClearBackground(BLUE);
+                ClearBackground(DARKBLUE);
             }
             if (screen_mngr.GetScreen() == AUDIO_FREQ)
             {
