@@ -103,7 +103,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;..\staticLib\include;..\staticLib;..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +121,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;..\staticLib\include;..\staticLib;..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,20 +131,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="EnergyManager.cpp" />
     <ClCompile Include="Lava.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
-    <ClCompile Include="ScreenManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetManager.hpp" />
+    <ClInclude Include="Viewport3D.hpp" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="EnergyManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerMovement.h" />
     <ClInclude Include="RenderingSystem.h" />
-    <ClInclude Include="ScreenManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
