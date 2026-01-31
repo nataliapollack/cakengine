@@ -148,7 +148,7 @@ void temp_place_objs()
 
     gCoordinator.AddComponent(
         en,
-        player{ Vector2{20.0f, 20.0f} }
+        player{ Vector2{30.0f, 30.0f} }
     );
 
     // 3D ENTITY BILLBOARD TEST

@@ -141,6 +141,7 @@
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
+    <ClCompile Include="SolarPanels.cpp" />
     <ClCompile Include="Tooling.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,7 +150,9 @@
     <ClInclude Include="CycleManager.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="DoorSystem.h" />
+    <ClInclude Include="Minigames.h" />
     <ClInclude Include="ScreenManager.h" />
+    <ClInclude Include="SolarPanels.h" />
     <ClInclude Include="Tooling.h" />
     <ClInclude Include="Viewport3D.hpp" />
     <ClInclude Include="Core.h" />

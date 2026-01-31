@@ -1,0 +1,5 @@
+
+struct solar_panel
+{
+
+};

@@ -28,6 +28,12 @@
     <Filter Include="Source Files\managers">
       <UniqueIdentifier>{7e8edfca-2472-4ebe-9d53-49bc2f9d6728}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\minigames">
+      <UniqueIdentifier>{2bd1e3ea-7474-4087-8f80-fe5e9df6d089}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\minigames">
+      <UniqueIdentifier>{8afc8303-d70f-447a-9119-8e72050d2521}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="DoorSystem.cpp">
       <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SolarPanels.cpp">
+      <Filter>Source Files\minigames</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +111,12 @@
       <Filter>Header Files\systems</Filter>
     </ClInclude>
     <ClInclude Include="Door.h">
+      <Filter>Resource Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="SolarPanels.h">
+      <Filter>Header Files\minigames</Filter>
+    </ClInclude>
+    <ClInclude Include="Minigames.h">
       <Filter>Resource Files\components</Filter>
     </ClInclude>
   </ItemGroup>
