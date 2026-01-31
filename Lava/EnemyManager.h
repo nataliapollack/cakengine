@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdlib>
 #include "raylib.h"
+#include "raymath.h"
 
 
 //TODO - Swap name to NightManager
@@ -97,19 +98,17 @@ private:
         //For each enemy, check its health
         for (int i = static_cast<int>(enemies.size()) - 1; i >= 0; --i)
         {
-            Enemy* enemy = enemies[i];
+            Enemy& enemy = enemies[i];
 
-            if (enemy->health <= 0)
+            if (enemy.health <= 0)
             {
-                PlayEnemyDeathFX(enemy->position);
+                PlayEnemyDeathFX(enemy.position);
                 
-                //TODO - Is this correct?
-                delete enemy;
                 enemies.erase(enemies.begin() + i);
                 continue;
             }
 
-            UpdateEnemyMovement(enemy, deltaTime);
+            UpdateEnemyMovement(&enemy, deltaTime);
         }
     }
 
@@ -118,7 +117,7 @@ private:
     {
         //TODO - dot product here instead of length?
         Vector2 toBase = baseLocation - enemy->position;
-        float distance = toBase.Length();
+        float distance = Vector2Length(toBase);
 
         //If we are inside the radius/at the base then we try damage
         if (distance <= baseDamageRadius)
@@ -128,7 +127,7 @@ private:
         }
 
         //TODO - Normalize?
-        Vector2 direction = toBase.Normalized();
+        Vector2 direction = Vector2Normalize(toBase);
         enemy->position = enemy->position + direction * enemy->speed * deltaTime;
 
         PlayEnemyMoveFX(enemy->position);
@@ -146,7 +145,7 @@ private:
 
         PlayBaseHitFX();
 
-        //If base is 0 hp then play defete
+        //If base is 0 hp then play delete
         if (baseCurrentHealth <= 0)
         {
             baseCurrentHealth = 0;
@@ -196,9 +195,6 @@ private:
 
     void Cleanup()
     {
-        for (Enemy* enemy : enemies)
-            delete enemy;
-
         enemies.clear();
     }
 };
