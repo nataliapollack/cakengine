@@ -1,115 +1,204 @@
 ﻿#pragma once
+#include <vector>
+#include <cstdlib>
+#include "raylib.h"
 
+
+//TODO - Swap name to NightManager
 class EnemyManager
 {
 public:
-    /*
-    [Header("Enemy Vars")]
-    public sprite enemySprite;
-    public int enemyHealth = 5;
-    public float enemySpeed = 10f;
-    public gameObject enemyPrefab = transform, sprite, hp int holder
+    //ENEMY VARS
+    int enemyMaxHealth = 5;
+    float enemyMoveSpeed = 10.0f;
+    
+    //BASE VARS
+    Vector2 baseLocation;
+    int baseMaxHealth = 20;
+    float baseDamageRadius = 3.0f;
+    float baseDamageCooldown = 1.0f;
 
-    [Header("Base Vars")]
-    public vector2 targetLocation;
-    public float damageDistance = 3;
-    public int baseHealth = 20;
+    //SPAWNING VARS
+    int enemiesToSpawn = 0;
+    float spawnInterval = 1.0f;
+    Vector2 spawnPointA;
+    Vector2 spawnPointB;
+    float spawnOffsetRadius = 1.0f;
     
-    [Header("Spawning Vars")]
-    public int enemyToSpawnCount;
-    private float spawnDelay;
-    public float spawnTimer
-    public vector2 spawnA;
-    public vector2 spawnB;
-    public float spawnOffset;
-    private gameObject[] enemyList;
-    
-    
-    //Call this to play the minigame
-    public void EnemyGameplay()
+    //Runtime
+    int baseCurrentHealth = 20;
+   
+    //Enemy goes here??????
+    struct Enemy
     {
-        if(enemiesToSpawnCount > 0)
-            EnemySpawner()
-            UpdateEnemyList()
-        else
-            Success()
+        Vector2 position;
+        int health = 5;
+        float speed = 10.0f;
+
+        //THIS IS GROSS
+        Enemy(const Vector2& spawnPos, int hp, float spd)
+            : position(spawnPos), health(hp), speed(spd)
+        {}
+    };
+    
+    //------------------------
+    
+    //TODO - How to connect this to game?
+    //TODO - Make this work for four instances / corners
+    void Update(float deltaTime)
+    {
+        UpdateSpawning(deltaTime);
+        UpdateEnemies(deltaTime);
+        CheckEndConditions();
+    }
+
+private:
+    //inside script code?
+    std::vector<Enemy> enemies;
+
+    float spawnTimer = 0.0f;
+    float baseDamageTimer = 0.0f;
+
+    //Spawn Enemy Loop
+    void UpdateSpawning(float deltaTime)
+    {
+        //Check valid enemies & valid time
+        if (enemiesToSpawn <= 0) return;
+        spawnTimer -= deltaTime;
+        if (spawnTimer > 0.0f) return;
+
+        //TODO - RANDOM????
+        //Pick spawn point
+        Vector2 spawnPoint = (std::rand() % 2 == 0) ? spawnPointA : spawnPointB;
+
+        //Create and add offset
+        float offsetX = ((std::rand() / (float)RAND_MAX) * 2.0f - 1.0f) * spawnOffsetRadius;
+        float offsetY = ((std::rand() / (float)RAND_MAX) * 2.0f - 1.0f) * spawnOffsetRadius;
+
+        spawnPoint.x += offsetX;
+        spawnPoint.y += offsetY;
+
+        //Instance 
+        enemies.emplace_back(spawnPoint, enemyMaxHealth, enemyMoveSpeed);
+        enemiesToSpawn--;
+
+        //Play FX and reset timer
+        PlayEnemySpawnFX(spawnPoint);
+
+        spawnTimer = spawnInterval;
     }
     
-    
-    private void EnemySpawner
+    //Enemy Update Loop
+    void UpdateEnemies(float deltaTime)
     {
-        if(spawnDelay > 0)
-            --spawnDelay vs delta.time
-        else
-            instantiate enemy prefab and add it to the enemyList[]
+        baseDamageTimer -= deltaTime;
 
-        //Random spawning
-        vec2 spawnLocation;
-            
-        if (random 50/50)
-            SpawnA + spawnOffset;
-        else
-            SpawnB + spawnOffset;
+        //THIS IS GROSS
+        //For each enemy, check its health
+        for (int i = static_cast<int>(enemies.size()) - 1; i >= 0; --i)
+        {
+            Enemy* enemy = enemies[i];
+
+            if (enemy->health <= 0)
+            {
+                PlayEnemyDeathFX(enemy->position);
                 
-        translate enemy prefab to spawn
-            
-        //Play audio queue for spawning an enemy
-            
-        //reset spawn delay to spawnTimer so we have consistent delays between spawns
-        spawnDelay = spawnTimer;
+                //TODO - Is this correct?
+                delete enemy;
+                enemies.erase(enemies.begin() + i);
+                continue;
+            }
+
+            UpdateEnemyMovement(enemy, deltaTime);
+        }
     }
 
-
-    private void UpdateEnemyList
+    //Enemy movement loop per enemy
+    void UpdateEnemyMovement(Enemy* enemy, float deltaTime)
     {
-        for enemyList
-            if (enemyHealth == 0)
-                removeFromList.enemyList;
-        else 
-            call updateEnemyPosition()
+        //TODO - dot product here instead of length?
+        Vector2 toBase = baseLocation - enemy->position;
+        float distance = toBase.Length();
+
+        //If we are inside the radius/at the base then we try damage
+        if (distance <= baseDamageRadius)
+        {
+            TryDamageBase();
+            return;
+        }
+
+        //TODO - Normalize?
+        Vector2 direction = toBase.Normalized();
+        enemy->position = enemy->position + direction * enemy->speed * deltaTime;
+
+        PlayEnemyMoveFX(enemy->position);
     }
 
-
-    private void UpdateEnemyPosition()
+    // Base can only take damage X times per second
+    void TryDamageBase()
     {
-        myTransform = current position
-        vector math to get position vs targetLocation
-        
-        if (distance <= damageDistance)
-            //dont move, instead deal damage
-            DamageBase();
-        else
-            move at enemySpeed towards the target
-            //enemy shuffling or move audio?
+        //Check against timer
+        if (baseDamageTimer > 0.0f) return;
+
+        //Damage the base and start the damage timer again
+        baseCurrentHealth--;
+        baseDamageTimer = baseDamageCooldown;
+
+        PlayBaseHitFX();
+
+        //If base is 0 hp then play defete
+        if (baseCurrentHealth <= 0)
+        {
+            baseCurrentHealth = 0;
+            Defeat();
+        }
     }
 
-
-    public void DamageEnemy(gameobject targetEnemy)
+    //Check for wincon
+    void CheckEndConditions()
     {
-        --targetEnemy.enemyHealth;
-        
-        //Any damage visuals or audio
-    }
-
-
-    private void DamageBase()
-    {
-        //damage delay timer
-        if(damageDelay > 0)
-            --damageDelay vs delta.time
-        else
-            --baseHealth;
-        
-            //Play any damage effect or audio
+        if (enemiesToSpawn <= 0 && enemies.empty() && baseCurrentHealth > 0)
+        {
+            Success();
+        }
     }
     
-    
-    public void Success()
+    //Towers damage selected enemy
+    void DamageEnemy(Enemy* enemy)
     {
-        //Play audio and vfx, then swap to other scene
+        if (!enemy || enemy->health <= 0) return;
+
+        enemy->health--;
+
+        PlayEnemyHitFX(enemy->position);
     }
     
-    
-     */
-    
+    //----------------------------------------------
+
+    //FX
+    void PlayEnemySpawnFX(const Vector2& pos) {}
+    void PlayEnemyMoveFX(const Vector2& pos) {}
+    void PlayEnemyHitFX(const Vector2& pos) {}
+    void PlayEnemyDeathFX(const Vector2& pos) {}
+    void PlayBaseHitFX() {}
+
+    void Success()
+    {
+        // Victory VFX / Audio
+        Cleanup();
+    }
+
+    void Defeat()
+    {
+        // Failure VFX / Audio
+        Cleanup();
+    }
+
+    void Cleanup()
+    {
+        for (Enemy* enemy : enemies)
+            delete enemy;
+
+        enemies.clear();
+    }
 };
