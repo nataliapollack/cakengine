@@ -72,6 +72,9 @@
     <ClCompile Include="SolarPanels.cpp">
       <Filter>Source Files\minigames</Filter>
     </ClCompile>
+    <ClCompile Include="MazeBuilder.cpp">
+      <Filter>Source Files\minigames</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingSystem.h">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="EnemyManager.h">
       <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="MazeBuilder.h">
+      <Filter>Header Files\minigames</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
