@@ -18,7 +18,10 @@ void EnergyManager::init()
         METHOD_LISTENER(Events::Energy::ENERGY_UP, EnergyManager::ChargeEnergy));
 
     gCoordinator.AddEventListener(
-        METHOD_LISTENER(Events::Health::HEALTH_DMG, EnergyManager::ChargeEnergy));
+        METHOD_LISTENER(Events::Health::HEALTH_DMG, EnergyManager::TakeHealthDmg));
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Time::NIGHT_BEGIN, EnergyManager::NightBegins));
 }
 
 void EnergyManager::TakeEnergyDmg(Event& event)
@@ -39,9 +42,7 @@ void EnergyManager::TakeEnergyDmg(Event& event)
 
 void EnergyManager::ChargeEnergy(Event& event)
 {
-    int charge_tick = event.GetParam<int>(Events::Energy::ENERGY_TICK);
-
-    TotalEnergyLeft += charge_tick;
+   ChargingPanels = true;
 }
 
 void EnergyManager::CheckEnergyLevels()
@@ -51,6 +52,15 @@ void EnergyManager::CheckEnergyLevels()
         Event game(Events::Game::END);
         gCoordinator.SendEvent(game);
     }
+    if (ChargingPanels)
+    {
+        TotalEnergyLeft += 5;
+    }
+}
+
+void EnergyManager::NightBegins(Event& event)
+{
+    ChargingPanels = false;
 }
 
 void EnergyManager::DrawEnergyLevels()

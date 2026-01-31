@@ -22,10 +22,14 @@
 #include "ScreenManager.h"
 #include "CycleManager.h"
 
+// minigames
+#include "SolarPanels.h"
+
 void temp_place_objs();
 
 Coordinator gCoordinator;
 Model gTeapotModel_temp; // TODO: REMOVE
+Camera2D gCamera;
 
 int main()
 {
@@ -49,6 +53,9 @@ int main()
     ScreenManager screen_mngr;
     CycleManager cycle_mngr;
 
+    // minigames
+    SolarPanel solar_game;
+
     tools.set_system_signatures();
 
     temp_place_objs();
@@ -61,9 +68,15 @@ int main()
     screen_mngr.init();
     cycle_mngr.init();
 
+    solar_game.init();
+
+    // camera Things
+    gCamera.target = Vector2{ 0, 0 };
+    gCamera.zoom = 1.0f;
+
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(OUTSIDE);
+    screen_mngr.SetScreen(SOLAR_TILE);
 
     while (!WindowShouldClose())
     {
@@ -84,19 +97,31 @@ int main()
 
             BeginDrawing();
 
-            if (screen_mngr.GetScreen() == OUTSIDE)
+            // things that are 2D
+            BeginMode2D(gCamera);
             {
-                ClearBackground(GRAY);
+                if (screen_mngr.GetScreen() == INSIDE)
+                {
+                    ClearBackground(GRAY);
+                }
+                if (screen_mngr.GetScreen() == OUTSIDE)
+                {
+                    ClearBackground(DARKGRAY);
+
+                    render_sys->draw();
+
+                    enery_mngr.DrawEnergyLevels();
+
+                    cycle_mngr.draw();
+
+                }
             }
-            if (screen_mngr.GetScreen() == OUTSIDE)
-            {                
+            EndMode2D();
+
+            if (screen_mngr.GetScreen() == SOLAR_TILE)
+            {
                 ClearBackground(DARKGRAY);
-
-                render_sys->draw();
-
-                enery_mngr.DrawEnergyLevels();
-
-                cycle_mngr.draw();
+                solar_game.draw();
 
             }
             if (screen_mngr.GetScreen() == MAZE)
@@ -107,17 +132,12 @@ int main()
             {
                 ClearBackground(RED);
             }
-            if (screen_mngr.GetScreen() == SOLAR_TILE)
-            {
-                ClearBackground(GREEN);
-            }
             if (screen_mngr.GetScreen() == CAMERAS)
             {
                 ClearBackground(DARKGREEN);
             }
 
             EndDrawing();
-
         }
     }
 

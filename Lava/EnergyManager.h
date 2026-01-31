@@ -12,10 +12,13 @@ public:
     void ChargeEnergy(Event& event);
 
     void TakeHealthDmg(Event& event);
+    void NightBegins(Event& event);
 
     void CheckEnergyLevels();
     void DrawEnergyLevels();
+
 private:
+    bool ChargingPanels;
     int TotalEnergyLeft;
     int TotalHealthLeft;
 };
