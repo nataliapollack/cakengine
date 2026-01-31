@@ -150,6 +150,7 @@
     <ClInclude Include="CycleManager.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="DoorSystem.h" />
+    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Minigames.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="SolarPanels.h" />
