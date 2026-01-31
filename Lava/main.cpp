@@ -76,7 +76,7 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(SOLAR_TILE);
+    screen_mngr.SetScreen(INSIDE);
 
     while (!WindowShouldClose())
     {
