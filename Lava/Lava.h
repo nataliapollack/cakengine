@@ -38,3 +38,8 @@ namespace Events::Game {
     const inline EventId SCREEN_CHANGE = "Events::Game::SCREEN_CHANGE"_hash;
     const inline ParamId SCREEN_ID = "Events::Game::SCREEN_ID"_hash;
 }
+
+namespace Events::Time {
+    const EventId NIGHT_BEGIN = "Events::Time::NIGHT_BEGIN"_hash;
+    const EventId DAY_BEGIN = "Events::Time::DAY_BEGIN"_hash;
+}

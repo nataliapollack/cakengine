@@ -4,156 +4,168 @@
 #include "raylib.h"
 #include "raymath.h"
 
-
-//TODO - Swap name to NightManager
 class EnemyManager
 {
 public:
-    //ENEMY VARS
+    static constexpr int MAX_ZONES = 4;
+
+    //TODO - Connect this to the code below?--------------------V
+    CombatZone zones[MAX_ZONES];                                //
+                                                                //
+    void Update(float deltaTime)                                //
+    {                                                           //
+        for (int i = 0; i < MAX_ZONES; ++i)                     //
+        {                                                       //
+            zones[i].Update(deltaTime);                         //
+        }                                                       //
+    }                                                           //
+};                                                              //
+                                                                //
+//TODO - Can i do this?  :)      <--------------------------------
+struct CombatZone
+{
+#pragma region CombatVariables
+    // enemy vars
     int enemyMaxHealth = 5;
     float enemyMoveSpeed = 10.0f;
-    
-    //BASE VARS
-    Vector2 baseLocation;
+
+    // base vars
+    Vector2 baseLocation{};
     int baseMaxHealth = 20;
-    float baseDamageRadius = 3.0f;
+    float baseDamageRadius = 30.0f;
     float baseDamageCooldown = 1.0f;
 
-    //SPAWNING VARS
+    // spawning vars
     int enemiesToSpawn = 0;
     float spawnInterval = 1.0f;
-    Vector2 spawnPointA;
-    Vector2 spawnPointB;
-    float spawnOffsetRadius = 1.0f;
-    
-    //Runtime
-    int baseCurrentHealth = 20;
-   
-    //Enemy goes here??????
+    Vector2 spawnPointA{};
+    Vector2 spawnPointB{};
+    float spawnOffsetRadius = 10.0f;
+
+    // runtime vars
+    int baseCurrentHealth = baseMaxHealth;
+
+    // enemy definition
     struct Enemy
     {
         Vector2 position;
-        int health = 5;
-        float speed = 10.0f;
+        int health;
+        float speed;
 
-        //THIS IS GROSS
-        Enemy(const Vector2& spawnPos, int hp, float spd)
-            : position(spawnPos), health(hp), speed(spd)
-        {}
+        //TODO - this is gross and ugly?
+        Enemy(Vector2 pos, int hp, float spd)
+            : position(pos), health(hp), speed(spd) {}
     };
+
+    // internal vars
+    std::vector<Enemy> enemies;
+    float spawnTimer = 0.0f;
+    float baseDamageTimer = 0.0f;
+    bool isResolved = false;
+#pragma endregion
     
-    //------------------------
-    
-    //TODO - How to connect this to game?
-    //TODO - Make this work for four instances / corners
+    // CORE LOOP
     void Update(float deltaTime)
     {
+        if (isResolved) return;
+
         UpdateSpawning(deltaTime);
         UpdateEnemies(deltaTime);
         CheckEndConditions();
     }
 
+    //TODO - Private here?
 private:
-    //inside script code?
-    std::vector<Enemy> enemies;
-
-    float spawnTimer = 0.0f;
-    float baseDamageTimer = 0.0f;
-
-    //Spawn Enemy Loop
+#pragma region EnemyAssaultLoop
+    // Spawning 
     void UpdateSpawning(float deltaTime)
     {
-        //Check valid enemies & valid time
+        //check timer
         if (enemiesToSpawn <= 0) return;
+
         spawnTimer -= deltaTime;
         if (spawnTimer > 0.0f) return;
 
-        //TODO - RANDOM????
-        //Pick spawn point
+        //rand spawn
+        //TODO - is this the right random?
         Vector2 spawnPoint = (std::rand() % 2 == 0) ? spawnPointA : spawnPointB;
 
-        //Create and add offset
-        float offsetX = ((std::rand() / (float)RAND_MAX) * 2.0f - 1.0f) * spawnOffsetRadius;
-        float offsetY = ((std::rand() / (float)RAND_MAX) * 2.0f - 1.0f) * spawnOffsetRadius;
+        float offsetX = ((std::rand() / (float)RAND_MAX) * 2 - 1) * spawnOffsetRadius;
+        float offsetY = ((std::rand() / (float)RAND_MAX) * 2 - 1) * spawnOffsetRadius;
 
         spawnPoint.x += offsetX;
         spawnPoint.y += offsetY;
 
-        //Instance 
+        //instanciate, play FX, reset timer, and reduce enemiesToSpawn
         enemies.emplace_back(spawnPoint, enemyMaxHealth, enemyMoveSpeed);
         enemiesToSpawn--;
 
-        //Play FX and reset timer
         PlayEnemySpawnFX(spawnPoint);
-
         spawnTimer = spawnInterval;
     }
-    
-    //Enemy Update Loop
+
+    // Enemies
     void UpdateEnemies(float deltaTime)
     {
+        //update timer
         baseDamageTimer -= deltaTime;
 
-        //THIS IS GROSS
-        //For each enemy, check its health
-        for (int i = static_cast<int>(enemies.size()) - 1; i >= 0; --i)
+        //for each enemy check health then update its movement
+        for (int i = (int)enemies.size() - 1; i >= 0; --i)
         {
             Enemy& enemy = enemies[i];
 
             if (enemy.health <= 0)
             {
                 PlayEnemyDeathFX(enemy.position);
-                
                 enemies.erase(enemies.begin() + i);
                 continue;
             }
 
-            UpdateEnemyMovement(&enemy, deltaTime);
+            UpdateEnemyMovement(enemy, deltaTime);
         }
     }
 
-    //Enemy movement loop per enemy
-    void UpdateEnemyMovement(Enemy* enemy, float deltaTime)
+    // movement
+    void UpdateEnemyMovement(Enemy& enemy, float deltaTime)
     {
-        //TODO - dot product here instead of length?
-        Vector2 toBase = baseLocation - enemy->position;
+        Vector2 toBase = Vector2Subtract(baseLocation, enemy.position);
         float distance = Vector2Length(toBase);
 
-        //If we are inside the radius/at the base then we try damage
+        //if in range, damage base and return
         if (distance <= baseDamageRadius)
         {
             TryDamageBase();
             return;
         }
 
-        //TODO - Normalize?
-        Vector2 direction = Vector2Normalize(toBase);
-        enemy->position = enemy->position + direction * enemy->speed * deltaTime;
+        //else move towards the base
+        Vector2 dir = Vector2Normalize(toBase);
+        enemy.position = Vector2Add(enemy.position, Vector2Scale(dir, enemy.speed * deltaTime));
 
-        PlayEnemyMoveFX(enemy->position);
+        PlayEnemyMoveFX(enemy.position);
     }
 
     // Base can only take damage X times per second
     void TryDamageBase()
     {
-        //Check against timer
         if (baseDamageTimer > 0.0f) return;
 
-        //Damage the base and start the damage timer again
         baseCurrentHealth--;
         baseDamageTimer = baseDamageCooldown;
 
         PlayBaseHitFX();
 
-        //If base is 0 hp then play delete
         if (baseCurrentHealth <= 0)
         {
             baseCurrentHealth = 0;
             Defeat();
         }
     }
-
-    //Check for wincon
+#pragma endregion
+    
+#pragma region EndConditions
+    // check wincons
     void CheckEndConditions()
     {
         if (enemiesToSpawn <= 0 && enemies.empty() && baseCurrentHealth > 0)
@@ -162,34 +174,16 @@ private:
         }
     }
     
-    //Towers damage selected enemy
-    void DamageEnemy(Enemy* enemy)
-    {
-        if (!enemy || enemy->health <= 0) return;
-
-        enemy->health--;
-
-        PlayEnemyHitFX(enemy->position);
-    }
-    
-    //----------------------------------------------
-
-    //FX
-    void PlayEnemySpawnFX(const Vector2& pos) {}
-    void PlayEnemyMoveFX(const Vector2& pos) {}
-    void PlayEnemyHitFX(const Vector2& pos) {}
-    void PlayEnemyDeathFX(const Vector2& pos) {}
-    void PlayBaseHitFX() {}
-
+    //TODO - What to do on win or lose?
     void Success()
     {
-        // Victory VFX / Audio
+        isResolved = true;
         Cleanup();
     }
 
     void Defeat()
     {
-        // Failure VFX / Audio
+        isResolved = true;
         Cleanup();
     }
 
@@ -197,4 +191,15 @@ private:
     {
         enemies.clear();
     }
+#pragma endregion
+
+#pragma region FX
+    // FX
+    //TODO - FX?
+    void PlayEnemySpawnFX(const Vector2&) {}
+    void PlayEnemyMoveFX(const Vector2&) {}
+    void PlayEnemyDeathFX(const Vector2&) {}
+    void PlayBaseHitFX() {}
+#pragma endregion
+
 };

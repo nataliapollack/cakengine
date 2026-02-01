@@ -1,17 +1,127 @@
 #include "SolarPanels.h"
 #include "Coordinator.hpp"
 #include "raylib.h"
+#include "rlgl.h"
+#include "Lava.h"
+#include "ScreenManager.h"
 
 extern Coordinator gCoordinator;
 
+void SolarPanel::init()
+{
+    toggle = false;
+    completed = false;
+    placed_panel_count = 0;
+    timer = 5;
+
+    for (int i = 0; i < 5; i++)
+    {
+        std::vector<bool> temp;
+        for (int j = 0; j < 5; j++)
+        {
+            temp.push_back(false);
+        }
+
+        solar_grid.push_back(temp);
+    }
+}
+
 void SolarPanel::update()
 {
+    if (show_warning)
+    {
+        timer -= (1 / 60);
+        if (timer <= 0)
+        {
+            show_warning = false;
+            timer = 5.0f;
+        }
+    }
 
+    Rectangle current_box = { 0, 0, GetScreenWidth() / 5, GetScreenHeight() / 5 };
+
+    Vector2 mouse_pos = GetMousePosition();
+
+    for (int i = 0; i < solar_grid.size(); i++)
+    {
+        for (int j = 0; j < solar_grid[i].size(); j++)
+        {
+            if (CheckCollisionPointRec(mouse_pos, current_box))
+            {
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                {
+                    if (placed_panel_count >= 5)
+                    {
+                        show_warning = true;
+
+                        if (solar_grid[i][j])
+                        {
+                            placed_panel_count--;
+                            solar_grid[i][j] = false;
+                            show_warning = false;
+                            timer = 5.0f;
+                        }
+                    }
+                    else
+                    {
+                        if (solar_grid[i][j])
+                        {
+                            placed_panel_count--;
+                            solar_grid[i][j] = false;
+                            show_warning = false;
+                            timer = 5.0f;
+                        }
+                        else
+                        {
+                            placed_panel_count++;
+                            solar_grid[i][j] = true;
+                        }
+                    }
+
+
+                }
+            }
+
+            current_box.y += current_box.height;
+        }
+
+        current_box.x += current_box.width;
+        current_box.y = 0;
+    }
 }
 
 void SolarPanel::draw()
 {
+    Rectangle current_box = { 0, 0, GetScreenWidth() / 5, GetScreenHeight() / 5 };
+    Color col = DARKGREEN;
 
+    for (int i = 0; i < solar_grid.size(); i++)
+    {
+        for (int j = 0; j < solar_grid[i].size(); j++)
+        {
+            if (solar_grid[i][j])
+            {
+                col = GREEN;
+                DrawRectangleRec(current_box, ColorAlpha(col, 0.75));
+            }
+            //else
+            {
+                col = DARKGREEN;
+                DrawRectangleLinesEx(current_box, 10, ColorAlpha(col, 0.75));
+            }
+
+            current_box.y += current_box.height;
+        }
+
+        current_box.x += current_box.width;
+        current_box.y = 0;
+    }
+
+    if (show_warning)
+    {
+        DrawRectangle(275, 535, 350, 50, ColorAlpha(BLACK, 0.5));
+        DrawText("Max Panels Placed.", 300, 550, 30.0f, RED);
+    }
 }
 
 bool SolarPanel::active()
@@ -21,7 +131,15 @@ bool SolarPanel::active()
 
 void SolarPanel::StartMinigame(Event& event)
 {
-    toggle = true;
+    if (!completed)
+    {
+        toggle = true;
+
+        Event screen(Events::Game::SCREEN_CHANGE);
+        screen.SetParam(Events::Game::SCREEN_ID, SOLAR_SCREEN);
+
+        gCoordinator.SendEvent(screen);
+    }
 }
 
 void SolarPanel::StartNewDay(Event& event)
