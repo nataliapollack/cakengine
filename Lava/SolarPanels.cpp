@@ -11,7 +11,8 @@ void SolarPanel::init()
 {
     toggle = false;
     completed = false;
-    placed_panel_count = -1;
+    placed_panel_count = 0;
+    timer = 5;
 
     for (int i = 0; i < 5; i++)
     {
@@ -22,15 +23,21 @@ void SolarPanel::init()
         }
 
         solar_grid.push_back(temp);
-
-        current_tiles[i] = tile{ 0, 0 };
     }
 }
 
-
-
 void SolarPanel::update()
 {
+    if (show_warning)
+    {
+        timer -= (1 / 60);
+        if (timer <= 0)
+        {
+            show_warning = false;
+            timer = 5.0f;
+        }
+    }
+
     Rectangle current_box = { 0, 0, GetScreenWidth() / 5, GetScreenHeight() / 5 };
 
     Vector2 mouse_pos = GetMousePosition();
@@ -43,18 +50,35 @@ void SolarPanel::update()
             {
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
                 {
-                    solar_grid[i][j] = !solar_grid[i][j];
-                    placed_panel_count++;
-
-                    // means we replace first placed one
                     if (placed_panel_count >= 5)
                     {
-                        placed_panel_count = -1;
-                        current_tiles[placed_panel_count + 1];
+                        show_warning = true;
 
+                        if (solar_grid[i][j])
+                        {
+                            placed_panel_count--;
+                            solar_grid[i][j] = false;
+                            show_warning = false;
+                            timer = 5.0f;
+                        }
                     }
-                    current_tiles[placed_panel_count + 1].col = i;
-                    current_tiles[placed_panel_count + 1].row = j;
+                    else
+                    {
+                        if (solar_grid[i][j])
+                        {
+                            placed_panel_count--;
+                            solar_grid[i][j] = false;
+                            show_warning = false;
+                            timer = 5.0f;
+                        }
+                        else
+                        {
+                            placed_panel_count++;
+                            solar_grid[i][j] = true;
+                        }
+                    }
+
+
                 }
             }
 
@@ -78,12 +102,12 @@ void SolarPanel::draw()
             if (solar_grid[i][j])
             {
                 col = GREEN;
-                DrawRectangleRec(current_box, col);
+                DrawRectangleRec(current_box, ColorAlpha(col, 0.75));
             }
-            else
+            //else
             {
                 col = DARKGREEN;
-                DrawRectangleLinesEx(current_box, 10, col);
+                DrawRectangleLinesEx(current_box, 10, ColorAlpha(col, 0.75));
             }
 
             current_box.y += current_box.height;
@@ -91,6 +115,12 @@ void SolarPanel::draw()
 
         current_box.x += current_box.width;
         current_box.y = 0;
+    }
+
+    if (show_warning)
+    {
+        DrawRectangle(275, 535, 350, 50, ColorAlpha(BLACK, 0.5));
+        DrawText("Max Panels Placed.", 300, 550, 30.0f, RED);
     }
 }
 

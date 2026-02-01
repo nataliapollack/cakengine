@@ -5,12 +5,6 @@
 
 #define MAX_PANELS 5
 
-struct tile
-{
-    int col;
-    int row;
-};
-
 class SolarPanel
 {
 public:
@@ -30,9 +24,10 @@ public:
 private:
     bool completed;
     bool toggle;
+    bool show_warning;
 
     int placed_panel_count = 0;
-    tile current_tiles[MAX_PANELS];
+    float timer;
 
     std::vector<std::vector<bool>> solar_grid;
 };
