@@ -40,6 +40,6 @@ namespace Events::Game {
 }
 
 namespace Events::Time {
-    const EventId NIGHT_BEGIN = "Events::Time::NIGHT_BEGIN"_hash;
-    const EventId DAY_BEGIN = "Events::Time::DAY_BEGIN"_hash;
+    const inline EventId NIGHT_BEGIN = "Events::Time::NIGHT_BEGIN"_hash;
+    const inline EventId DAY_BEGIN = "Events::Time::DAY_BEGIN"_hash;
 }
