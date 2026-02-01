@@ -42,8 +42,26 @@ struct CombatZone
     Vector2 spawnPointB{};
     float spawnOffsetRadius = 10.0f;
 
+    //TODO - tower toggles (another script controls these)
+    bool towerAEnabled = true;
+    bool towerBEnabled = true;
+
+    // shared tower tuning
+    float towerAttackRange = 250.0f;
+    float towerAttackCooldown = 0.75f;
+    int towerDamage = 1;
+
     // runtime vars
     int baseCurrentHealth = baseMaxHealth;
+    
+    // light tower vars
+    Vector2 lightTowerPosition{};
+    float lightTowerRange = 200.0f;
+    float lightTowerFearTime = 2.5f;
+    float fleeSpeedMultiplier = 1.75f;
+
+    //TODO - tower toggles (another script controls these)
+    bool lightTowerEnabled = true;
 
     // enemy definition
     struct Enemy
@@ -52,16 +70,26 @@ struct CombatZone
         int health;
         float speed;
 
-        //TODO - this is gross and ugly?
+        // Light tower state
+        bool isFleeing = false;
+        float lightExposureTimer = 0.0f;
+
         Enemy(Vector2 pos, int hp, float spd)
             : position(pos), health(hp), speed(spd) {}
     };
+
 
     // internal vars
     std::vector<Enemy> enemies;
     float spawnTimer = 0.0f;
     float baseDamageTimer = 0.0f;
+
+    // tower internal timers
+    float towerATimer = 0.0f;
+    float towerBTimer = 0.0f;
+
     bool isResolved = false;
+    
 #pragma endregion
     
     // CORE LOOP
@@ -71,6 +99,8 @@ struct CombatZone
 
         UpdateSpawning(deltaTime);
         UpdateEnemies(deltaTime);
+        UpdateLightTower(deltaTime);
+        UpdateTowers(deltaTime);
         CheckEndConditions();
     }
 
@@ -87,7 +117,7 @@ private:
         if (spawnTimer > 0.0f) return;
 
         //rand spawn
-        //TODO - is this the right random?
+        //TODO - is this the right random to use?
         Vector2 spawnPoint = (std::rand() % 2 == 0) ? spawnPointA : spawnPointB;
 
         float offsetX = ((std::rand() / (float)RAND_MAX) * 2 - 1) * spawnOffsetRadius;
@@ -129,17 +159,40 @@ private:
     // movement
     void UpdateEnemyMovement(Enemy& enemy, float deltaTime)
     {
+        //Check if fleeingm and make the enemy move away
+        if (enemy.isFleeing)
+        {
+            Vector2 awayFromLight = Vector2Subtract(enemy.position, lightTowerPosition);
+            Vector2 dir = Vector2Normalize(awayFromLight);
+
+            enemy.position = Vector2Add(
+                enemy.position,
+                Vector2Scale(dir, enemy.speed * fleeSpeedMultiplier * deltaTime)
+            );
+
+            // off-screen cleanup of enemies
+            //TODO - Check if this works?
+            if (enemy.position.x < -50 || enemy.position.x > (float)GetScreenWidth() + 50 ||
+                enemy.position.y < -50 || enemy.position.y > (float)GetScreenHeight() + 50)
+            {
+                //reuses death cleanup
+                PlayEnemyFledFX(enemy.position);
+                enemy.health = 0;
+            }
+
+            return;
+        }
+
+        // Move to base, if in range, damage base
         Vector2 toBase = Vector2Subtract(baseLocation, enemy.position);
         float distance = Vector2Length(toBase);
 
-        //if in range, damage base and return
         if (distance <= baseDamageRadius)
         {
             TryDamageBase();
             return;
         }
 
-        //else move towards the base
         Vector2 dir = Vector2Normalize(toBase);
         enemy.position = Vector2Add(enemy.position, Vector2Scale(dir, enemy.speed * deltaTime));
 
@@ -147,6 +200,7 @@ private:
     }
 
     // Base can only take damage X times per second
+    //TODO - Connect to actual gameplay for base health
     void TryDamageBase()
     {
         if (baseDamageTimer > 0.0f) return;
@@ -162,6 +216,96 @@ private:
             Defeat();
         }
     }
+    
+#pragma endregion
+
+#pragma region TowerCombat
+    // Tower timer update loop
+    void UpdateTowers(float deltaTime)
+    {
+        if (enemies.empty()) return;
+        
+        towerATimer -= deltaTime;
+        towerBTimer -= deltaTime;
+
+        if (towerAEnabled && towerATimer <= 0.0f)
+        {
+            TryTowerAttack(towerATimer);
+        }
+
+        if (towerBEnabled && towerBTimer <= 0.0f)
+        {
+            TryTowerAttack(towerBTimer);
+        }
+    }
+
+    // Tower attacks deal damage to enemy
+    void TryTowerAttack(float& towerTimer)
+    {
+        //get enemy in range, check our range, then damage and reset timer
+        Enemy* target = GetEnemyClosestToBase();
+        if (!target) return;
+
+        float distanceToBase = Vector2Distance(target->position, baseLocation);
+        if (distanceToBase > towerAttackRange) return;
+
+        target->health -= towerDamage;
+
+        PlayTowerAttackFX(target->position);
+
+        towerTimer = towerAttackCooldown;
+    }
+
+    // Fetch enemy closest to base
+    Enemy* GetEnemyClosestToBase()
+    {
+        //TODO - check C++ values work
+        Enemy* closestEnemy = nullptr; //google said this :)
+        float closestDist = FLT_MAX; //google said this :)
+
+        for (Enemy& enemy : enemies)
+        {
+            float dist = Vector2Distance(enemy.position, baseLocation);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closestEnemy = &enemy;
+            }
+        }
+
+        return closestEnemy;
+    }
+    
+    // Light tower causes fleeing
+    void UpdateLightTower(float deltaTime)
+    {
+        if (!lightTowerEnabled || enemies.empty()) return;
+
+        //for each enemy, check range, add to their timer, toggle fleeing if exposed
+        for (int i = (int)enemies.size() - 1; i >= 0; --i)
+        {
+            Enemy& enemy = enemies[i];
+
+            if (enemy.isFleeing) continue;
+
+            float dist = Vector2Distance(enemy.position, lightTowerPosition);
+            if (dist <= lightTowerRange)
+            {
+                enemy.lightExposureTimer += deltaTime;
+
+                if (enemy.lightExposureTimer >= lightTowerFearTime)
+                {
+                    enemy.isFleeing = true;
+                    PlayEnemyFleeFX(enemy.position);
+                }
+            }
+            else
+            {
+                enemy.lightExposureTimer = 0.0f;
+            }
+        }
+    }
+    
 #pragma endregion
     
 #pragma region EndConditions
@@ -174,7 +318,7 @@ private:
         }
     }
     
-    //TODO - What to do on win or lose?
+    //TODO - TEMP please connect to actual game
     void Success()
     {
         isResolved = true;
@@ -191,15 +335,21 @@ private:
     {
         enemies.clear();
     }
+    
 #pragma endregion
 
 #pragma region FX
+    
     // FX
-    //TODO - FX?
+    //TODO - Please connect to actual audio and vfx calls
     void PlayEnemySpawnFX(const Vector2&) {}
     void PlayEnemyMoveFX(const Vector2&) {}
     void PlayEnemyDeathFX(const Vector2&) {}
     void PlayBaseHitFX() {}
+    void PlayTowerAttackFX(const Vector2&) {}
+    void PlayEnemyFleeFX(const Vector2&) {}
+    void PlayEnemyFledFX(const Vector2&) {}
+
 #pragma endregion
 
 };
