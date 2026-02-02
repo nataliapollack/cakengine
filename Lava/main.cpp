@@ -21,6 +21,7 @@
 #include "EnergyManager.h"
 #include "ScreenManager.h"
 #include "CycleManager.h"
+#include "AssetManager.hpp"
 
 // minigames
 #include "SolarPanels.h"
@@ -28,7 +29,6 @@
 void temp_place_objs();
 
 Coordinator gCoordinator;
-Model gTeapotModel_temp; // TODO: REMOVE
 Camera2D gCamera;
 
 int main()
@@ -76,7 +76,7 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(INSIDE);
+    screen_mngr.SetScreen(OUTSIDE); // <-- I changed this from "INSIDE" for testing -- Evan
 
     while (!WindowShouldClose())
     {
@@ -141,7 +141,6 @@ int main()
         }
     }
 
-    UnloadModel(gTeapotModel_temp);
     render_sys->shutdown();
 
     CloseWindow();
@@ -173,11 +172,13 @@ void temp_place_objs()
 
     // 3D ENTITY BILLBOARD TEST
     Entity teapot = gCoordinator.CreateEntity();
-    gTeapotModel_temp = LoadModel("art/teapot.obj");
-    // TODO: TEMP! REPLACE WITH ASSET REF WHEN ASSET MANAGER IMPLEMENTED
+
+    auto& assetMngr = AssetManager::get();
+    assetMngr.load("art/teapot.obj");
+
     gCoordinator.AddComponent(
         teapot,
-        model_view{ .model = &gTeapotModel_temp }
+        model_view{ .model = &assetMngr.get<Model>("teapot") }
     );
     gCoordinator.AddComponent(
         teapot,
