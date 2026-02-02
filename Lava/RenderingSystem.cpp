@@ -74,7 +74,7 @@ void RenderSystem::draw()
                            rend.col);
         }
         else {
-            DrawRectangle(transform.pos.x, transform.pos.y, rend.size.x, rend.size.y, rend.col);
+            DrawRectangle(int(transform.pos.x), int(transform.pos.y), int(rend.size.x), int(rend.size.y), rend.col);
         }
     }
 }
