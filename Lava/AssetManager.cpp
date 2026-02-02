@@ -104,14 +104,16 @@ void AssetManager::unload_all() {
 #define UNLOAD_MAP(Map, UnloadFunc) \
 	for (auto& [_, asset] : Map) { \
 		UnloadFunc(asset); \
-	}
+	} \
+	Map.clear();
 #define UNLOAD_INFO_MAP(Map, UnloadFunc) \
 	for (auto& [_, info] : Map) { \
 		for (int i = 0; i < info.count; ++i) { \
 			UnloadFunc(info.pData[i]); \
 		} \
 		RL_FREE(info.pData); \
-	}
+	} \
+	Map.clear();
 
 	UNLOAD_MAP(m_Textures, UnloadTexture);
 	UNLOAD_MAP(m_Fonts, UnloadFont);
