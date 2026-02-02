@@ -25,15 +25,17 @@ public:
 struct CombatZone
 {
 #pragma region CombatVariables
-    // enemy vars
-    int enemyMaxHealth = 5;
-    float enemyMoveSpeed = 10.0f;
-
+    
+    //TODO - Connect health via another script
     // base vars
     Vector2 baseLocation{};
     int baseMaxHealth = 20;
     float baseDamageRadius = 30.0f;
     float baseDamageCooldown = 1.0f;
+    
+    // enemy vars
+    int enemyMaxHealth = 5;
+    float enemyMoveSpeed = 10.0f;
 
     // spawning vars
     int enemiesToSpawn = 0;
@@ -41,28 +43,29 @@ struct CombatZone
     Vector2 spawnPointA{};
     Vector2 spawnPointB{};
     float spawnOffsetRadius = 10.0f;
-
-    //TODO - tower toggles (another script controls these)
-    bool towerAEnabled = true;
-    bool towerBEnabled = true;
-
+    
     // shared tower tuning
     float towerAttackRange = 250.0f;
     float towerAttackCooldown = 0.75f;
     int towerDamage = 1;
-
-    // runtime vars
-    int baseCurrentHealth = baseMaxHealth;
+    float towerATimer = 0.0f;
+    float towerBTimer = 0.0f;
     
+    //TODO - tower toggles (another script controls these)
+    bool towerAEnabled = true;
+    bool towerBEnabled = true;
+    bool lightTowerEnabled = true;
+    bool barricadeEnabled = true;
+
     // light tower vars
     Vector2 lightTowerPosition{};
     float lightTowerRange = 200.0f;
     float lightTowerFearTime = 2.5f;
     float fleeSpeedMultiplier = 1.75f;
 
-    //TODO - tower toggles (another script controls these)
-    bool lightTowerEnabled = true;
-
+    // barricade tuning
+    float barricadeRadius = 60.0f;
+    
     // enemy definition
     struct Enemy
     {
@@ -77,17 +80,12 @@ struct CombatZone
         Enemy(Vector2 pos, int hp, float spd)
             : position(pos), health(hp), speed(spd) {}
     };
-
-
+    
     // internal vars
     std::vector<Enemy> enemies;
     float spawnTimer = 0.0f;
     float baseDamageTimer = 0.0f;
-
-    // tower internal timers
-    float towerATimer = 0.0f;
-    float towerBTimer = 0.0f;
-
+    int baseCurrentHealth = baseMaxHealth;
     bool isResolved = false;
     
 #pragma endregion
@@ -183,16 +181,24 @@ private:
             return;
         }
 
-        // Move to base, if in range, damage base
+        // Calculate distances
         Vector2 toBase = Vector2Subtract(baseLocation, enemy.position);
         float distance = Vector2Length(toBase);
 
+        // If Barricade check (circle around base, larger than damage radius)
+        if (barricadeEnabled && distance <= barricadeRadius && distance > baseDamageRadius)
+        {
+            return; // Full stop when touching the barricade
+        }
+
+        // else If Damage check
         if (distance <= baseDamageRadius)
         {
             TryDamageBase();
             return;
         }
 
+        // Else Move towards base
         Vector2 dir = Vector2Normalize(toBase);
         enemy.position = Vector2Add(enemy.position, Vector2Scale(dir, enemy.speed * deltaTime));
 
