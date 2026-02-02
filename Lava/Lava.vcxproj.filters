@@ -122,5 +122,8 @@
     <ClInclude Include="EnemyManager.h">
       <Filter>Header Files\managers</Filter>
     </ClInclude>
+    <ClInclude Include="AssetManager.cxx">
+      <Filter>Header Files\managers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
