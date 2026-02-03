@@ -32,7 +32,8 @@ public:
 	void DrawMaze();
 	bool mazeBuilt = false;
 	void BuildMaze();
-	
+	void EndMaze();
+
 	struct MazeNode
 	{
 		bool Visited = false;

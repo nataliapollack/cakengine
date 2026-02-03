@@ -132,10 +132,10 @@ std::vector<MazeBuilder::MazeNode*> MazeBuilder::GetValidNeighbors(MazeNode* nod
 
 void MazeBuilder::StartMaze()
 {
+	isActive = true;
 	for (int i = 0; i < MazeWidth; ++i)
 		for (int j = 0; j < MazeHeight; ++j)
 		{
-			// TODO: Remember to Delete this shit somewhere! 
 			MazeNodes[i][j] = new MazeNode;
 			MazeNodes[i][j]->col = i;
 			MazeNodes[i][j]->row = j;
@@ -154,6 +154,16 @@ bool MazeBuilder::GetIsActive()
 	return isActive;
 }
 
+void MazeBuilder::EndMaze()
+{
+	for (int i = 0; i < MazeWidth; ++i)
+	{
+		for(int j = 0; j < MazeHeight; ++j)
+			delete MazeNodes[i][j];
+	}
+	isActive = false;
+}
+
 void MazeBuilder::PlaceWall(Vector2 pos)
 {
 
@@ -165,7 +175,8 @@ void MazeBuilder::DrawMaze()
 
 	//DrawRectangle(node.nodeSize * 11, 0.0f, node.nodeSize, node.nodeSize, WHITE);
 	//DrawRectangle(0.0f, node.nodeSize * 7, node.nodeSize, node.nodeSize, WHITE);
-
+	if(!isActive)
+		return;
 
 	for (int col = 0; col < MazeWidth; ++col)
 	{
