@@ -21,14 +21,15 @@
 #include "EnergyManager.h"
 #include "ScreenManager.h"
 #include "CycleManager.h"
+#include "AssetManager.hpp"
 
-// Minigames
-#include "MazeBuilder.h"
+// minigames
+#include "SolarPanels.h"
 
 void temp_place_objs();
 
 Coordinator gCoordinator;
-Model gTeapotModel_temp; // TODO: REMOVE
+Camera2D gCamera;
 
 int main()
 {
@@ -52,9 +53,11 @@ int main()
     ScreenManager screen_mngr;
     CycleManager cycle_mngr;
 
+    // minigames
+    SolarPanel solar_game;
+
     tools.set_system_signatures();
 
-    MazeBuilder maze_builder;
     temp_place_objs();
 
     // inits
@@ -65,16 +68,20 @@ int main()
     screen_mngr.init();
     cycle_mngr.init();
 
+    solar_game.init();
+
+    // camera Things
+    gCamera.target = Vector2{ 0, 0 };
+    gCamera.zoom = 1.0f;
+
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(MAZE);
-    maze_builder.StartMaze();
+    screen_mngr.SetScreen(OUTSIDE); // <-- I changed this from "INSIDE" for testing -- Evan
 
     while (!WindowShouldClose())
     {
         // update
         float deltaTime = 1.0f / 60.0f;
-    
 
         cycle_mngr.UpdateTimer(deltaTime);
         if (screen_mngr.GetScreen() == OUTSIDE || screen_mngr.GetScreen() == INSIDE)
@@ -90,40 +97,40 @@ int main()
 
             BeginDrawing();
 
-            if (screen_mngr.GetScreen() == OUTSIDE)
+            // things that are 2D
+            BeginMode2D(gCamera);
             {
-                ClearBackground(GRAY);
+                if (screen_mngr.GetScreen() == INSIDE)
+                {
+                    ClearBackground(GRAY);
+                }
+                if (screen_mngr.GetScreen() == OUTSIDE)
+                {
+                    ClearBackground(DARKGRAY);
+
+                    render_sys->draw();
+
+                    enery_mngr.DrawEnergyLevels();
+
+                    cycle_mngr.draw();
+
+                }
             }
-            if (screen_mngr.GetScreen() == OUTSIDE)
-            {                
+            EndMode2D();
+
+            if (screen_mngr.GetScreen() == SOLAR_TILE)
+            {
                 ClearBackground(DARKGRAY);
-
-                render_sys->draw();
-                    
-                enery_mngr.DrawEnergyLevels();
-
-                cycle_mngr.draw();
+                solar_game.draw();
 
             }
             if (screen_mngr.GetScreen() == MAZE)
             {
                 ClearBackground(DARKBLUE);
-                maze_builder.DrawMaze();
-                if (!maze_builder.mazeBuilt)
-                {
-                    maze_builder.BuildMaze();
-                }
-              //  else
-                  //  maze_builder.EndMaze();
-
             }
             if (screen_mngr.GetScreen() == AUDIO_FREQ)
             {
                 ClearBackground(RED);
-            }
-            if (screen_mngr.GetScreen() == SOLAR_TILE)
-            {
-                ClearBackground(GREEN);
             }
             if (screen_mngr.GetScreen() == CAMERAS)
             {
@@ -131,11 +138,9 @@ int main()
             }
 
             EndDrawing();
-
         }
     }
 
-    UnloadModel(gTeapotModel_temp);
     render_sys->shutdown();
 
     CloseWindow();
@@ -167,11 +172,13 @@ void temp_place_objs()
 
     // 3D ENTITY BILLBOARD TEST
     Entity teapot = gCoordinator.CreateEntity();
-    gTeapotModel_temp = LoadModel("art/teapot.obj");
-    // TODO: TEMP! REPLACE WITH ASSET REF WHEN ASSET MANAGER IMPLEMENTED
+
+    auto& assetMngr = AssetManager::get();
+    assetMngr.load("art/teapot.obj");
+
     gCoordinator.AddComponent(
         teapot,
-        model_view{ .model = &gTeapotModel_temp }
+        model_view{ .model = &assetMngr.get<Model>("teapot") }
     );
     gCoordinator.AddComponent(
         teapot,
