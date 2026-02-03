@@ -1,8 +1,12 @@
 ﻿#pragma once
 #include <vector>
 #include <cstdlib>
+#include <cfloat>
 #include "raylib.h"
 #include "raymath.h"
+
+// Forward declaration for events
+struct Event {};
 
 class EnemyManager
 {
@@ -10,18 +14,59 @@ public:
     static constexpr int MAX_ZONES = 4;
 
     //TODO - Connect this to the code below?--------------------V
-    CombatZone zones[MAX_ZONES];                                //
-                                                                //
-    void Update(float deltaTime)                                //
-    {                                                           //
-        for (int i = 0; i < MAX_ZONES; ++i)                     //
-        {                                                       //
-            zones[i].Update(deltaTime);                         //
-        }                                                       //
-    }                                                           //
-};                                                              //
-                                                                //
-//TODO - Can i do this?  :)      <--------------------------------
+    CombatZone zones[MAX_ZONES];
+        
+    // CORE GAME LOOP
+    void update(float deltaTime)
+    {     
+        if (!isNight) return;
+        
+        for (int i = 0; i < MAX_ZONES; ++i)  
+        {   
+            zones[i].update(deltaTime); 
+        }      
+    }     
+  
+    // DRAW LOOP    
+    void draw()     
+    {  
+        if (!isVisible) return;  
+   
+        for (int i = 0; i < MAX_ZONES; ++i)
+        {  
+            zones[i].draw();
+        }  
+    }    
+    
+    void init()
+    {
+        //TODO - Hook this up to an actual event system
+    }
+
+    // Event hooks
+    void StartNight(Event&)
+    {
+        isNight = true;
+    }
+
+    void ToggleStatus(Event&)
+    {
+        isVisible = !isVisible;
+    }
+
+    void StartNewDay(Event&)
+    {
+        currentDay++;
+        //TODO - Read enemy counts / difficulty scaling per day
+    }
+
+private:
+    bool isNight = false;    // determines whether update() runs
+    bool isVisible = false;  // determines whether draw() runs
+    int currentDay = 0;
+};
+
+//TODO - Can i do this?  :)      <-------------------------------------------------
 struct CombatZone
 {
 #pragma region CombatVariables
@@ -63,7 +108,7 @@ struct CombatZone
     float lightTowerFearTime = 2.5f;
     float fleeSpeedMultiplier = 1.75f;
 
-    // barricade tuning
+    // barricade vars
     float barricadeRadius = 60.0f;
     
     // enemy definition
@@ -77,6 +122,7 @@ struct CombatZone
         bool isFleeing = false;
         float lightExposureTimer = 0.0f;
 
+        //TODO - this is gross and ugly?
         Enemy(Vector2 pos, int hp, float spd)
             : position(pos), health(hp), speed(spd) {}
     };
@@ -87,14 +133,22 @@ struct CombatZone
     float baseDamageTimer = 0.0f;
     int baseCurrentHealth = baseMaxHealth;
     bool isResolved = false;
+
+    // FX toggle tracking
+    bool fxTogglesInitialized = false;
+    bool prevBarricadeEnabled = true;
+    bool prevLightTowerEnabled = true;
+    bool prevTowerAEnabled = true;
+    bool prevTowerBEnabled = true;
     
 #pragma endregion
     
     // CORE LOOP
-    void Update(float deltaTime)
+    void update(float deltaTime)
     {
         if (isResolved) return;
 
+        UpdateToggleFX();
         UpdateSpawning(deltaTime);
         UpdateEnemies(deltaTime);
         UpdateLightTower(deltaTime);
@@ -102,9 +156,61 @@ struct CombatZone
         CheckEndConditions();
     }
 
+    // DRAW LOOP
+    void draw()
+    {
+        //TODO - Draw enemies, base, towers, light radius, barricade radius
+    }
+
     //TODO - Private here?
 private:
+
 #pragma region EnemyAssaultLoop
+
+    // Toggle FX
+    void UpdateToggleFX()
+    {
+        // Fetch initial states
+        if (!fxTogglesInitialized)
+        {
+            prevBarricadeEnabled = barricadeEnabled;
+            prevLightTowerEnabled = lightTowerEnabled;
+            prevTowerAEnabled = towerAEnabled;
+            prevTowerBEnabled = towerBEnabled;
+            fxTogglesInitialized = true;
+            return;
+        }
+
+        // Check for changes then play FX
+        if (barricadeEnabled != prevBarricadeEnabled)
+        {
+            if (barricadeEnabled) PlayBarricadeUpFX(baseLocation);
+            else PlayBarricadeDownFX(baseLocation);
+            prevBarricadeEnabled = barricadeEnabled;
+        }
+
+        if (lightTowerEnabled != prevLightTowerEnabled)
+        {
+            if (lightTowerEnabled) PlayLightTowerOnFX(lightTowerPosition);
+            else PlayLightTowerOffFX(lightTowerPosition);
+            prevLightTowerEnabled = lightTowerEnabled;
+        }
+
+        if (towerAEnabled != prevTowerAEnabled)
+        {
+            if (towerAEnabled) PlayTowerAEnabledFX();
+            else PlayTowerADisabledFX();
+            prevTowerAEnabled = towerAEnabled;
+        }
+
+        if (towerBEnabled != prevTowerBEnabled)
+        {
+            if (towerBEnabled) PlayTowerBEnabledFX();
+            else PlayTowerBDisabledFX();
+            prevTowerBEnabled = towerBEnabled;
+        }
+    }
+
     // Spawning 
     void UpdateSpawning(float deltaTime)
     {
@@ -157,7 +263,7 @@ private:
     // movement
     void UpdateEnemyMovement(Enemy& enemy, float deltaTime)
     {
-        //Check if fleeingm and make the enemy move away
+        //Check if fleeing and make the enemy move away
         if (enemy.isFleeing)
         {
             Vector2 awayFromLight = Vector2Subtract(enemy.position, lightTowerPosition);
@@ -181,14 +287,13 @@ private:
             return;
         }
 
-        // Calculate distances
         Vector2 toBase = Vector2Subtract(baseLocation, enemy.position);
         float distance = Vector2Length(toBase);
 
         // If Barricade check (circle around base, larger than damage radius)
         if (barricadeEnabled && distance <= barricadeRadius && distance > baseDamageRadius)
         {
-            return; // Full stop when touching the barricade
+            return; // Stop enemy when touching the barricade
         }
 
         // else If Damage check
@@ -226,6 +331,7 @@ private:
 #pragma endregion
 
 #pragma region TowerCombat
+
     // Tower timer update loop
     void UpdateTowers(float deltaTime)
     {
@@ -267,7 +373,7 @@ private:
     {
         //TODO - check C++ values work
         Enemy* closestEnemy = nullptr; //google said this :)
-        float closestDist = FLT_MAX; //google said this :)
+        float closestDist = FLT_MAX;   //google said this :)
 
         for (Enemy& enemy : enemies)
         {
@@ -281,7 +387,7 @@ private:
 
         return closestEnemy;
     }
-    
+
     // Light tower causes fleeing
     void UpdateLightTower(float deltaTime)
     {
@@ -315,6 +421,7 @@ private:
 #pragma endregion
     
 #pragma region EndConditions
+
     // check wincons
     void CheckEndConditions()
     {
@@ -355,7 +462,14 @@ private:
     void PlayTowerAttackFX(const Vector2&) {}
     void PlayEnemyFleeFX(const Vector2&) {}
     void PlayEnemyFledFX(const Vector2&) {}
+    void PlayBarricadeUpFX(const Vector2&) {}
+    void PlayBarricadeDownFX(const Vector2&) {}
+    void PlayLightTowerOnFX(const Vector2&) {}
+    void PlayLightTowerOffFX(const Vector2&) {}
+    void PlayTowerAEnabledFX() {}
+    void PlayTowerADisabledFX() {}
+    void PlayTowerBEnabledFX() {}
+    void PlayTowerBDisabledFX() {}
 
 #pragma endregion
-
 };
