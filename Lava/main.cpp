@@ -22,6 +22,9 @@
 #include "ScreenManager.h"
 #include "CycleManager.h"
 
+// Minigames
+#include "MazeBuilder.h"
+
 void temp_place_objs();
 
 Coordinator gCoordinator;
@@ -51,6 +54,7 @@ int main()
 
     tools.set_system_signatures();
 
+    MazeBuilder maze_builder;
     temp_place_objs();
 
     // inits
@@ -63,12 +67,14 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(OUTSIDE);
+    screen_mngr.SetScreen(MAZE);
+    maze_builder.StartMaze();
 
     while (!WindowShouldClose())
     {
         // update
         float deltaTime = 1.0f / 60.0f;
+    
 
         cycle_mngr.UpdateTimer(deltaTime);
         if (screen_mngr.GetScreen() == OUTSIDE || screen_mngr.GetScreen() == INSIDE)
@@ -93,7 +99,7 @@ int main()
                 ClearBackground(DARKGRAY);
 
                 render_sys->draw();
-
+                    
                 enery_mngr.DrawEnergyLevels();
 
                 cycle_mngr.draw();
@@ -102,6 +108,14 @@ int main()
             if (screen_mngr.GetScreen() == MAZE)
             {
                 ClearBackground(DARKBLUE);
+                maze_builder.DrawMaze();
+                if (!maze_builder.mazeBuilt)
+                {
+                    maze_builder.BuildMaze();
+                }
+              //  else
+                  //  maze_builder.EndMaze();
+
             }
             if (screen_mngr.GetScreen() == AUDIO_FREQ)
             {
