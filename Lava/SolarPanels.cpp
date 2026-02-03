@@ -30,7 +30,7 @@ void SolarPanel::update()
 {
     if (show_warning)
     {
-        timer -= (1 / 60);
+        timer -= (1.f / 60);
         if (timer <= 0)
         {
             show_warning = false;
