@@ -3,6 +3,7 @@
 #include <vector>
 #include "raylib.h"
 #include "Events.hpp"
+#include "MazePlayer.h"
 
 
 // Ok uhh, this will build the maze and place whatever items in it, 
@@ -28,7 +29,7 @@ public:
 
 
 
-	void PlaceWall(Vector2 pos);
+	void PlaceWall();
 	void DrawMaze();
 	bool mazeBuilt = false;
 	void BuildMaze();
@@ -38,6 +39,7 @@ public:
 	{
 		bool Visited = false;
 		bool OnStack = false; // Just a debugging thing
+		bool IsFoggy = true;
 		int row;
 		int col;
 
@@ -48,7 +50,7 @@ public:
 		WallDirs ThisToParent = NONE; 
 
 		// True if the wall still exists
-		bool walls[4] = { true, true, true, true };
+		bool RemainingWalls[4] = { true, true, true, true };
 	};
 
 private:
@@ -75,18 +77,24 @@ private:
 	int nodeSize = 50;
 	float wallOffset = nodeSize;
 
-	// Just whatever looks good really
-	int wallThickness = 10;
+	
+	int wallThickness = 15;
 
 	std::stack<MazeNode*> VisitedNodes;
 
+	std::vector<Rectangle> Walls; 
+
 
 	bool isActive = false;
-	bool StepByStepBuild = true;
+	bool StepByStepBuild = false;
 	bool firstStep = true;
 
 	std::vector<MazeNode*> GetValidNeighbors(MazeNode* node);
 
+	MazePlayer player;
 
+	void HitWall(Rectangle wall);
 };
+
+
 

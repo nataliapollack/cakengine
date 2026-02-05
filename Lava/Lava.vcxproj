@@ -140,6 +140,7 @@
     <ClCompile Include="Lava.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MazeBuilder.cpp" />
+    <ClCompile Include="MazePlayer.cpp" />
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="DoorSystem.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="MazeBuilder.h" />
+    <ClInclude Include="MazePlayer.h" />
     <ClInclude Include="Minigames.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="SolarPanels.h" />

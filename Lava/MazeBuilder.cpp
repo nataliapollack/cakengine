@@ -3,6 +3,7 @@
 #include "Core.h" 
 #include "ScreenManager.h"
 #include <random>
+#include "Player.h"
 
 extern Coordinator gCoordinator;
 
@@ -27,7 +28,6 @@ void MazeBuilder::BuildMaze()
 		firstStep = false;
 	}
 
-
 	while (!VisitedNodes.empty())
 	{
 		MazeNode* currNode = VisitedNodes.top();
@@ -48,8 +48,8 @@ void MazeBuilder::BuildMaze()
 
 			// Deletes walls between currNode and chosen node
 			MazeNode* chosenNode = neighbors[randomIndex];
-			currNode->walls[chosenNode->ParentToThis] = false;
-			chosenNode->walls[chosenNode->ThisToParent] = false;
+			currNode->RemainingWalls[chosenNode->ParentToThis] = false;
+			chosenNode->RemainingWalls[chosenNode->ThisToParent] = false;
 
 
 			neighbors[randomIndex]->Visited = true;	
@@ -64,6 +64,7 @@ void MazeBuilder::BuildMaze()
 			return;
 		}
 	}
+	PlaceWall();
 	mazeBuilt = true;
 
 }
@@ -127,9 +128,51 @@ std::vector<MazeBuilder::MazeNode*> MazeBuilder::GetValidNeighbors(MazeNode* nod
 		}
 	}
 	return ValidNeighbors;
-	//return std::vector<MazeNode*>();
 }
 
+void MazeBuilder::HitWall(Rectangle wall)
+{
+	float collision_forgiveness = 0.4f;
+	float x_correction = 0.0f;
+
+	if (wall.height <= wall.width)
+	{
+		if (player.vel.y > 0 && wall.y > player.pos.y) // floor
+		{
+			player.pos.y -= wall.height/5;
+			player.vel.y = 0.0f;
+		}
+		else if (player.vel.y < 0) // roof
+		{
+			// collision forgiveness 
+			if (wall.width < player.shape.width * collision_forgiveness)
+			{
+				if (wall.x > player.pos.x)
+					x_correction = -wall.width/5;
+				else
+					x_correction = wall.width/5;
+			}
+			else // or not
+			{
+				player.pos.y += wall.height/5;
+				player.vel.y = 0.0f;
+			}
+		}
+	}
+	else
+	{
+		if (player.vel.x > 0)
+		{
+			player.pos.x -= wall.width/5;
+			player.vel.x = 0.0f;
+		}
+		else if (player.vel.x < 0)
+		{
+			player.pos.x += wall.width/5;
+			player.vel.x = 0.0f;
+		}
+	}
+}
 void MazeBuilder::StartMaze()
 {
 	isActive = true;
@@ -142,11 +185,40 @@ void MazeBuilder::StartMaze()
 		}
 	if(!StepByStepBuild)
 		BuildMaze();
+
 }
 
 void MazeBuilder::UpdateMaze(float dt)
 {
+	player.UpdatePlayer(dt);
 
+	for (int i = 0; i < Walls.size(); ++i)
+	{
+		if (CheckCollisionRecs(player.shape, Walls[i]))
+		{
+			HitWall(Walls[i]);
+		}
+	}
+
+	for (int col = 0; col < MazeWidth; ++col)
+	{
+		for (int row = 0; row < MazeHeight; ++row)
+		{
+			MazeNode* node = MazeNodes[col][row];
+			int xPos = col * nodeSize;
+			int yPos = row * nodeSize;
+			Rectangle rec = { xPos, yPos, nodeSize, nodeSize };
+			if (CheckCollisionRecs(player.shape, rec))
+			{
+				/*if (col == MazeWidth - 1 && row == MazeHeight - 1)
+				{
+					DrawRectangle(xPos, yPos, nodeSize, nodeSize, RED);
+				}*/
+
+				node->IsFoggy = false;
+			}
+		}
+	}
 }
 
 bool MazeBuilder::GetIsActive()
@@ -164,9 +236,25 @@ void MazeBuilder::EndMaze()
 	isActive = false;
 }
 
-void MazeBuilder::PlaceWall(Vector2 pos)
+void MazeBuilder::PlaceWall()
 {
-
+	for (int col = 0; col < MazeWidth; ++col)
+	{
+		for (int row = 0; row < MazeHeight; ++row)
+		{
+			MazeNode* node = MazeNodes[col][row];
+			int xPos = col * nodeSize;
+			int yPos = row * nodeSize;
+			if (node->RemainingWalls[NORTH])
+				Walls.push_back(Rectangle(xPos, yPos, nodeSize, wallThickness));
+			if (node->RemainingWalls[EAST])
+				Walls.push_back(Rectangle(xPos + wallOffset, yPos, wallThickness, nodeSize));
+			if (node->RemainingWalls[SOUTH])
+				Walls.push_back(Rectangle(xPos, yPos + wallOffset, nodeSize, wallThickness));
+			if (node->RemainingWalls[WEST])
+				Walls.push_back(Rectangle(xPos, yPos, wallThickness, nodeSize));
+		}
+	}
 }
 
 void MazeBuilder::DrawMaze()
@@ -183,29 +271,35 @@ void MazeBuilder::DrawMaze()
 		for (int row = 0; row < MazeHeight; ++row)
 		{
 			MazeNode* node = MazeNodes[col][row];
-			if (!node->Visited)
-				continue;
-			// Draw nodes
 			int xPos = col * nodeSize;
 			int yPos = row * nodeSize;
+			if (col == MazeWidth - 1 && row == MazeHeight - 1)
+			{
+				DrawRectangle(xPos, yPos, nodeSize, nodeSize, RED);
+			}
+
+			
+			if (!node->Visited || node->IsFoggy)
+				continue;
+			// Draw nodes
 			if(node->Visited)
 				DrawRectangle(xPos, yPos, nodeSize, nodeSize, WHITE);
 			if(node->OnStack)
 				DrawRectangle(xPos, yPos, nodeSize, nodeSize, GREEN);
-
 			// Draw walls 
 			// North
-			if(node->walls[NORTH])
+			if(node->RemainingWalls[NORTH])
 				DrawRectangle(xPos, yPos, nodeSize, wallThickness, PURPLE);
 			// East
-			if (node->walls[EAST])
+			if (node->RemainingWalls[EAST])
 				DrawRectangle(xPos + wallOffset, yPos, wallThickness, nodeSize, PURPLE);
 			// South
-			if (node->walls[SOUTH])
+			if (node->RemainingWalls[SOUTH])
 				DrawRectangle(xPos, yPos + wallOffset, nodeSize, wallThickness, PURPLE);
 			// West
-			if (node->walls[WEST])
+			if (node->RemainingWalls[WEST])
 				DrawRectangle(xPos, yPos, wallThickness, nodeSize, PURPLE);
 		}
 	}
+	player.DrawPlayer();
 }
