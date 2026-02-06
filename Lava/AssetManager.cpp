@@ -106,7 +106,6 @@ void AssetManager::Load(const fs::path& path) {
 	else
 	{
 		std::cerr << "Invalid asset path: " << path << std::endl;
-		assert(!"Invalid asset path! See console error!");
 	}
 }
 
@@ -127,8 +126,7 @@ void AssetManager::LoadMusic(const fs::path& path) {
 	}
 	else
 	{
-		std::cerr << "Invalid asset path: " << path << std::endl;
-		assert(!"Invalid asset path! See console error!");
+		std::cerr << "Invalid asset type: " << path << std::endl;
 	}
 }
 
