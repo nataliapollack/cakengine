@@ -294,6 +294,7 @@ void NightMinigame::draw() {
 		return;
 
 	// TODO: basic shapes
+	// TODO: create + draw ui to switch cams :)
 
 	for (auto& zone : m_zones) {
 		zone.draw();
