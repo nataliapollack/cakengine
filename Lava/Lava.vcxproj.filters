@@ -72,6 +72,9 @@
     <ClCompile Include="SolarPanels.cpp">
       <Filter>Source Files\minigames</Filter>
     </ClCompile>
+    <ClCompile Include="NightMinigame.cpp">
+      <Filter>Source Files\minigames</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingSystem.h">
@@ -119,11 +122,17 @@
     <ClInclude Include="Minigames.h">
       <Filter>Resource Files\components</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyManager.h">
-      <Filter>Header Files\managers</Filter>
-    </ClInclude>
     <ClInclude Include="AssetManager.cxx">
       <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="NightMinigame.h">
+      <Filter>Header Files\minigames</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>Resource Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="Health.h">
+      <Filter>Resource Files\components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

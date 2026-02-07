@@ -26,6 +26,7 @@ If it’s slow, we gotta multithread
 #include <filesystem>
 #include <concepts>
 #include <string_view>
+#include <optional>
 
 #include <raylib.h>
 
@@ -63,6 +64,9 @@ public:
 
 	AssetManager(const AssetManager&) = delete;
 	AssetManager& operator=(const AssetManager&) = delete;
+
+	void load_all(const std::filesystem::path& baseDirectory,
+				  const std::optional<std::filesystem::path> musicDirectory = {});
 
 	template <std::convertible_to<std::filesystem::path>... AssetPaths>
 	void load(AssetPaths... nonMusicPaths);

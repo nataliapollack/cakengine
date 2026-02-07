@@ -14,7 +14,42 @@ AssetManager::~AssetManager() {
 	unload_all();
 }
 
-void AssetManager::Load(const std::filesystem::path& path) {
+namespace fs = std::filesystem;
+
+void AssetManager::load_all(const fs::path& baseDirectory,
+							const std::optional<fs::path> musicDirectory)
+{
+	fs::directory_entry directory = fs::directory_entry{ baseDirectory };
+	assert(directory.exists() && directory.is_directory());
+
+	for (auto it = fs::recursive_directory_iterator{ baseDirectory }; it != fs::recursive_directory_iterator{}; ++it) {
+		if (it->is_directory()) {
+			// skip music directory cause we have to call LoadMusic instead of Load
+			if (musicDirectory.has_value() && fs::equivalent(it->path(), *musicDirectory)) {
+				it.disable_recursion_pending();
+			}
+
+			continue;
+		}
+
+		if (it->is_regular_file()) {
+			Load(it->path());
+		}
+	}
+
+	if (!musicDirectory.has_value())
+		return;
+
+	for (auto& entry : fs::recursive_directory_iterator{ *musicDirectory }) {
+		if (entry.is_directory())
+			continue;
+
+		if (entry.is_regular_file())
+			LoadMusic(entry.path());
+	}
+}
+
+void AssetManager::Load(const fs::path& path) {
 	auto extension = path.extension().string();
 	std::ranges::transform(extension, extension.begin(), [](auto c) {
 		return static_cast<char>(std::tolower(c));
@@ -71,11 +106,10 @@ void AssetManager::Load(const std::filesystem::path& path) {
 	else
 	{
 		std::cerr << "Invalid asset path: " << path << std::endl;
-		assert(!"Invalid asset path! See console error!");
 	}
 }
 
-void AssetManager::LoadMusic(const std::filesystem::path& path) {
+void AssetManager::LoadMusic(const fs::path& path) {
 	auto extension = path.extension().string();
 	std::ranges::transform(extension, extension.begin(), [](auto c) {
 		return static_cast<char>(std::tolower(c));
@@ -92,8 +126,7 @@ void AssetManager::LoadMusic(const std::filesystem::path& path) {
 	}
 	else
 	{
-		std::cerr << "Invalid asset path: " << path << std::endl;
-		assert(!"Invalid asset path! See console error!");
+		std::cerr << "Invalid asset type: " << path << std::endl;
 	}
 }
 

@@ -24,7 +24,7 @@ public:
         for (int i = 0; i < MAX_ZONES; ++i)  
         {   
             zones[i].update(deltaTime); 
-        }      
+        }
     }     
   
     // DRAW LOOP    
@@ -266,8 +266,8 @@ private:
         //Check if fleeing and make the enemy move away
         if (enemy.isFleeing)
         {
-            Vector2 awayFromLight = Vector2Subtract(enemy.position, lightTowerPosition);
-            Vector2 dir = Vector2Normalize(awayFromLight);
+            Vector2 awayFromBase = Vector2Subtract(enemy.position, baseLocation);
+            Vector2 dir = Vector2Normalize(awayFromBase);
 
             enemy.position = Vector2Add(
                 enemy.position,
@@ -275,7 +275,10 @@ private:
             );
 
             // off-screen cleanup of enemies
-            //TODO - Check if this works?
+            //TODO - Check if this works? (np) (np)
+            // off-screen screen 1/2/3/4? [ - - ] (not possible)
+            //                            [ - o ] o
+            //                                o
             if (enemy.position.x < -50 || enemy.position.x > (float)GetScreenWidth() + 50 ||
                 enemy.position.y < -50 || enemy.position.y > (float)GetScreenHeight() + 50)
             {
@@ -361,9 +364,10 @@ private:
         float distanceToBase = Vector2Distance(target->position, baseLocation);
         if (distanceToBase > towerAttackRange) return;
 
+        // events?
         target->health -= towerDamage;
-
         PlayTowerAttackFX(target->position);
+        // enemy dmg fx? vfx particles?
 
         towerTimer = towerAttackCooldown;
     }
@@ -403,8 +407,10 @@ private:
             float dist = Vector2Distance(enemy.position, lightTowerPosition);
             if (dist <= lightTowerRange)
             {
+                // how long in light += time
                 enemy.lightExposureTimer += deltaTime;
 
+                // isAfraid
                 if (enemy.lightExposureTimer >= lightTowerFearTime)
                 {
                     enemy.isFleeing = true;
