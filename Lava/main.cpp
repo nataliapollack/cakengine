@@ -25,6 +25,7 @@
 
 // minigames
 #include "SolarPanels.h"
+#include "NightMinigame.h"
 
 void temp_place_objs();
 
@@ -55,9 +56,11 @@ int main()
 
     // minigames
     SolarPanel solar_game;
+    NightMinigame night_game;
 
     tools.set_system_signatures();
 
+    AssetManager::get().load_all("art");
     temp_place_objs();
 
     // inits
@@ -69,6 +72,7 @@ int main()
     cycle_mngr.init();
 
     solar_game.init();
+    night_game.init();
 
     // camera Things
     gCamera.target = Vector2{ 0, 0 };
@@ -174,7 +178,6 @@ void temp_place_objs()
     Entity teapot = gCoordinator.CreateEntity();
 
     auto& assetMngr = AssetManager::get();
-    assetMngr.load("art/teapot.obj");
 
     gCoordinator.AddComponent(
         teapot,

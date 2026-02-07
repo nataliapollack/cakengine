@@ -139,6 +139,7 @@
     <ClCompile Include="EnergyManager.cpp" />
     <ClCompile Include="Lava.h" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NightMinigame.cpp" />
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
@@ -151,8 +152,10 @@
     <ClInclude Include="CycleManager.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="DoorSystem.h" />
-    <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="EnemyState.h" />
+    <ClInclude Include="Health.h" />
     <ClInclude Include="Minigames.h" />
+    <ClInclude Include="NightMinigame.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="SolarPanels.h" />
     <ClInclude Include="Tooling.h" />

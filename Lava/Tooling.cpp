@@ -27,7 +27,7 @@ void Tooling::register_components()
     gCoordinator.RegisterComponent<collidble>();
 
     gCoordinator.RegisterComponent<viewport3D>();
-    // TODO: TEMP! REPLACE WITH ASSET REF WHEN ASSET MANAGER IMPLEMENTED
+    // TODO: temp? replace with asset manager ref?
     gCoordinator.RegisterComponent<model_view>();
 }
 
