@@ -133,14 +133,14 @@
   <ItemGroup>
     <ClCompile Include="AssetManager.cpp" />
     <ClInclude Include="AssetManager.cxx" />
+    <ClCompile Include="AudioFreq.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="CycleManager.cpp" />
     <ClCompile Include="DoorSystem.cpp" />
     <ClCompile Include="EnergyManager.cpp" />
     <ClCompile Include="Lava.h" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MazeBuilder.cpp" />
-    <ClCompile Include="MazePlayer.cpp" />
+    <ClCompile Include="NightMinigame.cpp" />
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
@@ -149,14 +149,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.hpp" />
+    <ClInclude Include="AudioFreq.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="CycleManager.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="DoorSystem.h" />
-    <ClInclude Include="EnemyManager.h" />
-    <ClInclude Include="MazeBuilder.h" />
-    <ClInclude Include="MazePlayer.h" />
+    <ClInclude Include="EnemyState.h" />
+    <ClInclude Include="Health.h" />
     <ClInclude Include="Minigames.h" />
+    <ClInclude Include="NightMinigame.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="SolarPanels.h" />
     <ClInclude Include="Tooling.h" />
