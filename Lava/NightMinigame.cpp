@@ -31,7 +31,7 @@ void NightMinigame::shutdown() {
 }
 
 void NightMinigame::update(float dt) {
-	if (!m_isNight || m_isResolved)
+	if (!m_isNight) //|| m_isResolved)
 		return;
 
 	m_base.hurtTimer -= dt;
@@ -43,16 +43,16 @@ void NightMinigame::update(float dt) {
 	}
 
 	// Success
-	for (auto& zone : m_zones) {
+	/*for (auto& zone : m_zones) {
 		if (zone.m_enemiesToSpawn <= 0 && zone.m_enemiesInZone.empty() && m_base.hp.health > 0) {
 			m_isResolved = true;
 		}
-	}
+	}*/
 
 	// Defeat
-	if (m_base.hp.health <= 0) {
+	/*if (m_base.hp.health <= 0) {
 		m_isResolved = true;
-	}
+	}*/
 }
 
 // this turns on the night bool which determines whether or not we're actively
@@ -174,7 +174,8 @@ void NightMinigame::combat_zone::TryDamageBase() {
 	if (m_pBase->hurtTimer > 0)
 		return;
 
-	m_pBase->hp.health--;
+	// TODO
+	//m_pBase->hp.health--;
 	m_pBase->hurtTimer = m_pBase->hurtCooldown;
 
 	// TODO: base hit fx

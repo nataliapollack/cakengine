@@ -50,8 +50,8 @@ private:
 #pragma region Base Info
 	struct Base {
 		transform2D t2d;
-		health hp = { 20 };
-		float dmgRadius = 30.0f;
+
+		float dmgRadius = 10.0f;
 		float attackCooldown = 1.0f;
 
 		float hurtTimer = 0;
@@ -93,7 +93,7 @@ private:
 #pragma region Defenses
 	struct Defense {
 		transform2D t2d;
-		float range;
+		float range = 1;
 
 		bool enabled = true; // TODO?
 
@@ -130,7 +130,7 @@ private:
 	};
 
 	struct Barricade final : Defense {
-		void init() override { range = 60; }
+		void init() override { /* TODO */ }
 		void draw() override;
 	};
 #pragma endregion Defenses
@@ -167,5 +167,5 @@ private:
 	bool m_isNight = false;		// update()
 	bool m_isVisible = false;	// draw()
 
-	bool m_isResolved = false;
+	//bool m_isResolved = false;
 };
