@@ -26,6 +26,7 @@
 // minigames
 #include "SolarPanels.h"
 #include "NightMinigame.h"
+#include "MazeBuilder.h"
 
 void temp_place_objs();
 
@@ -57,6 +58,7 @@ int main()
     // minigames
     SolarPanel solar_game;
     NightMinigame night_game;
+    MazeBuilder maze_game;
 
     tools.set_system_signatures();
 
@@ -73,6 +75,7 @@ int main()
 
     solar_game.init();
     night_game.init();
+    maze_game.Init();
 
     // camera Things
     gCamera.target = Vector2{ 0, 0 };
@@ -80,13 +83,11 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(OUTSIDE); // <-- I changed this from "INSIDE" for testing -- Evan
-
+    screen_mngr.SetScreen(MAZE); // <-- I changed this from "INSIDE" for testing -- Evan
     while (!WindowShouldClose())
     {
         // update
         float deltaTime = 1.0f / 60.0f;
-
         cycle_mngr.UpdateTimer(deltaTime);
         if (screen_mngr.GetScreen() == OUTSIDE || screen_mngr.GetScreen() == INSIDE)
         {
@@ -134,6 +135,13 @@ int main()
             if (screen_mngr.GetScreen() == MAZE)
             {
                 ClearBackground(DARKBLUE);
+
+                if (maze_game.mazeBuilt)
+                {
+                    maze_game.UpdateMaze(deltaTime);
+                }
+                maze_game.DrawMaze();
+
             }
             if (screen_mngr.GetScreen() == AUDIO_FREQ)
             {
@@ -145,6 +153,10 @@ int main()
                 night_game.draw();
             }
 
+            if (screen_mngr.GetIsFading())
+            {
+                screen_mngr.UpdateFadeTransition(deltaTime);
+            }
             EndDrawing();
         }
     }

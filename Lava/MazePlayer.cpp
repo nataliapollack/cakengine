@@ -1,6 +1,12 @@
 #include "MazePlayer.h"
+#include "Events.hpp"
+#include "Coordinator.hpp"
+#include "Core.h" 
+#include "ScreenManager.h"
 #include <algorithm>
 
+
+extern Coordinator gCoordinator;
 void MazePlayer::UpdatePlayer(float dt)
 {
 	bool keyPress = false;
@@ -64,6 +70,15 @@ void MazePlayer::UpdatePlayer(float dt)
 	else if (vel.y > 0)
 	{
 		vel.y -= dt;
+	}
+
+
+	if (IsKeyPressed(KEY_BACKSPACE))
+	{
+		Event screen(Events::Game::SCREEN_CHANGE);
+		screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
+
+		gCoordinator.SendEvent(screen);
 	}
 }
 

@@ -214,10 +214,15 @@ void MazeBuilder::UpdateMaze(float dt)
 			Rectangle rec = { xPos, yPos, nodeSize, nodeSize };
 			if (CheckCollisionRecs(player.shape, rec))
 			{
-				/*if (col == MazeWidth - 1 && row == MazeHeight - 1)
+				if (col == MazeWidth - 1 && row == MazeHeight - 1)
 				{
-					DrawRectangle(xPos, yPos, nodeSize, nodeSize, RED);
-				}*/
+					DrawRectangle(xPos, yPos, nodeSize, nodeSize, GREEN);
+					EndMaze();
+					Event screen(Events::Game::SCREEN_CHANGE);
+					screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
+
+					gCoordinator.SendEvent(screen);
+				}
 
 				node->IsFoggy = false;
 			}

@@ -140,6 +140,8 @@
     <ClCompile Include="EnergyManager.cpp" />
     <ClCompile Include="Lava.h" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MazeBuilder.cpp" />
+    <ClCompile Include="MazePlayer.cpp" />
     <ClCompile Include="NightMinigame.cpp" />
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="RenderingSystem.cpp" />
@@ -156,6 +158,8 @@
     <ClInclude Include="DoorSystem.h" />
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="Health.h" />
+    <ClInclude Include="MazeBuilder.h" />
+    <ClInclude Include="MazePlayer.h" />
     <ClInclude Include="Minigames.h" />
     <ClInclude Include="NightMinigame.h" />
     <ClInclude Include="ScreenManager.h" />
