@@ -24,13 +24,13 @@ auto& AssetManager::get(std::string_view assetName) {
 		} \
 	}
 
-	CHECK_ASSET(Texture, m_Textures);
-	CHECK_ASSET(Font, m_Fonts);
-	CHECK_ASSET(Model, m_Models);
-	CHECK_ASSET(ModelAnimationInfo, m_ModelAnims);
-	CHECK_ASSET(MaterialInfo, m_Materials);
-	CHECK_ASSET(Sound, m_Sounds);
-	CHECK_ASSET(Music, m_Music);
+	CHECK_ASSET(Texture, m_Textures)
+	CHECK_ASSET(Font, m_Fonts)
+	CHECK_ASSET(Model, m_Models)
+	CHECK_ASSET(ModelAnimationInfo, m_ModelAnims)
+	CHECK_ASSET(MaterialInfo, m_Materials)
+	CHECK_ASSET(Sound, m_Sounds)
+	CHECK_ASSET(Music, m_Music)
 
 #undef CHECK_ASSET
 	CAKE_UNREACHABLE;
