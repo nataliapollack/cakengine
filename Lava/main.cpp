@@ -93,6 +93,9 @@ int main()
             player_movement_sys->move_player(deltaTime);
             collision_sys->CheckCollisions();
         }
+        else if (screen_mngr.GetScreen() == CAMERAS) {
+            night_game.update(deltaTime);
+        }
 
         //draw
         {
@@ -139,6 +142,7 @@ int main()
             if (screen_mngr.GetScreen() == CAMERAS)
             {
                 ClearBackground(DARKGREEN);
+                night_game.draw();
             }
 
             EndDrawing();
