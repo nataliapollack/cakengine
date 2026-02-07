@@ -22,7 +22,6 @@ void MazeBuilder::BuildMaze()
 
 		MazeNode* InitialNode = MazeNodes[randomCol][randomRow];
 
-
 		InitialNode->Visited = true;
 		VisitedNodes.push(InitialNode);
 		firstStep = false;
@@ -173,9 +172,10 @@ void MazeBuilder::HitWall(Rectangle wall)
 		}
 	}
 }
-void MazeBuilder::StartMaze()
+void MazeBuilder::Init()
 {
 	isActive = true;
+	player.pos = player.defaultPos;
 	for (int i = 0; i < MazeWidth; ++i)
 		for (int j = 0; j < MazeHeight; ++j)
 		{
@@ -190,6 +190,10 @@ void MazeBuilder::StartMaze()
 
 void MazeBuilder::UpdateMaze(float dt)
 {
+	if (!isActive)
+		return;
+
+	
 	player.UpdatePlayer(dt);
 
 	for (int i = 0; i < Walls.size(); ++i)
@@ -236,6 +240,24 @@ void MazeBuilder::EndMaze()
 	isActive = false;
 }
 
+void MazeBuilder::StartMaze(Event& event)
+{
+	isActive = true;
+	firstStep = true;
+
+
+	Event screen(Events::Game::SCREEN_CHANGE);
+	screen.SetParam(Events::Game::SCREEN_ID, MAZE_SCREEN);
+
+	gCoordinator.SendEvent(screen);
+}
+
+void MazeBuilder::StartDay(Event& event)
+{
+	EndMaze();
+	Init();
+}
+
 void MazeBuilder::PlaceWall()
 {
 	for (int col = 0; col < MazeWidth; ++col)
@@ -259,10 +281,6 @@ void MazeBuilder::PlaceWall()
 
 void MazeBuilder::DrawMaze()
 {
-	//DrawRectangle(0.0f, 0.0f, node.nodeSize, node.nodeSize, WHITE);
-
-	//DrawRectangle(node.nodeSize * 11, 0.0f, node.nodeSize, node.nodeSize, WHITE);
-	//DrawRectangle(0.0f, node.nodeSize * 7, node.nodeSize, node.nodeSize, WHITE);
 	if(!isActive)
 		return;
 
@@ -273,14 +291,19 @@ void MazeBuilder::DrawMaze()
 			MazeNode* node = MazeNodes[col][row];
 			int xPos = col * nodeSize;
 			int yPos = row * nodeSize;
+
+			// goal
 			if (col == MazeWidth - 1 && row == MazeHeight - 1)
 			{
 				DrawRectangle(xPos, yPos, nodeSize, nodeSize, RED);
 			}
 
-			
+			// visited is for maze building/step by step drawing
+			// IsFoggy is for fog o war during game 
 			if (!node->Visited || node->IsFoggy)
 				continue;
+
+
 			// Draw nodes
 			if(node->Visited)
 				DrawRectangle(xPos, yPos, nodeSize, nodeSize, WHITE);

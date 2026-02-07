@@ -22,7 +22,7 @@ public:
 		NONE = 5
 	};
 
-	void StartMaze();
+	void Init();
 	void UpdateMaze(float dt);
 	//void NewDay(Event& event);
 	bool GetIsActive();
@@ -34,6 +34,9 @@ public:
 	bool mazeBuilt = false;
 	void BuildMaze();
 	void EndMaze();
+
+	void StartMaze(Event& event);
+	void StartDay(Event& event);
 
 	struct MazeNode
 	{
