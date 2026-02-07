@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="AssetManager.cpp" />
     <ClInclude Include="AssetManager.cxx" />
+    <ClCompile Include="AudioFreq.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="CycleManager.cpp" />
     <ClCompile Include="DoorSystem.cpp" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.hpp" />
+    <ClInclude Include="AudioFreq.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="CycleManager.h" />
     <ClInclude Include="Door.h" />

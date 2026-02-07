@@ -75,6 +75,9 @@
     <ClCompile Include="NightMinigame.cpp">
       <Filter>Source Files\minigames</Filter>
     </ClCompile>
+    <ClCompile Include="AudioFreq.cpp">
+      <Filter>Source Files\minigames</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingSystem.h">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="Health.h">
       <Filter>Resource Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioFreq.h">
+      <Filter>Header Files\minigames</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
