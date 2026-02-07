@@ -293,7 +293,7 @@ void NightMinigame::draw() {
 	if (!m_isVisible)
 		return;
 
-	// TODO: render system rework / integration? or manual drawing?
+	// TODO: basic shapes
 
 	for (auto& zone : m_zones) {
 		zone.draw();
@@ -301,21 +301,21 @@ void NightMinigame::draw() {
 }
 
 void NightMinigame::combat_zone::draw() {
-	// TODO
+	// TODO: basic shapes
 }
 
 void NightMinigame::Enemy::draw() {
-	// TODO
+	// TODO: basic shapes
 }
 
 void NightMinigame::DamageTower::draw() {
-	// TODO
+	// TODO: basic shapes
 }
 
 void NightMinigame::LightTower::draw() {
-	// TODO
+	// TODO: basic shapes
 }
 
 void NightMinigame::Barricade::draw() {
-	// TODO
+	// TODO: basic shapes
 }
