@@ -43,3 +43,7 @@ namespace Events::Time {
     const inline EventId NIGHT_BEGIN = "Events::Time::NIGHT_BEGIN"_hash;
     const inline EventId DAY_BEGIN = "Events::Time::DAY_BEGIN"_hash;
 }
+
+namespace Events::Hints {
+    const inline EventId HINT_RECEIVED = "Events::Hints::HINT_RECEIVED"_hash;
+}

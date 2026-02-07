@@ -24,6 +24,33 @@ void SolarPanel::init()
 
         solar_grid.push_back(temp);
     }
+
+    //for (int i = 0; i < 10; i++)
+    //{
+    //    correct_panels[i].pos.x = GetRandomValue(0, 24);
+    //    correct_panels[i].pos.y = GetRandomValue(0, 24);
+
+    //    correct_panels[i].correct = false;
+    //}
+}
+
+
+void  SolarPanel::CheckCorrectness(float x, float y)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        //if (correct_panels[i].pos == Vector2(x, y))
+        //{
+        //    if (correct_panels[i].correct)
+        //    {
+        //        correct_panels[i].correct = false;
+        //    }
+        //    else
+        //    {
+        //        correct_panels[i].correct = true;
+        //    }
+        //}
+    }
 }
 
 void SolarPanel::update()
@@ -78,7 +105,7 @@ void SolarPanel::update()
                         }
                     }
 
-
+                    CheckCorrectness(i, j);
                 }
             }
 
@@ -90,10 +117,16 @@ void SolarPanel::update()
     }
 }
 
+
 void SolarPanel::draw()
 {
     Rectangle current_box = { 0, 0, GetScreenWidth() / 5, GetScreenHeight() / 5 };
     Color col = DARKGREEN;
+
+    if (show_hints)
+    {
+
+    }
 
     for (int i = 0; i < solar_grid.size(); i++)
     {
@@ -146,4 +179,14 @@ void SolarPanel::StartNewDay(Event& event)
 {
     toggle = false;
     completed = false;
+
+    // pick random correct panels
+
+//    for (int i = 0; i < 10; i++)
+//    {
+//        correct_panels[i].pos.x = GetRandomValue(0, 24);
+//        correct_panels[i].pos.y = GetRandomValue(0, 24);
+//
+//        correct_panels[i].correct = false;
+//    }
 }
