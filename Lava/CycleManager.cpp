@@ -1,6 +1,13 @@
 #include "CycleManager.h"
 #include "raylib.h"
 
+#include "Events.hpp"
+#include "Lava.h"
+
+#include "Coordinator.hpp"
+
+extern  Coordinator gCoordinator;
+
 void CycleManager::init()
 {
     night = false;
@@ -18,7 +25,18 @@ void CycleManager::UpdateTimer(float dt)
 
         current_time = night ? MAX_NIGHT_TIME : MAX_DAY_TIME;
 
-        if (!night) current_day++;
+        if (!night)
+        {
+            current_day++;
+
+            Event hints(Events::Time::DAY_BEGIN);
+            gCoordinator.SendEvent(hints);
+        }
+        else
+        {
+            Event hints(Events::Time::NIGHT_BEGIN);
+            gCoordinator.SendEvent(hints);
+        }
 
     }
 }

@@ -10,6 +10,8 @@ extern Coordinator gCoordinator;
 void EnergyManager::init()
 {
     TotalEnergyLeft = 100;
+    TotalHealthLeft = 100;
+    ChargeAmount = 0;
 
     gCoordinator.AddEventListener(
         METHOD_LISTENER(Events::Energy::ENERGY_DOWN, EnergyManager::TakeEnergyDmg));
@@ -42,7 +44,10 @@ void EnergyManager::TakeEnergyDmg(Event& event)
 
 void EnergyManager::ChargeEnergy(Event& event)
 {
+    float energy_tick = event.GetParam<float>(Events::Energy::ENERGY_TICK);
+
    ChargingPanels = true;
+   ChargeAmount += energy_tick;
 }
 
 void EnergyManager::CheckEnergyLevels()
@@ -58,9 +63,18 @@ void EnergyManager::CheckEnergyLevels()
     }
 }
 
+void EnergyManager::update(float dt)
+{
+    if (ChargingPanels)
+    {
+        TotalEnergyLeft += ChargeAmount / 60;
+    }
+}
+
 void EnergyManager::NightBegins(Event& event)
 {
     ChargingPanels = false;
+    ChargeAmount = 0;
 }
 
 void EnergyManager::DrawEnergyLevels()

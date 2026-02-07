@@ -31,13 +31,14 @@ public:
     void CheckCorrectness(float x, float y);
 
 private:
-    bool completed;
     bool toggle;
     bool show_warning;
     bool show_hints;
 
     int placed_panel_count = 0;
     float timer;
+
+    float charge_timer;
 
     std::vector<std::vector<bool>> solar_grid;
     Panel correct_panels[10];

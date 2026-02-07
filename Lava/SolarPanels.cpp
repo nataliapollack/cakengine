@@ -12,7 +12,6 @@ extern Coordinator gCoordinator;
 void SolarPanel::init()
 {
     toggle = false;
-    completed = false;
     placed_panel_count = 0;
     timer = 5;
 
@@ -46,10 +45,23 @@ void  SolarPanel::CheckCorrectness(float x, float y)
             if (correct_panels[i].correct)
             {
                 correct_panels[i].correct = false;
+
+                Event energy(Events::Energy::ENERGY_DOWN);
+
+                energy.SetParam(Events::Energy::ENERGY_TICK,
+                    -20);
+                gCoordinator.SendEvent(energy);
             }
             else
             {
                 correct_panels[i].correct = true;
+
+                Event energy(Events::Energy::ENERGY_UP);
+
+                energy.SetParam(Events::Energy::ENERGY_TICK,
+                    20);
+
+                gCoordinator.SendEvent(energy);
             }
         }
     }
@@ -117,6 +129,14 @@ void SolarPanel::update()
         current_box.x += current_box.width;
         current_box.y = 0;
     }
+
+    if (IsKeyPressed(KEY_BACKSPACE))
+    {
+        Event screen(Events::Game::SCREEN_CHANGE);
+        screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
+
+        gCoordinator.SendEvent(screen);
+    }
 }
 
 
@@ -125,15 +145,18 @@ void SolarPanel::draw()
     Rectangle current_box = { 0, 0, GetScreenWidth() / 5, GetScreenHeight() / 5 };
     Color col = DARKGREEN;
 
-    if (show_hints)
-    {
-
-    }
-
     for (int i = 0; i < solar_grid.size(); i++)
     {
         for (int j = 0; j < solar_grid[i].size(); j++)
         {
+            if (show_hints)
+            {
+                if (Vector2Equals(correct_panels[i].pos, Vector2(i, j)))
+                {
+                    DrawRectangleRec(current_box, ColorAlpha(YELLOW, 0.5));
+                }
+            }
+
             if (solar_grid[i][j])
             {
                 col = GREEN;
@@ -144,6 +167,7 @@ void SolarPanel::draw()
                 col = DARKGREEN;
                 DrawRectangleLinesEx(current_box, 10, ColorAlpha(col, 0.75));
             }
+
 
             current_box.y += current_box.height;
         }
@@ -166,21 +190,19 @@ bool SolarPanel::active()
 
 void SolarPanel::StartMinigame(Event& event)
 {
-    if (!completed)
-    {
-        toggle = true;
+    toggle = true;
 
-        Event screen(Events::Game::SCREEN_CHANGE);
-        screen.SetParam(Events::Game::SCREEN_ID, SOLAR_SCREEN);
+    Event screen(Events::Game::SCREEN_CHANGE);
+    screen.SetParam(Events::Game::SCREEN_ID, SOLAR_SCREEN);
 
-        gCoordinator.SendEvent(screen);
-    }
+    gCoordinator.SendEvent(screen);
+    
 }
 
 void SolarPanel::StartNewDay(Event& event)
 {
     toggle = false;
-    completed = false;
+    show_hints = false;
 
     // pick random correct panels
 
@@ -191,4 +213,9 @@ void SolarPanel::StartNewDay(Event& event)
 
         correct_panels[i].correct = false;
     }
+}
+
+void SolarPanel::ShowHint(Event& event)
+{
+    show_hints = true;
 }

@@ -1,4 +1,10 @@
 #include "AudioFreq.h"
+#include "Coordinator.hpp"
+
+#include "Lava.h"
+
+extern Coordinator gCoordinator;
+
 
 void AudioFreq::init()
 {
@@ -38,6 +44,9 @@ void AudioFreq::init()
 
 void AudioFreq::update()
 {
+    if (completed)
+        return;
+
     Vector2 mouse_pos = GetMousePosition();
     begin_timer = false;
 
@@ -90,6 +99,9 @@ void AudioFreq::update()
         if (timer <= 0)
         {
             completed = true;
+
+            Event hints(Events::Hints::HINT_RECEIVED);
+            gCoordinator.SendEvent(hints);
         }
     }
 

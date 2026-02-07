@@ -17,8 +17,12 @@ public:
     void CheckEnergyLevels();
     void DrawEnergyLevels();
 
+    void update(float dt);
+
 private:
     bool ChargingPanels;
     int TotalEnergyLeft;
     int TotalHealthLeft;
+
+    int ChargeAmount;
 };
