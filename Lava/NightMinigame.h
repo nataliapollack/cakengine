@@ -21,7 +21,11 @@ class Event;
 
 class NightMinigame {
 	static constexpr int MAX_ZONES = 4;
+
+	// TODO: tweak me for design purposes :)
 	static constexpr int ENEMY_LEAVE_BOUNDS = 30; // how far off screen enemy needs to be to despawn
+	
+	// TODO: tweak me for design purposes :)
 	static constexpr int ENERGY_TICK_AMT = 1; // when energy event gets sent out
 
 public:
@@ -47,6 +51,8 @@ public:
 
 // ----- Funcs -----
 private:
+	void HandleInput();
+
 	void DrawUI() const;
 	void DrawBase() const;
 
@@ -66,11 +72,11 @@ private:
 		int width = 25;
 		int height = 25;
 
-		float dmgRadius = 10.0f;
-		float attackCooldown = 1.0f;
+		float dmgRadius = 10.0f; // TODO: tweak me for design purposes :)
+		float attackCooldown = 1.0f; // TODO: tweak me for design purposes :)
 
 		float hurtTimer = 0;
-		float hurtCooldown = 1.f;
+		float hurtCooldown = 1.f; // TODO: tweak me for design purposes :)
 	};
 #pragma endregion Base Info
 #pragma region Enemy
@@ -82,8 +88,8 @@ private:
 		};
 
 		transform2D t2d;
-		health hp = { 5 };
-		enemy_state state{ .speed = 10, .tower { .fleeSpeedMult = 1.25f } };
+		health hp = { 5 }; // TODO: tweak me for design purposes :)
+		enemy_state state{ .speed = 10, .tower { .fleeSpeedMult = 1.25f } }; // TODO: tweak just the listed vars for design purposes :)
 	
 		// false = died / issue
 		LivingState update(float dt, const Rectangle& baseBounds);
@@ -107,7 +113,7 @@ private:
 #pragma endregion Enemy
 #pragma region Defenses
 	struct Defense {
-		transform2D t2d = { .pos = {0, 0} };
+		transform2D t2d = { .pos = {0, 0} }; // TODO: need to place defenses and manually set their positions
 		float range = 1;
 
 		bool enabled = true; // TODO?
@@ -120,17 +126,17 @@ private:
 
 	protected:
 		float timeUp = 0;
-		float energyTickTime = 5.f;
+		float energyTickTime = 5.f; // TODO: tweak me for design purposes :)
 
 		Enemy* GetClosestEnemyToBase(combat_zone& zone);
 		void TickEnergy(float dt);
 	};
 
 	struct DamageTower final : Defense {
-		float cooldownTime = 0.75f;
-		int dmg = 1;
+		float cooldownTime = 0.75f; // TODO: tweak me for design purposes :)
+		int dmg = 1; // TODO: tweak me for design purposes :)
 
-		inline void init() override { range = 250; }
+		inline void init() override { range = 250; } // TODO: tweak me for design purposes :)
 		void update(float dt, combat_zone& zone) override;
 		void draw() const override;
 
@@ -141,15 +147,15 @@ private:
 	};
 
 	struct LightTower final : Defense {
-		float enemyFearTime = 2.5f;
+		float enemyFearTime = 2.5f; // TODO: tweak me for design purposes :)
 
-		inline void init() override { range = 200; }
+		inline void init() override { range = 200; } // TODO: tweak me for design purposes :)
 		void update(float dt, combat_zone& zone) override;
 		void draw() const override;
 	};
 
 	struct Barricade final : Defense {
-		inline void init() override { range = 5; }
+		inline void init() override { range = 5; } // TODO: barricades are still todo mostly sorry
 		void draw() const override;
 	};
 #pragma endregion Defenses
@@ -164,8 +170,10 @@ private:
 		Base* m_pBase = nullptr;
 		Rectangle m_baseBounds{ 0, 0, 0, 0 }; // center of map basically -- this should be reworked maybe probably not it works its fine :)
 		
-		float m_enemySpawnRadius = 10;
-		int m_enemiesToSpawn = 15; // TODO
+		Vector2 m_center{};
+
+		float m_enemySpawnRadius = 10; // TODO: tweak me for design purposes :)
+		int m_enemiesToSpawn = 15; // TODO: tweak me for design purposes :)
 
 		void init(const std::array<Vector2, 2>& enemySpawns);
 		void update(float dt);

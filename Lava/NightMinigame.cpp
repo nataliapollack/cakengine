@@ -9,6 +9,18 @@
 
 extern Coordinator gCoordinator;
 
+namespace UI {
+static constexpr Vector2 CAM_RECT_DIMS = { 70, 70 };
+static constexpr int CAM_RECT_SPACING = 10;
+static constexpr int FONT_SIZE = 24;
+static constexpr Color CAM_RECT_COLOR = Color{ 245, 245, 245, 155 }; // RAYWHITE but lower opacity
+
+static inline Vector2 GetCamRectPos(int i) {
+	return { CAM_RECT_SPACING * 2 + CAM_RECT_DIMS.x * i + CAM_RECT_SPACING * (i - 1),
+			 GetScreenHeight() - CAM_RECT_DIMS.y - 5};
+}
+} // namespace UI
+
 template <typename T>
 static T Random(T min, T max) {
 	return static_cast<T>(std::rand() % (max - min + 1)) + min;
@@ -23,28 +35,48 @@ void NightMinigame::init() {
 	// so using c random
 	std::srand(static_cast<unsigned>(std::time(NULL)));
 
-	Vector2 screenDims = { GetScreenWidth(), GetScreenHeight() };
-	static constexpr int SPAWN_OFFSET = 222;
+	const Vector2 screenDims = { GetScreenWidth(), GetScreenHeight() };
 
+	// TODO: tweak me for design purposes :)
+	// adjust these (> = farther, < = closer) to adjust where enemies spawn
+	static constexpr int ZONE_CENTER = 111;
+	static constexpr int SPAWN_OFFSET = 285;
+	static constexpr int CAM_OFFSET_X = 60;
+
+	// enemies can spawn in a radius around two points for each camera. these are the points
 	auto enemySpawnCenters = std::to_array<std::array<Vector2, 2>, 4>({
-		 // cam 1
-		{ Vector2{ -SPAWN_OFFSET, -SPAWN_OFFSET / 2 }, Vector2{ -SPAWN_OFFSET / 2, -SPAWN_OFFSET } },
+		// cam 1
+		{ Vector2{ -SPAWN_OFFSET - CAM_OFFSET_X, -SPAWN_OFFSET / 2 }, Vector2{ -SPAWN_OFFSET / 2, -SPAWN_OFFSET } },
 		// cam 2
-		{ Vector2{  SPAWN_OFFSET, -SPAWN_OFFSET / 2 }, Vector2{  SPAWN_OFFSET / 2, -SPAWN_OFFSET } },
+		{ Vector2{  SPAWN_OFFSET + CAM_OFFSET_X, -SPAWN_OFFSET / 2 }, Vector2{  SPAWN_OFFSET / 2, -SPAWN_OFFSET } },
 		// cam 3
-		{ Vector2{ -SPAWN_OFFSET,  SPAWN_OFFSET / 2 }, Vector2{ -SPAWN_OFFSET / 2,  SPAWN_OFFSET } },
+		{ Vector2{ -SPAWN_OFFSET - CAM_OFFSET_X,  SPAWN_OFFSET / 2 }, Vector2{ -SPAWN_OFFSET / 2,  SPAWN_OFFSET } },
 		// cam 4
-		{ Vector2{  SPAWN_OFFSET,  SPAWN_OFFSET / 2 }, Vector2{  SPAWN_OFFSET / 2,  SPAWN_OFFSET } }
+		{ Vector2{  SPAWN_OFFSET + CAM_OFFSET_X,  SPAWN_OFFSET / 2 }, Vector2{  SPAWN_OFFSET / 2,  SPAWN_OFFSET } }
 	});
+
+	auto zoneCenters = std::to_array<Vector2, 4>({
+		{ -ZONE_CENTER - CAM_OFFSET_X, -ZONE_CENTER },
+		{  ZONE_CENTER + CAM_OFFSET_X, -ZONE_CENTER },
+		{ -ZONE_CENTER - CAM_OFFSET_X,  ZONE_CENTER },
+		{  ZONE_CENTER + CAM_OFFSET_X,  ZONE_CENTER }
+	});
+
+	// TODO: place defenses: DamageTower, LightTower, Barricade
+	// create objects -- default initialization
+	// tweak positions (defense.t2d.pos = xyz)
+	// call m_zones[i].emplace_back(new DefenseType([default copy ctor]defense));
+	// once per each defense wanted to add
 
 	for (int i = 0; i < 4; ++i) {
 		m_zones[i].m_pBase = &m_base;
+		m_zones[i].m_center = zoneCenters[i];
 		m_zones[i].init(enemySpawnCenters[i]);
 	}
 
 	m_zoneCam.offset = screenDims / 2;
 	m_zoneCam.target = Vector2Zeros;
-	m_zoneCam.zoom = 2;
+	m_zoneCam.zoom = 2.5f; // good enough :)
 	m_curCam = 1;
 }
 
@@ -54,9 +86,33 @@ void NightMinigame::shutdown() {
 	}
 }
 
+void NightMinigame::HandleInput() {
+	const Vector2 mousePos = GetMousePosition();
+	const int key = GetKeyPressed();
+
+	const float height = float(GetScreenHeight());
+	for (int i = 0; i < 4; ++i) {
+		Vector2 pos = UI::GetCamRectPos(i);
+		Rectangle uiRect{ .x = pos.x, .y = pos.y,
+						  .width = UI::CAM_RECT_DIMS.x, .height = UI::CAM_RECT_DIMS.y };
+
+		if (CheckCollisionPointRec(mousePos, uiRect) &&
+			IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+		{
+			m_curCam = i + 1;
+			break;
+		}
+	}
+
+	if (key == KEY_ONE || key == KEY_TWO || key == KEY_THREE || key == KEY_FOUR) {
+		m_curCam = key - KEY_ZERO;
+	}
+}
+
 void NightMinigame::update(float dt) {
-	//if (!m_isNight) //|| m_isResolved)
-	//	return;
+	HandleInput();
+
+	m_zoneCam.target = m_zones[m_curCam - 1].m_center;
 
 	m_base.hurtTimer -= dt;
 	if (m_base.hurtTimer < 0)
@@ -122,7 +178,7 @@ void NightMinigame::combat_zone::update(float dt) {
 
 void NightMinigame::enemy_spawner::init(std::array<Vector2, 2> enemySpawnCenterPoints, float spawnDelay) {
 	m_EnemySpawnCenters = enemySpawnCenterPoints;
-	m_spawnInterval = spawnDelay;
+	m_spawnInterval = spawnDelay; // TODO: tweak me for design purposes :)
 }
 
 std::optional<NightMinigame::Enemy> NightMinigame::enemy_spawner::attempt_spawn(float dt, float spawnRadius) {
@@ -360,29 +416,24 @@ void NightMinigame::DrawBase() const {
 }
 
 void NightMinigame::DrawUI() const {
-	static constexpr Vector2 CAM_RECT_DIMS = { 90, 90 };
-	static constexpr int CAM_RECT_SPACING = 10;
-	static constexpr int FONT_SIZE = 24;
-	static constexpr Color FONT_COLOR = RAYWHITE;
-
-	const float height = float(GetScreenHeight());
-
+	// camera text
 	char camText[] = "Camera X";
 	camText[7] = static_cast<char>('0' + m_curCam);
 
-	DrawText(camText, 0, 0, FONT_SIZE, FONT_COLOR);
+	DrawText(camText, UI::CAM_RECT_SPACING, UI::CAM_RECT_SPACING,
+			 UI::FONT_SIZE, UI::CAM_RECT_COLOR);
 
 	for (int i = 0; i < 4; ++i) {
-		Vector2 pos = { CAM_RECT_SPACING * 2 + CAM_RECT_DIMS.x * i + CAM_RECT_SPACING * (i - 1),
-						height - CAM_RECT_DIMS.y - 5 };
+		// camera switch ui boxe
+		Vector2 pos = UI::GetCamRectPos(i);
+		DrawRectangleV(pos, UI::CAM_RECT_DIMS, UI::CAM_RECT_COLOR);
 		
-		DrawRectangleV(pos, CAM_RECT_DIMS, FONT_COLOR);
-		
-		char num[2] = { char('0' + i), '\0' };
+		// number inside said boxes
+		char num[2] = { char('0' + i + 1), '\0' };
 		DrawText(num,
-				 int(pos.x + CAM_RECT_DIMS.x / 2) - FONT_SIZE / 4,
-				 int(pos.y + CAM_RECT_DIMS.y / 2) - FONT_SIZE / 2,
-				 FONT_SIZE, BLACK);
+				 int(pos.x + UI::CAM_RECT_DIMS.x / 2) - UI::FONT_SIZE / 4,
+				 int(pos.y + UI::CAM_RECT_DIMS.y / 2) - UI::FONT_SIZE / 2,
+				 UI::FONT_SIZE, BLACK);
 	}
 }
 
@@ -416,6 +467,6 @@ void NightMinigame::LightTower::draw() const {
 }
 
 void NightMinigame::Barricade::draw() const {
-	// TODO: basic shapes
+	// TODO: basic shapes -- barricades still have a bit of work, will finish later tonight or in the morning
 	//DrawLineV() // light orange
 }
