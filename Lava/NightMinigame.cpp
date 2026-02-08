@@ -23,13 +23,24 @@ void NightMinigame::init() {
 	// so using c random
 	std::srand(static_cast<unsigned>(std::time(NULL)));
 
-	for (auto& zone : m_zones) {
-		zone.m_pBase = &m_base;
-		zone.init();
+	Vector2 screenDims = { GetScreenWidth(), GetScreenHeight() };
+	static constexpr int SPAWN_OFFSET = 50;
+
+	auto enemySpawnCenters = std::to_array<std::array<Vector2, 2>, 4>({
+		{ Vector2{  }, Vector2{  } }, // cam 1
+		{ Vector2{}, Vector2{} }, // cam 2
+		{ Vector2{}, Vector2{} }, // cam 3
+		{ Vector2{}, Vector2{} }  // cam 4
+	});
+
+	for (int i = 0; i < 4; ++i) {
+		m_zones[i].m_pBase = &m_base;
+		m_zones[i].init(enemySpawnCenters[i]);
 	}
 
 	m_zoneCam.target = Vector2Zeros;
 	m_zoneCam.zoom = 1;
+	m_curCam = 1;
 }
 
 void NightMinigame::shutdown() {
