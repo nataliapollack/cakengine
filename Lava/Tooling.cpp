@@ -28,6 +28,7 @@ void Tooling::register_components()
     gCoordinator.RegisterComponent<render_box>();
     gCoordinator.RegisterComponent<status>();
     gCoordinator.RegisterComponent<collidble>();
+    gCoordinator.RegisterComponent<render_texture>();
 
     gCoordinator.RegisterComponent<viewport3D>();
     // TODO: temp? replace with asset manager ref?
