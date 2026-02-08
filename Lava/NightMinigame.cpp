@@ -42,6 +42,8 @@ void NightMinigame::init() {
 	static constexpr int ZONE_CENTER = 111;
 	static constexpr int SPAWN_OFFSET = 285;
 	static constexpr int CAM_OFFSET_X = 60;
+	static constexpr Vector2 DMG_TOWER_POS = { ZONE_CENTER + 50, ZONE_CENTER + 30 };
+	static constexpr Vector2 LIGHT_TOWER_POS = { ZONE_CENTER - 30, ZONE_CENTER - 30 };
 
 	// enemies can spawn in a radius around two points for each camera. these are the points
 	auto enemySpawnCenters = std::to_array<std::array<Vector2, 2>, 4>({
@@ -65,12 +67,35 @@ void NightMinigame::init() {
 	// TODO: place defenses: DamageTower, LightTower, Barricade
 	// create objects -- default initialization
 	// tweak positions (defense.t2d.pos = xyz)
-	// call m_zones[i].emplace_back(new DefenseType([default copy ctor]defense));
+	// call m_zones[i].m_defenses.emplace_back(new DefenseType([default copy ctor]defense));
 	// once per each defense wanted to add
+	DamageTower dt;
+	LightTower lt;
+	//Barricade top, side;
+
+	auto dmgPos = std::to_array<Vector2, 4>({
+		{ -DMG_TOWER_POS.x, -DMG_TOWER_POS.y },
+		{  DMG_TOWER_POS.x, -DMG_TOWER_POS.y },
+		{ -DMG_TOWER_POS.x,  DMG_TOWER_POS.y },
+		{  DMG_TOWER_POS.x,  DMG_TOWER_POS.y }
+	});
+
+	auto lightPos = std::to_array<Vector2, 4>({
+		{ -LIGHT_TOWER_POS.x, -LIGHT_TOWER_POS.y },
+		{  LIGHT_TOWER_POS.x, -LIGHT_TOWER_POS.y },
+		{ -LIGHT_TOWER_POS.x,  LIGHT_TOWER_POS.y },
+		{  LIGHT_TOWER_POS.x,  LIGHT_TOWER_POS.y }
+	});
 
 	for (int i = 0; i < 4; ++i) {
 		m_zones[i].m_pBase = &m_base;
 		m_zones[i].m_center = zoneCenters[i];
+
+		dt.t2d.pos = dmgPos[i];
+		lt.t2d.pos = lightPos[i];
+		m_zones[i].m_defenses.emplace_back(new DamageTower(dt));
+		m_zones[i].m_defenses.emplace_back(new LightTower(lt));
+
 		m_zones[i].init(enemySpawnCenters[i]);
 	}
 
@@ -452,8 +477,10 @@ void NightMinigame::Enemy::draw() const {
 	DrawCircleV(t2d.pos, 1.5f, RED); // light red
 }
 
+static constexpr float DEFENSE_DRAW_SCALE = 5.f;
+
 void NightMinigame::DamageTower::draw() const {
-	static constexpr float TRI_SCALE = 3.f;
+	static constexpr float TRI_SCALE = 3.f * DEFENSE_DRAW_SCALE;
 
 	Vector2 v1 = t2d.pos + Vector2{ 0, -TRI_SCALE / 2 };
 	Vector2 v2 = t2d.pos + Vector2{ -TRI_SCALE / 2, TRI_SCALE / 2 };
@@ -463,7 +490,7 @@ void NightMinigame::DamageTower::draw() const {
 
 void NightMinigame::LightTower::draw() const {
 	//DrawCircleLines(t2d.pos,  MAGENTA);
-	DrawRingLines(t2d.pos, 5, 10, 0, 360, 1, MAGENTA);
+	DrawRingLines(t2d.pos, 5 * DEFENSE_DRAW_SCALE, 10 * DEFENSE_DRAW_SCALE, 0, 360, 1, MAGENTA);
 }
 
 void NightMinigame::Barricade::draw() const {
