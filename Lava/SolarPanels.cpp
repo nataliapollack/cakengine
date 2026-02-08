@@ -4,7 +4,6 @@
 #include "rlgl.h"
 #include "Lava.h"
 #include "ScreenManager.h"
-#include "AudioManager.h"
 
 #include "raymath.h"
 
@@ -63,10 +62,6 @@ void  SolarPanel::CheckCorrectness(float x, float y)
                     20);
 
                 gCoordinator.SendEvent(energy);
-
-                Event audio(Events::Audio::PLAY_SOUND);
-                audio.SetParam(Events::Audio::ASSET, ENERGY_SOUND);
-                gCoordinator.SendEvent(audio);
             }
         }
     }
@@ -124,10 +119,6 @@ void SolarPanel::update()
                         }
                     }
 
-                    Event audio(Events::Audio::PLAY_SOUND);
-                    audio.SetParam(Events::Audio::ASSET, SOLAR_PLACE);
-                    gCoordinator.SendEvent(audio);
-
                     CheckCorrectness(i, j);
                 }
             }
@@ -142,13 +133,9 @@ void SolarPanel::update()
     if (IsKeyPressed(KEY_BACKSPACE))
     {
         Event screen(Events::Game::SCREEN_CHANGE);
-        screen.SetParam(Events::Game::SCREEN_ID, INSIDE);
+        screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
 
         gCoordinator.SendEvent(screen);
-
-        Event audio(Events::Audio::PLAY_SOUND);
-        audio.SetParam(Events::Audio::ASSET, RADUIO_STOP);
-        gCoordinator.SendEvent(audio);
     }
 }
 
@@ -213,10 +200,6 @@ void SolarPanel::StartMinigame(Event& event)
     Event screen1(Events::Dialogue::TUTORIAL);
     screen1.SetParam(Events::Dialogue::ID, 1);
     gCoordinator.SendEvent(screen1);
-
-    Event audio(Events::Audio::PLAY_SOUND);
-    audio.SetParam(Events::Audio::ASSET, MINI_SFX);
-    gCoordinator.SendEvent(audio);
     
 }
 

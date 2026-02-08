@@ -187,13 +187,6 @@ void MazeBuilder::Init()
 	if(!StepByStepBuild)
 		BuildMaze();
 
-	gCoordinator.AddEventListener(
-		METHOD_LISTENER(Events::Collision::HIT_MAZE, MazeBuilder::StartMaze));
-
-
-	gCoordinator.AddEventListener(
-		METHOD_LISTENER(Events::Time::DAY_BEGIN, MazeBuilder::StartDay));
-
 }
 
 void MazeBuilder::UpdateMaze(float dt)
@@ -210,7 +203,7 @@ void MazeBuilder::UpdateMaze(float dt)
 	{
 		EndMaze();
 		Event screen(Events::Game::SCREEN_CHANGE);
-		screen.SetParam(Events::Game::SCREEN_ID, INSIDE);
+		screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
 
 		gCoordinator.SendEvent(screen);
 	}
@@ -240,7 +233,7 @@ void MazeBuilder::UpdateMaze(float dt)
 					DrawRectangle(xPos, yPos, nodeSize, nodeSize, GREEN);
 					EndMaze();
 					Event screen(Events::Game::SCREEN_CHANGE);
-					screen.SetParam(Events::Game::SCREEN_ID, INSIDE);
+					screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
 
 					gCoordinator.SendEvent(screen);
 				}
