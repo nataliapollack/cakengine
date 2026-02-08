@@ -219,6 +219,15 @@ void NightMinigame::update(float dt) {
 // updating this minigame, it should always be updating if it's night
 void NightMinigame::StartMinigame(Event& e) {
 	//m_isNight = true;
+
+	if (!m_tutorialShown)
+	{
+		Event tutorial(Events::Dialogue::TUTORIAL);
+		tutorial.SetParam(Events::Dialogue::ID, 4);
+		gCoordinator.SendEvent(tutorial);
+
+		m_tutorialShown = true;
+	}
 }
 
 void NightMinigame::StartNewDay(Event& e) {

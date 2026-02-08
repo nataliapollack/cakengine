@@ -208,6 +208,7 @@ private:
 	int m_currentDay = 0;
 	bool m_isNight = false;		// update()
 	//bool m_isVisible = false;	// draw()
+	bool m_tutorialShown = false;
 
 	//bool m_isResolved = false;
 };
