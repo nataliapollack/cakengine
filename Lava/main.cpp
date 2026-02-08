@@ -83,7 +83,7 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(MAZE); // <-- I changed this from "INSIDE" for testing -- Evan
+    screen_mngr.SetScreen(OUTSIDE); // <-- I changed this from "INSIDE" for testing -- Evan
     while (!WindowShouldClose())
     {
         // update
@@ -197,17 +197,17 @@ void temp_place_objs()
 
     gCoordinator.AddComponent(
         teapot,
-        model_view{ .model = &assetMngr.get<Model>("teapot") }
+        model_view{ .model = &assetMngr.get<Model>("agnus") }
     );
     gCoordinator.AddComponent(
         teapot,
         viewport3D{
             .view = {
-                .position = { 0, 1, 5 },
+                .position = { 0, 1, 15 },
                 .target = { 0 },
                 .up = { 0, 1, 0 },
                 .fovy = { 10 },
-                .projection = { CAMERA_ORTHOGRAPHIC }
+                .projection = { CAMERA_PERSPECTIVE }
             },
             .framebuffer = LoadRenderTexture(200, 200)
         }
