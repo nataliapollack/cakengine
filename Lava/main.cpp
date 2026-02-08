@@ -83,7 +83,7 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(CAMERAS); // <-- I changed this from "INSIDE" for testing -- Evan
+    screen_mngr.SetScreen(CAMERAS);
     while (!WindowShouldClose())
     {
         // update
