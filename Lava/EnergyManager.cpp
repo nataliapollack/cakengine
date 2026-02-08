@@ -2,8 +2,6 @@
 #include "EnergyManager.h"
 #include "Coordinator.hpp"
 
-#include "AudioManager.h"
-
 #include "Lava.h"
 #include "raylib.h"
 
@@ -78,23 +76,12 @@ void EnergyManager::update(float dt)
             gCoordinator.SendEvent(no_energy);
         }
     }
-
-    if (TotalEnergyLeft <= 20 && TotalEnergyLeft > 0)
-    {
-        Event audio(Events::Audio::PLAY_SOUND);
-        audio.SetParam(Events::Audio::ASSET, LOW_BATT);
-        gCoordinator.SendEvent(audio);
-    }
 }
 
 void EnergyManager::NightBegins(Event& event)
 {
     ChargingPanels = false;
     ChargeAmount = 0;
-
-    Event audio(Events::Audio::PLAY_SOUND);
-    audio.SetParam(Events::Audio::ASSET, NIGHT_START);
-    gCoordinator.SendEvent(audio);
 }
 
 void EnergyManager::DrawEnergyLevels()
@@ -106,8 +93,4 @@ void EnergyManager::DrawEnergyLevels()
 void EnergyManager::TakeHealthDmg(Event& event)
 {
     TotalHealthLeft -= HEALTH_TICK;
-
-    Event audio(Events::Audio::PLAY_SOUND);
-    audio.SetParam(Events::Audio::ASSET, HEALTH_DMG);
-    gCoordinator.SendEvent(audio);
 }
