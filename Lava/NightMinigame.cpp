@@ -44,7 +44,15 @@ void NightMinigame::init() {
 		METHOD_LISTENER(Events::Energy::NO_ENERGY, NightMinigame::NoEnergy)
 	);
 
-	const Vector2 screenDims = { GetScreenWidth(), GetScreenHeight() };
+	/*gCoordinator.AddEventListener(
+		METHOD_LISTENER(Events::Time::DAY_BEGIN, NightMinigame::)
+	);
+	
+	gCoordinator.AddEventListener(
+		METHOD_LISTENER(Events::Time::NIGHT_BEGIN, NightMinigame::)
+	);*/
+
+	const Vector2 screenDims = { float(GetScreenWidth()), float(GetScreenHeight()) };
 
 	// TODO: tweak me for design purposes :)
 	// adjust these (> = farther, < = closer) to adjust where enemies spawn
@@ -52,8 +60,13 @@ void NightMinigame::init() {
 	static constexpr int SPAWN_OFFSET = 330;
 	static constexpr int SPAWN_OFFSET_FIX = 330;
 	static constexpr int CAM_OFFSET_X = 60;
+	static constexpr float BARRIER_OFFSET = 2.f;
 	static constexpr Vector2 DMG_TOWER_POS = { ZONE_CENTER + 150, ZONE_CENTER - 20 };
 	static constexpr Vector2 LIGHT_TOWER_POS = { ZONE_CENTER - 35, ZONE_CENTER - 35 };
+	const std::array BARRIER_TOP_POS = { Vector2{ 0, m_base.height + BARRIER_OFFSET },
+										 Vector2{ m_base.width + BARRIER_OFFSET, m_base.height + BARRIER_OFFSET } };
+	const std::array BARRIER_SIDE_POS = { Vector2{ m_base.width + BARRIER_OFFSET, 0 },
+										  Vector2{ m_base.width + BARRIER_OFFSET, m_base.height + BARRIER_OFFSET } };
 
 	// enemies can spawn in a radius around two points for each camera. these are the points
 	auto enemySpawnCenters = std::to_array<std::array<Vector2, 2>, 4>({
@@ -81,7 +94,7 @@ void NightMinigame::init() {
 	// once per each defense wanted to add
 	DamageTower dt;
 	LightTower lt;
-	//Barricade top, side;
+	Barricade top, side;
 
 	auto dmgPos = std::to_array<Vector2, 4>({
 		{ -DMG_TOWER_POS.x, -DMG_TOWER_POS.y },
@@ -97,14 +110,37 @@ void NightMinigame::init() {
 		{  LIGHT_TOWER_POS.x,  LIGHT_TOWER_POS.y }
 	});
 
+	auto barrierTopPos = std::to_array<std::array<Vector2, 2>, 4>({
+		{ BARRIER_TOP_POS[0] * -1, BARRIER_TOP_POS[1] * -1 },
+		{ BARRIER_TOP_POS[0],	   BARRIER_TOP_POS[1] * -1 },
+		{ BARRIER_TOP_POS[0] * -1, BARRIER_TOP_POS[1] },
+		{ BARRIER_TOP_POS[0],	   BARRIER_TOP_POS[1] },
+	});
+
+	auto barrierSidePos = std::to_array<std::array<Vector2, 2>, 4>({
+		{ BARRIER_SIDE_POS[0] * -1, BARRIER_SIDE_POS[1] * -1 },
+		{ BARRIER_SIDE_POS[0],		BARRIER_SIDE_POS[1] * -1 },
+		{ BARRIER_SIDE_POS[0] * -1, BARRIER_SIDE_POS[1] },
+		{ BARRIER_SIDE_POS[0],		BARRIER_SIDE_POS[1] },
+	});
+
 	for (int i = 0; i < 4; ++i) {
 		m_zones[i].m_pBase = &m_base;
 		m_zones[i].m_center = zoneCenters[i];
 
 		dt.t2d.pos = dmgPos[i];
 		lt.t2d.pos = lightPos[i];
+		
+		top.t2d.pos = barrierTopPos[i][0];
+		top.endPos = barrierTopPos[i][1];
+
+		side.t2d.pos = barrierSidePos[i][0];
+		side.endPos = barrierSidePos[i][1];
+
 		m_zones[i].m_defenses.emplace_back(new DamageTower(dt));
 		m_zones[i].m_defenses.emplace_back(new LightTower(lt));
+		m_zones[i].m_defenses.emplace_back(new Barricade(top));
+		m_zones[i].m_defenses.emplace_back(new Barricade(side));
 
 		m_zones[i].init(enemySpawnCenters[i]);
 	}
@@ -141,6 +177,12 @@ void NightMinigame::HandleInput() {
 
 	if (key == KEY_ONE || key == KEY_TWO || key == KEY_THREE || key == KEY_FOUR) {
 		m_curCam = key - KEY_ZERO;
+	}
+
+	for (auto& zone : m_zones) {
+		for (auto& defense : zone.m_defenses) {
+			defense->CheckClicked(m_zoneCam);
+		}
 	}
 }
 
@@ -270,7 +312,7 @@ void NightMinigame::combat_zone::UpdateEnemies(float dt) {
 
 			// try damage base
 			if (dist <= m_pBase->dmgRadius) {
-				TryDamageBase();
+				TryDamageBase(true);
 				it->t2d.pos = oldPos; // move back
 			}
 			// get blocked by any barricades
@@ -278,6 +320,7 @@ void NightMinigame::combat_zone::UpdateEnemies(float dt) {
 				for (auto& defense : m_defenses) {
 					if (Barricade* barricade = dynamic_cast<Barricade*>(defense.get())) {
 						if (barricade->enabled && dist <= barricade->range) {
+							TryDamageBase(false);
 							it->t2d.pos = oldPos; // move back
 							break;
 						}
@@ -307,13 +350,18 @@ void NightMinigame::combat_zone::UpdateEnemies(float dt) {
 	}
 }
 
-void NightMinigame::combat_zone::TryDamageBase() {
+void NightMinigame::combat_zone::TryDamageBase(bool healthDmg) {
 	if (m_pBase->hurtTimer > 0)
 		return;
 
 	// TODO: send event? HEALTH_DMG?
 	m_pBase->hurtTimer = m_pBase->hurtCooldown;
-	gCoordinator.SendEvent(Events::Health::HEALTH_DMG);
+
+	if (healthDmg)
+		gCoordinator.SendEvent(Events::Health::HEALTH_DMG);
+	else {
+		gCoordinator.SendEvent(Events::Energy::ENERGY_DOWN);
+	}
 
 	// TODO: base hit fx
 }
@@ -446,7 +494,7 @@ void NightMinigame::LightTower::update(float dt, combat_zone& zone) {
 	}
 }
 
-void NightMinigame::draw() const {
+void NightMinigame::draw() {
 	/*if (!m_isVisible)
 		return;*/
 
@@ -460,7 +508,7 @@ void NightMinigame::draw() const {
 	DrawUI();
 }
 
-void NightMinigame::DrawBase() const {
+void NightMinigame::DrawBase() {
 	static constexpr float INNER_SCALE = 0.8f;
 
 	auto baseDimsOut = Rectangle{ .x = -m_base.width / 2.f, .y = -m_base.height / 2.f,
@@ -471,7 +519,7 @@ void NightMinigame::DrawBase() const {
 	DrawRectangleRounded(baseDimsIn, 1.f, 6, GRAY); // gray
 }
 
-void NightMinigame::DrawUI() const {
+void NightMinigame::DrawUI() {
 	// camera text
 	char camText[] = "Camera X";
 	camText[7] = static_cast<char>('0' + m_curCam);
@@ -502,7 +550,7 @@ void NightMinigame::DrawUI() const {
 	}
 }
 
-void NightMinigame::combat_zone::draw() const {
+void NightMinigame::combat_zone::draw() {
 	for (auto& e : m_enemiesInZone) {
 		e.draw();
 	}
@@ -512,7 +560,7 @@ void NightMinigame::combat_zone::draw() const {
 	}
 }
 
-void NightMinigame::Enemy::draw() const {
+void NightMinigame::Enemy::draw() {
 	DrawCircleV(t2d.pos, 3.f, Color{ 145, 10, 10, 255 }); // dark red
 	DrawCircleV(t2d.pos, 2.f, RED); // light red
 	DrawCircleV(t2d.pos, 0.5f, PINK); // light red
@@ -521,29 +569,74 @@ void NightMinigame::Enemy::draw() const {
 }
 
 static constexpr float DEFENSE_DRAW_SCALE = 5.f;
+static constexpr Color DEFENSE_DISABLED_COLOR = LIGHTGRAY;
 
-void NightMinigame::DamageTower::draw() const {
-	static constexpr float TRI_SCALE = 6.f * DEFENSE_DRAW_SCALE;
+static constexpr float TRI_SCALE = 6.f * DEFENSE_DRAW_SCALE;
 
+bool NightMinigame::DamageTower::CheckClicked(const Camera2D& cam) {
 	Vector2 v1 = t2d.pos + Vector2{ 0, -TRI_SCALE / 2 };
 	Vector2 v2 = t2d.pos + Vector2{ -TRI_SCALE / 2, TRI_SCALE / 2 };
 	Vector2 v3 = t2d.pos + Vector2{ TRI_SCALE / 2, TRI_SCALE / 2 };
-	DrawTriangle(v1, v2, v3, SKYBLUE);
-	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.8f * DEFENSE_DRAW_SCALE, BLUE);
-	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.5f * DEFENSE_DRAW_SCALE, DARKBLUE);
+
+	auto mouse = GetScreenToWorld2D(GetMousePosition(), cam);
+
+	if (CheckCollisionPointTriangle(mouse, v1, v2, v3) &&
+		IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	{
+		enabled = !enabled;
+		return true;
+	}
+
+	return false;
 }
 
-void NightMinigame::LightTower::draw() const
+void NightMinigame::DamageTower::draw() {
+	Vector2 v1 = t2d.pos + Vector2{ 0, -TRI_SCALE / 2 };
+	Vector2 v2 = t2d.pos + Vector2{ -TRI_SCALE / 2, TRI_SCALE / 2 };
+	Vector2 v3 = t2d.pos + Vector2{ TRI_SCALE / 2, TRI_SCALE / 2 };
+	DrawTriangle(v1, v2, v3, enabled ? SKYBLUE : DEFENSE_DISABLED_COLOR);
+	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.8f * DEFENSE_DRAW_SCALE, enabled ? BLUE : DEFENSE_DISABLED_COLOR);
+	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.5f * DEFENSE_DRAW_SCALE, enabled ? DARKBLUE : DEFENSE_DISABLED_COLOR);
+}
+
+bool NightMinigame::LightTower::CheckClicked(const Camera2D& cam) {
+	auto mouse = GetScreenToWorld2D(GetMousePosition(), cam);
+	Vector2 v1 = { t2d.pos.x + 0, t2d.pos.y + 20 };
+
+	if (CheckCollisionPointCircle(mouse, v1, 20 * DEFENSE_DRAW_SCALE) &&
+		IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	{
+		enabled = !enabled;
+		return true;
+	}
+
+	return false;
+}
+
+void NightMinigame::LightTower::draw()
 {
-	Color FirstColor = Color{ 255, 255, 0, 150 }; // yellow
-	Color SecondColor = Color{ 255, 255, 150, 10 }; // light yellow
+	Color FirstColor = enabled ? Color{ 255, 255, 0, 150 } : BLANK; // yellow
+	Color SecondColor = enabled ? Color{ 255, 255, 150, 10 } : BLANK; // light yellow
 	//DrawCircleLines(t2d.pos,  MAGENTA);
 	Vector2 v1 = {t2d.pos.x + 0, t2d.pos.y + 20};
-	DrawRing(v1, 19.8f * DEFENSE_DRAW_SCALE, 20 * DEFENSE_DRAW_SCALE, 0, 360, 32, GOLD);
+	DrawRing(v1, 19.8f * DEFENSE_DRAW_SCALE, 20 * DEFENSE_DRAW_SCALE, 0, 360, 32, enabled ? GOLD : DEFENSE_DISABLED_COLOR);
 	DrawCircleGradient(t2d.pos.x, t2d.pos.y + 20, 20 * DEFENSE_DRAW_SCALE, FirstColor, SecondColor);
 }
 
-void NightMinigame::Barricade::draw() const {
+bool NightMinigame::Barricade::CheckClicked(const Camera2D& cam) {
+	auto mouse = GetScreenToWorld2D(GetMousePosition(), cam);
+	if (CheckCollisionPointLine(mouse, t2d.pos, endPos, 10) &&
+		IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	{
+		enabled = !enabled;
+		return true;
+	}
+
+	return false;
+}
+
+void NightMinigame::Barricade::draw() {
 	// TODO: basic shapes -- barricades still have a bit of work, will finish later tonight or in the morning
 	//DrawLineV() // light orange
+	DrawLineV(t2d.pos, endPos, enabled ? ORANGE : DEFENSE_DISABLED_COLOR);
 }

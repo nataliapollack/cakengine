@@ -31,7 +31,7 @@ class NightMinigame {
 public:
 	void init();
 	void update(float dt);
-	void draw() const;
+	void draw();
 	void shutdown();
 	
 	// TODO
@@ -51,8 +51,8 @@ public:
 private:
 	void HandleInput();
 
-	void DrawUI() const;
-	void DrawBase() const;
+	void DrawUI();
+	void DrawBase();
 
 // ----- Structs & Typedefs -----
 /*
@@ -91,7 +91,7 @@ private:
 	
 		// false = died / issue
 		LivingState update(float dt, const Rectangle& baseBounds);
-		void draw() const;
+		void draw();
 
 	private:
 		LivingState UpdateMovement(float dt, const Rectangle& baseBounds);
@@ -113,18 +113,21 @@ private:
 	struct Defense {
 		transform2D t2d = { .pos = {0, 0} }; // TODO: need to place defenses and manually set their positions
 		float range = 1;
+		int energyTick = 1;
 
 		bool enabled = true; // TODO?
 
 		virtual inline void init() {}
 		virtual void update(float dt, combat_zone&);
-		virtual void draw() const = 0;
+		virtual void draw() = 0;
+
+		virtual bool CheckClicked(const Camera2D& cam) = 0;
 
 		virtual ~Defense() = default;
 
 	protected:
 		float timeUp = 0;
-		float energyTickTime = 5.f; // TODO: tweak me for design purposes :)
+		float energyTickTime = 3.f; // TODO: tweak me for design purposes :)
 
 		Enemy* GetClosestEnemyToBase(combat_zone& zone);
 		void TickEnergy(float dt);
@@ -134,9 +137,12 @@ private:
 		float cooldownTime = 0.75f; // TODO: tweak me for design purposes :)
 		int dmg = 1; // TODO: tweak me for design purposes :)
 
-		inline void init() override { range = 500; } // just keep range large so it affects all enemies in zone
+		// just keep range large so it affects all enemies in zone
+		inline void init() override { range = 500; energyTick = 2; }
 		void update(float dt, combat_zone& zone) override;
-		void draw() const override;
+		void draw() override;
+
+		bool CheckClicked(const Camera2D& cam) override;
 
 	private:
 		float m_cooldownTimer = 0;
@@ -149,12 +155,18 @@ private:
 
 		inline void init() override { range = 500; } // just keep range large so it affects all enemies in zone
 		void update(float dt, combat_zone& zone) override;
-		void draw() const override;
+		void draw() override;
+
+		bool CheckClicked(const Camera2D& cam) override;
 	};
 
 	struct Barricade final : Defense {
-		inline void init() override { range = 5; } // TODO: barricades are still todo mostly sorry
-		void draw() const override;
+		Vector2 endPos{};
+
+		inline void init() override { range = 5; energyTick = 3; }
+		void draw() override;
+
+		bool CheckClicked(const Camera2D& cam) override;
 	};
 #pragma endregion Defenses
 
@@ -175,12 +187,12 @@ private:
 
 		void init(const std::array<Vector2, 2>& enemySpawns);
 		void update(float dt);
-		void draw() const;
+		void draw();
 		void shutdown();
 
 	private:
 		void UpdateEnemies(float dt);
-		void TryDamageBase();
+		void TryDamageBase(bool healthDmg);
 	};
 
 // ----- Vars ----
