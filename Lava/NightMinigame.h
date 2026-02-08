@@ -23,7 +23,7 @@ class NightMinigame {
 	static constexpr int MAX_ZONES = 4;
 
 	// TODO: tweak me for design purposes :)
-	static constexpr int ENEMY_LEAVE_BOUNDS = 30; // how far off screen enemy needs to be to despawn
+	static constexpr int ENEMY_LEAVE_BOUNDS = 500; // how far off screen enemy needs to be to despawn
 	
 	// TODO: tweak me for design purposes :)
 	static constexpr int ENERGY_TICK_AMT = 1; // when energy event gets sent out
@@ -136,7 +136,7 @@ private:
 		float cooldownTime = 0.75f; // TODO: tweak me for design purposes :)
 		int dmg = 1; // TODO: tweak me for design purposes :)
 
-		inline void init() override { range = 250; } // TODO: tweak me for design purposes :)
+		inline void init() override { range = 500; } // just keep range large so it affects all enemies in zone
 		void update(float dt, combat_zone& zone) override;
 		void draw() const override;
 
@@ -147,9 +147,9 @@ private:
 	};
 
 	struct LightTower final : Defense {
-		float enemyFearTime = 2.5f; // TODO: tweak me for design purposes :)
+		float enemyFearTime = 6.5f; // TODO: tweak me for design purposes :)
 
-		inline void init() override { range = 200; } // TODO: tweak me for design purposes :)
+		inline void init() override { range = 500; } // just keep range large so it affects all enemies in zone
 		void update(float dt, combat_zone& zone) override;
 		void draw() const override;
 	};
