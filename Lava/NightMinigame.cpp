@@ -60,7 +60,7 @@ void NightMinigame::init() {
 	static constexpr int SPAWN_OFFSET = 330;
 	static constexpr int SPAWN_OFFSET_FIX = 330;
 	static constexpr int CAM_OFFSET_X = 60;
-	static constexpr float BARRIER_OFFSET = 2.f;
+	static constexpr float BARRIER_OFFSET = 80.f;
 	static constexpr Vector2 DMG_TOWER_POS = { ZONE_CENTER + 150, ZONE_CENTER - 20 };
 	static constexpr Vector2 LIGHT_TOWER_POS = { ZONE_CENTER - 35, ZONE_CENTER - 35 };
 	const std::array BARRIER_TOP_POS = { Vector2{ 0, m_base.height + BARRIER_OFFSET },
@@ -187,8 +187,8 @@ void NightMinigame::HandleInput() {
 }
 
 void NightMinigame::update(float dt) {
-	if (!m_isNight)
-		return;
+	//if (!m_isNight)
+		//return;
 
 	HandleInput();
 
