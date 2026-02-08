@@ -25,7 +25,7 @@ void NightMinigame::init() {
 
 	for (auto& zone : m_zones) {
 		zone.m_pBase = &m_base;
-		//zone.init(); // TODO
+		zone.init();
 	}
 
 	m_zoneCam.target = Vector2Zeros;
@@ -81,13 +81,7 @@ void NightMinigame::StartNewDay(Event& e) {
 	++m_currentDay;
 }
 
-void NightMinigame::combat_zone::init(const Rectangle& bounds,
-									  const Rectangle& baseBounds,
-									  const std::array<Vector2, 2>& enemySpawns)
-{
-	m_bounds = bounds;
-	m_baseBounds = baseBounds;
-
+void NightMinigame::combat_zone::init(const std::array<Vector2, 2>& enemySpawns) {
 	m_spawner.init(enemySpawns);
 
 	for (auto& defense : m_defenses) {

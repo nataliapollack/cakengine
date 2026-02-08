@@ -162,12 +162,12 @@ private:
 		enemy_spawner m_spawner{};
 		
 		Base* m_pBase = nullptr;
-		Rectangle m_bounds{}, m_baseBounds{};
+		Rectangle m_baseBounds{ 0, 0, 0, 0 }; // center of map basically -- this should be reworked maybe probably not it works its fine :)
 		
 		float m_enemySpawnRadius = 10;
 		int m_enemiesToSpawn = 15; // TODO
 
-		void init(const Rectangle& bounds, const Rectangle& baseBounds, const std::array<Vector2, 2>& enemySpawns);
+		void init(const std::array<Vector2, 2>& enemySpawns);
 		void update(float dt);
 		void draw() const;
 		void shutdown();
