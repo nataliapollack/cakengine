@@ -203,29 +203,6 @@ void Tooling::place_objs()
         collidble{ 650.0f, 190.0f, 50, 100 }
     );
 
-<<<<<<< Updated upstream
-
-    //en = gCoordinator.CreateEntity();
-    //gCoordinator.AddComponent(
-    //    en,
-    //    render_box{ Vector2{50.0f, 50.0f },  YELLOW }
-    //);
-
-    //gCoordinator.AddComponent(
-    //    en,
-    //    transform2D{ Vector2 {100.0f, 400.0f } }
-    //);
-
-    //gCoordinator.AddComponent(
-    //    en,
-    //    status{ true, true, OUTSIDE, MAZE_OBJ }
-    //);
-    //gCoordinator.AddComponent(
-    //    en,
-    //    collidble{ 100, 150, 50, 50 }
-    //);
-
-=======
     en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
         en,
@@ -245,5 +222,5 @@ void Tooling::place_objs()
         en,
         collidble{ 365, 500, 170.0f, 50 }
     );
->>>>>>> Stashed changes
+
 }
