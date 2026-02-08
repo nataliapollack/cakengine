@@ -151,7 +151,7 @@ void Tooling::place_objs()
     );
     gCoordinator.AddComponent(
         en,
-        collidble{50, 50, 200, 200}
+        collidble{50, 50, 50, 50}
     );
 
     // 3D ENTITY BILLBOARD TEST
@@ -216,11 +216,135 @@ void Tooling::place_objs()
 
     gCoordinator.AddComponent(
         en,
-        status{ true, true, OUTSIDE, MAZE_OBJ }
+        status{ true, true, INSIDE, MAZE_OBJ }
     );
     gCoordinator.AddComponent(
         en,
         collidble{ 365, 500, 170.0f, 50 }
     );
 
+
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{50.0f, 80.0f },  GREEN }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {155, 278 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, SOLAR_OBJ }
+    );
+    gCoordinator.AddComponent(
+        en,
+        collidble{ 155, 278, 50.0f, 80.0f }
+    );
+
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{80.0f, 30.0f },  RED }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {400, 200 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, CAM_OBJ }
+    );
+    gCoordinator.AddComponent(
+        en,
+        collidble{ 400, 200, 80, 30 }
+    );
+
+    /// WALLS
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{170, 900 },  GRAY }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {0, 0 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, WALL }
+    );
+    gCoordinator.AddComponent(
+        en,
+        collidble{ 0, 0, 170, 900 }
+    );
+
+
+
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{170, 900 },  GRAY }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {786, 0 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, WALL }
+    );
+    gCoordinator.AddComponent(
+        en,
+        collidble{ 786, 0, 170, 900 }
+    );
+
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{900, 50 },  GRAY }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {0, 0 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, WALL }
+    );
+    gCoordinator.AddComponent(
+        en,
+        collidble{ 0, 0, 900, 100 }
+    );
+
+
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{900, 50 },  GRAY }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {0, 511 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, WALL }
+    );
+    gCoordinator.AddComponent(
+        en,
+        collidble{ 0, 511, 900, 100 }
+    );
 }
