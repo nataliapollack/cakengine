@@ -378,7 +378,9 @@ void NightMinigame::combat_zone::TryDamageBase(bool healthDmg) {
 	if (healthDmg)
 		gCoordinator.SendEvent(Events::Health::HEALTH_DMG);
 	else {
-		gCoordinator.SendEvent(Events::Energy::ENERGY_DOWN);
+		Event e{ Events::Energy::ENERGY_DOWN };
+		e.SetParam<int>(Events::Energy::ENERGY_TICK, 5.f); // TODO: tweak :)
+		gCoordinator.SendEvent(e);
 	}
 
 	// TODO: base hit fx
