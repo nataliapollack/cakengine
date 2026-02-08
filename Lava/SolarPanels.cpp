@@ -196,6 +196,10 @@ void SolarPanel::StartMinigame(Event& event)
     screen.SetParam(Events::Game::SCREEN_ID, SOLAR_TILE);
 
     gCoordinator.SendEvent(screen);
+
+    Event screen1(Events::Dialogue::TUTORIAL);
+    screen1.SetParam(Events::Dialogue::ID, 1);
+    gCoordinator.SendEvent(screen1);
     
 }
 

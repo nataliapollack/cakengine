@@ -1,0 +1,4 @@
+Move using the arrow keys.
+Hit enter to interact with objects.
+The days allow you to complete tasks, some tasks make others easier!
+At night, you will need to manage your energy and your defenses.
