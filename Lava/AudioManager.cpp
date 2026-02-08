@@ -1,6 +1,5 @@
 #include "AudioManager.h"
 
-#include "raylib.h"
 #include "Lava.h"
 
 #include "Coordinator.hpp"
@@ -17,7 +16,7 @@ void Audio::load()
 {
     for (int i = 0; i < AUDIO_COUNT; i++)
     {
-        sfx[i] = LoadSound(TextFormat("audio/%i.wav", i);
+        sfx[i] = LoadSound(TextFormat("audio/%i.wav", i));
     }
 
     theme[0] = LoadMusicStream("audio/mus/Inside music + ambience.wav");

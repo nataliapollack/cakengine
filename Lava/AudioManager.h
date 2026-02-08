@@ -1,6 +1,8 @@
 #pragma once
 #include "Events.hpp"
 
+#include "raylib.h"
+
 enum AUDIO
 {
     BARR_DOWN,
@@ -45,6 +47,4 @@ private:
     Music theme[2];
 
     Sound sfx[AUDIO_COUNT];
-
-
 };
