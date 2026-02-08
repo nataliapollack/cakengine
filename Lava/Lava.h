@@ -8,10 +8,10 @@ enum OBJECT_TYPE
     PLAYER,
     DOOR,
     RADIO_OBJ,
-    ENERGY_SCREEN,
-    SOLAR_SCREEN,
+    SOLAR_OBJ,
+    MAZE_OBJ,
+    CAM_OBJ,
     ENVIRONMENT_OBJ,
-    MAZE_SCREEN,
     WALL
 };
 
@@ -46,4 +46,9 @@ namespace Events::Time {
 
 namespace Events::Hints {
     const inline EventId HINT_RECEIVED = "Events::Hints::HINT_RECEIVED"_hash;
+}
+
+namespace Events::Dialogue {
+    const inline EventId TUTORIAL = "Events::Dialogue::TUTORIAL"_hash;
+    const inline EventId AUDIO_FIXED = "Events::Dialogue::AUDIO_FIXED"_hash;
 }

@@ -193,7 +193,7 @@ void SolarPanel::StartMinigame(Event& event)
     toggle = true;
 
     Event screen(Events::Game::SCREEN_CHANGE);
-    screen.SetParam(Events::Game::SCREEN_ID, SOLAR_SCREEN);
+    screen.SetParam(Events::Game::SCREEN_ID, SOLAR_TILE);
 
     gCoordinator.SendEvent(screen);
     
