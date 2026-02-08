@@ -1,0 +1,3 @@
+Use WASD or the arrow keys to move around.
+
+Complete the maze before the day ends to upgrade the defenses.

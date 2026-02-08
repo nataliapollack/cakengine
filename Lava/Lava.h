@@ -20,6 +20,9 @@ namespace Events::Collision {
     const inline EventId HIT_WALL = "Events::Collision::COLLIDED"_hash;
     const inline EventId HIT_DOOR = "Events::Collision::HIT_DOOR"_hash;
     const inline EventId HIT_SOLAR = "Events::Collision::HIT_SOLAR"_hash;
+    const inline EventId HIT_MAZE = "Events::Collision::HIT_MAZE"_hash;
+    const inline EventId HIT_CAMS = "Events::Collision::HIT_CAMS"_hash;
+    const inline EventId HIT_AUDIO = "Events::Collision::HIT_AUDIO"_hash;
 }
 
 namespace Events::Energy {

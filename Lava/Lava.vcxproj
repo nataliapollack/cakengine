@@ -136,6 +136,7 @@
     <ClCompile Include="AudioFreq.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="CycleManager.cpp" />
+    <ClCompile Include="DialogueManager.cpp" />
     <ClCompile Include="DoorSystem.cpp" />
     <ClCompile Include="EnergyManager.cpp" />
     <ClCompile Include="Lava.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="AudioFreq.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="CycleManager.h" />
+    <ClInclude Include="DialogueManager.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="DoorSystem.h" />
     <ClInclude Include="EnemyState.h" />

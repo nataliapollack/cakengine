@@ -8,8 +8,7 @@ public:
     void register_components();
     void set_system_signatures();
 
-    void serialize_entities();
-    void deserialize_entities();
+    void place_objs();
 
 private:
     bool toggle;

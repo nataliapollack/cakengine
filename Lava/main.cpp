@@ -28,7 +28,6 @@
 #include "NightMinigame.h"
 #include "MazeBuilder.h"
 
-void temp_place_objs();
 
 Coordinator gCoordinator;
 Camera2D gCamera;
@@ -63,7 +62,7 @@ int main()
     tools.set_system_signatures();
 
     AssetManager::get().load_all("art");
-    temp_place_objs();
+    tools.place_objs();
 
     // inits
     render_sys->init();
@@ -165,60 +164,4 @@ int main()
     AssetManager::get().unload_all();
 
     CloseWindow();
-}
-
-// until tools gets made
-void temp_place_objs()
-{
-    Entity en = gCoordinator.CreateEntity();
-    gCoordinator.AddComponent(
-        en,
-        render_box{ Vector2{100.0f, 100.0f },  WHITE }
-    );
-
-    gCoordinator.AddComponent(
-        en,
-        transform2D{ Vector2 {200.0f, 200.0f } }
-    );
-
-    gCoordinator.AddComponent(
-        en,
-        status{true, true, OUTSIDE, PLAYER }
-    );
-
-    gCoordinator.AddComponent(
-        en,
-        player{ Vector2{30.0f, 30.0f} }
-    );
-
-    // 3D ENTITY BILLBOARD TEST
-    Entity teapot = gCoordinator.CreateEntity();
-
-    auto& assetMngr = AssetManager::get();
-
-    gCoordinator.AddComponent(
-        teapot,
-        model_view{ .model = &assetMngr.get<Model>("agnus") }
-    );
-    gCoordinator.AddComponent(
-        teapot,
-        viewport3D{
-            .view = {
-                .position = { 0, 1, 15 },
-                .target = { 0 },
-                .up = { 0, 1, 0 },
-                .fovy = { 10 },
-                .projection = { CAMERA_PERSPECTIVE }
-            },
-            .framebuffer = LoadRenderTexture(200, 200)
-        }
-    );
-    gCoordinator.AddComponent(
-        teapot,
-        transform2D{ { 450, 150 } }
-    );
-    gCoordinator.AddComponent(
-        teapot,
-        render_box{ { 200, 200 }, WHITE }
-    );
 }

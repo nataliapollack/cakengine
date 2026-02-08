@@ -16,6 +16,7 @@ public:
 private:
     bool in_dialogue;
     bool displaying_text;
+
     std::string current_line;
     std::fstream current_file;
 };

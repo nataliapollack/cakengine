@@ -3,6 +3,8 @@
 
 #include "Lava.h"
 
+#include "ScreenManager.h"
+
 extern Coordinator gCoordinator;
 
 
@@ -40,6 +42,9 @@ void AudioFreq::init()
 
      begin_timer = false;
      timer = 3.0f;
+
+     gCoordinator.AddEventListener(
+         METHOD_LISTENER(Events::Collision::HIT_AUDIO, AudioFreq::StartMinigame));
 }
 
 void AudioFreq::update()
@@ -105,6 +110,14 @@ void AudioFreq::update()
         }
     }
 
+    if (IsKeyPressed(KEY_BACKSPACE))
+    {
+        Event screen(Events::Game::SCREEN_CHANGE);
+        screen.SetParam(Events::Game::SCREEN_ID, INSIDE);
+
+        gCoordinator.SendEvent(screen);
+    }
+
 }
 
 void AudioFreq::draw()
@@ -115,5 +128,42 @@ void AudioFreq::draw()
 
     DrawCircle(knobs_pos[0].x, knobs_pos[0].y, radius, BLACK);
     DrawCircle(knobs_pos[1].x, knobs_pos[1].y, radius, BLACK);
+
+}
+
+void AudioFreq::StartMinigame(Event& event)
+{
+    toggle = true;
+
+    Event screen(Events::Game::SCREEN_CHANGE);
+    screen.SetParam(Events::Game::SCREEN_ID, AUDIO_FREQ);
+
+    gCoordinator.SendEvent(screen);
+}
+
+void AudioFreq::StartNewDay(Event& event)
+{
+    Correct_angle = GetRandomValue(100, 500) * 10;
+    Current_angle = 1000;
+
+    // Rectangle start = { 20.0f, 600 - 120.f , 200.0f, 100.0f };
+    float screen_width = GetScreenWidth();
+    float screen_height = GetScreenHeight();
+
+    Rectangle start = { 0, 200.0f, 200.0f, 100.0f };
+    float stride = GetScreenWidth() / WAVE_POINTS;
+    //  Correct_sinePoints[WAVE_POINTS] = { 0 };
+
+    for (int i = 0; i < WAVE_POINTS; i++)
+    {
+        float t = i / (float)(WAVE_POINTS - 1);
+        float currentAngle = t * Correct_angle * DEG2RAD;
+        Correct_sinePoints[i].x = (start.x + t * start.width) + (stride * i);
+        Correct_sinePoints[i].y = start.y + start.height / 2.0f - sinf(currentAngle) * (start.height / 2.0f);
+
+        float currentAngle2 = t * Current_angle * DEG2RAD;
+        Current_sinePoints[i].x = (start.x + t * start.width) + (stride * i);
+        Current_sinePoints[i].y = start.y + start.height / 2.0f - sinf(currentAngle2) * (start.height / 2.0f);
+    }
 
 }

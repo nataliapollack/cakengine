@@ -33,6 +33,10 @@ void CollisionSystem::CheckCollisions()
                 auto& transform_i = gCoordinator.GetComponent<transform2D>(entity_i);
                 auto& transform_j = gCoordinator.GetComponent<transform2D>(entity_j);
 
+                // update collision box for playuh
+                collision_i.box.x = transform_i.pos.x;
+                collision_i.box.y = transform_i.pos.y;
+
                 if (CheckCollisionRecs(collision_i.box, collision_j.box))
                 {
                     if (stats_j.type == WALL)
@@ -44,6 +48,46 @@ void CollisionSystem::CheckCollisions()
 
                         wall.SetParam(Events::Collision::COLLISION_DATA,
                             collision_box);
+
+                        gCoordinator.SendEvent(wall);
+                    }
+
+                    if (stats_j.type == RADIO_OBJ)
+                    {
+                        Rectangle collision_box = GetCollisionRec(
+                            collision_i.box, collision_j.box);
+
+                        Event wall(Events::Collision::HIT_AUDIO);
+
+                        gCoordinator.SendEvent(wall);
+                    }
+
+                    if (stats_j.type == MAZE_OBJ)
+                    {
+                        Rectangle collision_box = GetCollisionRec(
+                            collision_i.box, collision_j.box);
+
+                        Event wall(Events::Collision::HIT_MAZE);
+
+                        gCoordinator.SendEvent(wall);
+                    }
+
+                    if (stats_j.type == CAM_OBJ)
+                    {
+                        Rectangle collision_box = GetCollisionRec(
+                            collision_i.box, collision_j.box);
+
+                        Event wall(Events::Collision::HIT_CAMS);
+
+                        gCoordinator.SendEvent(wall);
+                    }
+
+                    if (stats_j.type == SOLAR_OBJ)
+                    {
+                        Rectangle collision_box = GetCollisionRec(
+                            collision_i.box, collision_j.box);
+
+                        Event wall(Events::Collision::HIT_SOLAR);
 
                         gCoordinator.SendEvent(wall);
                     }
