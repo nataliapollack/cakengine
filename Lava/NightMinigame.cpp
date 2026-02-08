@@ -187,8 +187,8 @@ void NightMinigame::HandleInput() {
 }
 
 void NightMinigame::update(float dt) {
-	if (!m_isNight)
-		return;
+	/*if (!m_isNight)
+		return;*/
 
 	HandleInput();
 

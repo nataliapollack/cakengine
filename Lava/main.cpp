@@ -89,7 +89,7 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(INSIDE);
+    screen_mngr.SetScreen(CAMERAS);
     while (!WindowShouldClose())
     {
         // update
@@ -129,14 +129,14 @@ int main()
 
             BeginDrawing();
 
-            Vector2 mouse_pos = GetMousePosition();\
+            Vector2 mouse_pos = GetMousePosition();
             // things that are 2D
             BeginMode2D(gCamera);
 
             mouse_pos = GetScreenToWorld2D(mouse_pos, gCamera);
 
             {
-                if (screen_mngr.GetScreen() == INSIDE)
+                if (screen_mngr.GetScreen() == INSIDE || screen_mngr.GetScreen() == OUTSIDE)
                 {
                     ClearBackground(GRAY);
 
@@ -146,7 +146,7 @@ int main()
 
                     cycle_mngr.draw();
                 }
-                if (screen_mngr.GetScreen() == OUTSIDE)
+               /*if (screen_mngr.GetScreen() == OUTSIDE)
                 {
                     ClearBackground(DARKGRAY);
 
@@ -156,7 +156,7 @@ int main()
 
                     cycle_mngr.draw();
 
-                }
+                }*/
             }
             EndMode2D();
 

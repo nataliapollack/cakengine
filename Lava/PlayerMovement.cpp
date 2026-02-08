@@ -5,6 +5,8 @@
 
 #include "Core.h"
 #include "Player.h"
+#include "AssetManager.hpp"
+#include "Viewport3D.hpp"
 
 extern Coordinator gCoordinator;
 
@@ -27,23 +29,40 @@ void PlayerMovementSystem::move_player(float dt)
         auto& playuh = gCoordinator.GetComponent<player>(entity);
         auto& stats = gCoordinator.GetComponent<status>(entity);
 
+        bool moved = false;
+
         if (IsKeyDown(KEY_LEFT))
         {
             transform.pos.x -= (playuh.speed.x * dt);
+            moved = true;
         }
         if (IsKeyDown(KEY_RIGHT))
         {
             transform.pos.x += (playuh.speed.x * dt);
+            moved = true;
         }
         if (IsKeyDown(KEY_DOWN))
         {
             transform.pos.y += (playuh.speed.y * dt);
             stats.dirty = true;
+            moved = true;
         }
         if (IsKeyDown(KEY_UP))
         {
             transform.pos.y -= (playuh.speed.y * dt);
             stats.dirty = true;
+            moved = true;
+        }
+
+        auto& model = gCoordinator.GetComponent<model_view>(entity);
+        auto& modelAnim = gCoordinator.GetComponent<ModelAnimationInfo>(entity);
+
+        if (moved) {
+            modelAnim.curFrame++;
+            if (modelAnim.curFrame >= modelAnim.pData[0].frameCount)
+                modelAnim.curFrame = 0;
+
+            UpdateModelAnimation(*model.model, modelAnim.pData[0], modelAnim.curFrame);
         }
     }
 }

@@ -128,7 +128,7 @@ void Tooling::place_objs()
     );
  
     ////////////////////////////////////////////////////////////////
-
+    // PLAYER
      
     en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
@@ -153,6 +153,27 @@ void Tooling::place_objs()
     gCoordinator.AddComponent(
         en,
         collidble{50, 50, 50, 50}
+    );
+    gCoordinator.AddComponent(
+        en,
+        model_view{ .model = &assetMngr.get<Model>("agnus") }
+    );
+    gCoordinator.AddComponent(
+        en,
+        assetMngr.get<ModelAnimationInfo>("agnus")
+    );
+    gCoordinator.AddComponent(
+        en,
+        viewport3D{
+            .view = {
+                .position = { 0, 1, 15 },
+                .target = { 0 },
+                .up = { 0, 1, 0 },
+                .fovy = { 30 },
+                .projection = { CAMERA_PERSPECTIVE }
+            },
+            .framebuffer = LoadRenderTexture(200, 200)
+        }
     );
 
     // 3D ENTITY BILLBOARD TEST
