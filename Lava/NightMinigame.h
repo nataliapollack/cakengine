@@ -43,7 +43,9 @@ public:
 
 	// this is to track which day we are on in the event we read in where / how
 	// many enemies are appearing based on the day
-	void StartNewDay(Event& e);
+	void StartNewNight(Event& e);
+
+	void StartNewDay(Event& e); // no more minigame
 
 	void NoEnergy(Event& e);
 

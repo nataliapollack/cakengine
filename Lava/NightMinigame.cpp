@@ -44,13 +44,13 @@ void NightMinigame::init() {
 		METHOD_LISTENER(Events::Energy::NO_ENERGY, NightMinigame::NoEnergy)
 	);
 
-	/*gCoordinator.AddEventListener(
-		METHOD_LISTENER(Events::Time::DAY_BEGIN, NightMinigame::)
+	gCoordinator.AddEventListener(
+		METHOD_LISTENER(Events::Time::DAY_BEGIN, NightMinigame::StartNewDay)
 	);
 	
 	gCoordinator.AddEventListener(
-		METHOD_LISTENER(Events::Time::NIGHT_BEGIN, NightMinigame::)
-	);*/
+		METHOD_LISTENER(Events::Time::NIGHT_BEGIN, NightMinigame::StartNewNight)
+	);
 
 	const Vector2 screenDims = { float(GetScreenWidth()), float(GetScreenHeight()) };
 
