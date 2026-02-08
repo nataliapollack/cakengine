@@ -194,7 +194,20 @@ void MazeBuilder::UpdateMaze(float dt)
 		return;
 
 	
+
+
 	player.UpdatePlayer(dt);
+
+	if (IsKeyPressed(KEY_BACKSPACE))
+	{
+		EndMaze();
+		Event screen(Events::Game::SCREEN_CHANGE);
+		screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
+
+		gCoordinator.SendEvent(screen);
+	}
+
+
 
 	for (int i = 0; i < Walls.size(); ++i)
 	{
@@ -214,10 +227,15 @@ void MazeBuilder::UpdateMaze(float dt)
 			Rectangle rec = { xPos, yPos, nodeSize, nodeSize };
 			if (CheckCollisionRecs(player.shape, rec))
 			{
-				/*if (col == MazeWidth - 1 && row == MazeHeight - 1)
+				if (col == MazeWidth - 1 && row == MazeHeight - 1)
 				{
-					DrawRectangle(xPos, yPos, nodeSize, nodeSize, RED);
-				}*/
+					DrawRectangle(xPos, yPos, nodeSize, nodeSize, GREEN);
+					EndMaze();
+					Event screen(Events::Game::SCREEN_CHANGE);
+					screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
+
+					gCoordinator.SendEvent(screen);
+				}
 
 				node->IsFoggy = false;
 			}
