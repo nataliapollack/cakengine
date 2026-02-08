@@ -265,7 +265,7 @@ void MazeBuilder::StartMaze(Event& event)
 
 
 	Event screen(Events::Game::SCREEN_CHANGE);
-	screen.SetParam(Events::Game::SCREEN_ID, MAZE_SCREEN);
+	screen.SetParam(Events::Game::SCREEN_ID, MAZE);
 
 	gCoordinator.SendEvent(screen);
 }
