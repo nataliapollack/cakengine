@@ -58,11 +58,11 @@ void NightMinigame::init() {
 	// adjust these (> = farther, < = closer) to adjust where enemies spawn
 	static constexpr int ZONE_CENTER = 111;
 	static constexpr int SPAWN_OFFSET = 330;
-	static constexpr int SPAWN_OFFSET_FIX = -330;
+	static constexpr int SPAWN_OFFSET_FIX = 330;
 	static constexpr int CAM_OFFSET_X = 60;
-	static constexpr float BARRIER_OFFSET = 80.f;
+	static constexpr float BARRIER_OFFSET = 2.f;
 	static constexpr Vector2 DMG_TOWER_POS = { ZONE_CENTER + 150, ZONE_CENTER - 20 };
-	static constexpr Vector2 LIGHT_TOWER_POS = { ZONE_CENTER - 25, ZONE_CENTER - 35 };
+	static constexpr Vector2 LIGHT_TOWER_POS = { ZONE_CENTER - 35, ZONE_CENTER - 35 };
 	const std::array BARRIER_TOP_POS = { Vector2{ 0, m_base.height + BARRIER_OFFSET },
 										 Vector2{ m_base.width + BARRIER_OFFSET, m_base.height + BARRIER_OFFSET } };
 	const std::array BARRIER_SIDE_POS = { Vector2{ m_base.width + BARRIER_OFFSET, 0 },
@@ -71,7 +71,7 @@ void NightMinigame::init() {
 	// enemies can spawn in a radius around two points for each camera. these are the points
 	auto enemySpawnCenters = std::to_array<std::array<Vector2, 2>, 4>({
 		// cam 1
-		{ Vector2{ -SPAWN_OFFSET - CAM_OFFSET_X, -SPAWN_OFFSET / 2 }, Vector2{ -SPAWN_OFFSET / 2, -SPAWN_OFFSET - SPAWN_OFFSET_FIX} },
+		{ Vector2{ -SPAWN_OFFSET - CAM_OFFSET_X, -SPAWN_OFFSET / 2 }, Vector2{ -SPAWN_OFFSET / 2, -SPAWN_OFFSET } },
 		// cam 2
 		{ Vector2{  SPAWN_OFFSET + CAM_OFFSET_X, -SPAWN_OFFSET / 2 }, Vector2{  SPAWN_OFFSET / 2, -SPAWN_OFFSET } },
 		// cam 3

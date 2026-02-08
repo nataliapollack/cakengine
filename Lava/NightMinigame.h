@@ -72,7 +72,7 @@ private:
 		int width = 100;
 		int height = 75;
 
-		float dmgRadius = 40.0f; // TODO: tweak me for design purposes :)
+		float dmgRadius = 10.0f; // TODO: tweak me for design purposes :)
 		//float attackCooldown = 1.0f; // TODO: tweak me for design purposes :)
 
 		float hurtTimer = 0;
@@ -153,9 +153,9 @@ private:
 	};
 
 	struct LightTower final : Defense {
-		float enemyFearTime = 5.f; // TODO: tweak me for design purposes :)
+		float enemyFearTime = 17.5f; // TODO: tweak me for design purposes :)
 
-		inline void init() override { range = 20; } // just keep range large so it affects all enemies in zone
+		inline void init() override { range = 500; } // just keep range large so it affects all enemies in zone
 		void update(float dt, combat_zone& zone) override;
 		void draw() override;
 
@@ -165,7 +165,7 @@ private:
 	struct Barricade final : Defense {
 		Vector2 endPos{};
 
-		inline void init() override { range = 200; energyTick = 3; }
+		inline void init() override { range = 5; energyTick = 3; }
 		void draw() override;
 
 		bool CheckClicked(const Camera2D& cam) override;
@@ -185,7 +185,7 @@ private:
 		Vector2 m_center{};
 
 		float m_enemySpawnRadius = 30; // TODO: tweak me for design purposes :)
-		int m_enemiesToSpawn = 20; // TODO: tweak me for design purposes :)
+		int m_enemiesToSpawn = 50; // TODO: tweak me for design purposes :)
 
 		void init(const std::array<Vector2, 2>& enemySpawns);
 		void update(float dt);
