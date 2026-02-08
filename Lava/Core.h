@@ -13,6 +13,11 @@ struct render_box
     Color col;
 };
 
+struct render_texture
+{
+    Texture2D txt;
+};
+
 struct collidble
 {
     Rectangle box;

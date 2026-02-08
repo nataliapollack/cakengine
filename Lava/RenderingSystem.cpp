@@ -64,6 +64,7 @@ void RenderSystem::draw()
     for (int i = 0; i < draw_order.size(); i++)
     {
         auto const& transform = gCoordinator.GetComponent<transform2D>(draw_order[i]);
+
         auto const& rend = gCoordinator.GetComponent<render_box>(draw_order[i]);
 
         if (gCoordinator.HasComponent<viewport3D>(draw_order[i])) {
@@ -73,8 +74,15 @@ void RenderSystem::draw()
                            Vector2{ transform.pos.x, transform.pos.y },
                            rend.col);
         }
-        else {
+        else if (gCoordinator.HasComponent<render_texture>(draw_order[i]))
+        {
+            auto const& rend = gCoordinator.GetComponent<render_texture>(draw_order[i]);
+            DrawTexture(rend.txt, transform.pos.x, transform.pos.y, WHITE);
+        }
+        else
+        {
             DrawRectangle(int(transform.pos.x), int(transform.pos.y), int(rend.size.x), int(rend.size.y), rend.col);
+
         }
     }
 }
