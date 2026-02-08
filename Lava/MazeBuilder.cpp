@@ -194,7 +194,20 @@ void MazeBuilder::UpdateMaze(float dt)
 		return;
 
 	
+
+
 	player.UpdatePlayer(dt);
+
+	if (IsKeyPressed(KEY_BACKSPACE))
+	{
+		EndMaze();
+		Event screen(Events::Game::SCREEN_CHANGE);
+		screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
+
+		gCoordinator.SendEvent(screen);
+	}
+
+
 
 	for (int i = 0; i < Walls.size(); ++i)
 	{
