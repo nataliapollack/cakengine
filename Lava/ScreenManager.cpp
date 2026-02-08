@@ -18,6 +18,16 @@ void ScreenManager::ChangeScreen(Event& event)
 {
     SCREENS screen = event.GetParam<SCREENS>(Events::Game::SCREEN_ID);
     current_screen = screen;
+
+    // Just for the sake of getting it working fast, i'm setting WinScreen here.
+    // I know it should probably be done via event but I don't 
+    // know enough about the event system to do it fast enough - Braedan
+    if (screen == WIN)
+    {
+        WinScreen = true;
+    }
+
+
     StartFade();
 }
 
@@ -30,6 +40,8 @@ void ScreenManager::SetScreen(SCREENS screen)
 {
     current_screen = screen;
 }
+
+
 
 void ScreenManager::UpdateFadeTransition(float dt)
 {
@@ -84,4 +96,30 @@ void ScreenManager::StartFade()
 {
     fadeTimerRemaining = fadeTimerDefault;
     IsFading = true;
+}
+
+void ScreenManager::UpdateWinLoseScreen(float dt)
+{
+    timeToClose -= dt;
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), BLACK);
+    WinScreen = true;
+    if (WinScreen)
+    {
+        DrawText("YOU WIN!", GetScreenWidth() / 4, 150.0f, 100.0f, WHITE);
+    }
+    else
+    {
+        DrawText("YOU LOSE!", GetScreenWidth() / 4, 150.0f, 100.0f, WHITE);
+    }
+
+    if (timeToClose <= 0)
+    {
+        EndScreenComplete = true;
+        CloseWindow();
+    }
+}
+
+bool ScreenManager::GetWindowClosed()
+{
+    return EndScreenComplete;
 }
