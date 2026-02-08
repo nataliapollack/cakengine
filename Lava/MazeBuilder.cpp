@@ -175,6 +175,7 @@ void MazeBuilder::HitWall(Rectangle wall)
 void MazeBuilder::Init()
 {
 	isActive = true;
+	firstStep = true;
 	player.pos = player.defaultPos;
 	for (int i = 0; i < MazeWidth; ++i)
 		for (int j = 0; j < MazeHeight; ++j)
