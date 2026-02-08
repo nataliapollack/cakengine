@@ -187,6 +187,9 @@ void NightMinigame::HandleInput() {
 }
 
 void NightMinigame::update(float dt) {
+	if (!m_isNight)
+		return;
+
 	HandleInput();
 
 	m_zoneCam.target = m_zones[m_curCam - 1].m_center;
@@ -218,9 +221,15 @@ void NightMinigame::StartMinigame(Event& e) {
 	//m_isNight = true;
 }
 
+void NightMinigame::StartNewDay(Event& e) {
+	m_isNight = false;
+}
+
 // this is to trakc which day we are on in the event we read in where / how
 // many enemies are appearing based on the day
-void NightMinigame::StartNewDay(Event& e) {
+void NightMinigame::StartNewNight(Event& e) {
+	m_isNight = true;
+
 	static constexpr std::array ENEMY_SPAWNS_DAY = {
 		15, // day 1
 		22, // day 2
