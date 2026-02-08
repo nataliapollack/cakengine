@@ -69,8 +69,6 @@ void RenderSystem::render_viewports() {
 
 void RenderSystem::draw()
 {
-    int modelIndex = -1;
-
     for (int i = 0; i < draw_order.size(); i++)
     {
         auto const& transform = gCoordinator.GetComponent<transform2D>(draw_order[i]);
@@ -78,7 +76,15 @@ void RenderSystem::draw()
         auto const& rend = gCoordinator.GetComponent<render_box>(draw_order[i]);
 
         if (gCoordinator.HasComponent<viewport3D>(draw_order[i])) {
-            modelIndex = i;
+            auto const& transform = gCoordinator.GetComponent<transform2D>(draw_order[i]);
+
+            auto const& rend = gCoordinator.GetComponent<render_box>(draw_order[i]);
+            auto& viewport = gCoordinator.GetComponent<viewport3D>(draw_order[i]);
+            DrawTextureRec(viewport.framebuffer.texture,
+                           Rectangle{ 0, 0, rend.size.x, -rend.size.y },
+                           Vector2{ transform.pos.x, transform.pos.y },
+                           rend.col);
+            DrawRectangleLines(transform.pos.x, transform.pos.y, rend.size.x, rend.size.y, RED);
         }
         else if (gCoordinator.HasComponent<render_texture>(draw_order[i]))
         {
@@ -90,17 +96,5 @@ void RenderSystem::draw()
             DrawRectangle(int(transform.pos.x), int(transform.pos.y), int(rend.size.x), int(rend.size.y), rend.col);
 
         }
-    }
-
-    if (modelIndex != -1) {
-        auto const& transform = gCoordinator.GetComponent<transform2D>(draw_order[modelIndex]);
-
-        auto const& rend = gCoordinator.GetComponent<render_box>(draw_order[modelIndex]);
-        auto& viewport = gCoordinator.GetComponent<viewport3D>(draw_order[modelIndex]);
-        DrawTextureRec(viewport.framebuffer.texture,
-                       Rectangle{ 0, 0, rend.size.x, -rend.size.y },
-                       Vector2{ transform.pos.x, transform.pos.y },
-                       rend.col);
-        DrawRectangleLines(transform.pos.x, transform.pos.y, rend.size.x, rend.size.y, RED);
     }
 }
