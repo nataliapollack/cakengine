@@ -5,6 +5,10 @@
 #include <cstdlib>
 #include <cfloat>
 
+#include "Coordinator.hpp"
+
+extern Coordinator gCoordinator;
+
 template <typename T>
 static T Random(T min, T max) {
 	return static_cast<T>(std::rand() % (max - min + 1)) + min;
@@ -21,7 +25,11 @@ void NightMinigame::init() {
 
 	for (auto& zone : m_zones) {
 		zone.m_pBase = &m_base;
+		//zone.init(); // TODO
 	}
+
+	m_zoneCam.target = Vector2Zeros;
+	m_zoneCam.zoom = 1;
 }
 
 void NightMinigame::shutdown() {
@@ -31,8 +39,8 @@ void NightMinigame::shutdown() {
 }
 
 void NightMinigame::update(float dt) {
-	if (!m_isNight) //|| m_isResolved)
-		return;
+	//if (!m_isNight) //|| m_isResolved)
+	//	return;
 
 	m_base.hurtTimer -= dt;
 	if (m_base.hurtTimer < 0)
@@ -58,13 +66,13 @@ void NightMinigame::update(float dt) {
 // this turns on the night bool which determines whether or not we're actively
 // updating this minigame, it should always be updating if it's night
 void NightMinigame::StartMinigame(Event& e) {
-	m_isNight = true;
+	//m_isNight = true;
 }
 
 // this turns on the drawing bool which determines whether
 // or not we're actively drawing this minigame on screen
 void NightMinigame::ToggleStatus(Event& e) {
-	m_isVisible = !m_isVisible;
+	//m_isVisible = !m_isVisible;
 }
 
 // this is to trakc which day we are on in the event we read in where / how
@@ -73,10 +81,18 @@ void NightMinigame::StartNewDay(Event& e) {
 	++m_currentDay;
 }
 
-void NightMinigame::combat_zone::init(const Rectangle& bounds, const Rectangle& baseBounds) {
+void NightMinigame::combat_zone::init(const Rectangle& bounds,
+									  const Rectangle& baseBounds,
+									  const std::array<Vector2, 2>& enemySpawns)
+{
 	m_bounds = bounds;
 	m_baseBounds = baseBounds;
-	// todo?
+
+	m_spawner.init(enemySpawns);
+
+	for (auto& defense : m_defenses) {
+		defense->init();
+	}
 }
 
 void NightMinigame::combat_zone::shutdown() {
@@ -174,8 +190,7 @@ void NightMinigame::combat_zone::TryDamageBase() {
 	if (m_pBase->hurtTimer > 0)
 		return;
 
-	// TODO
-	//m_pBase->hp.health--;
+	// TODO: send event? HEALTH_DMG?
 	m_pBase->hurtTimer = m_pBase->hurtCooldown;
 
 	// TODO: base hit fx
@@ -218,6 +233,11 @@ NightMinigame::Enemy::LivingState NightMinigame::Enemy::UpdateMovement(float dt,
 	return LivingState::ALIVE;
 }
 
+void NightMinigame::Defense::update(float dt, combat_zone&) {
+	if (enabled)
+		TickEnergy(dt);
+}
+
 NightMinigame::Enemy* NightMinigame::Defense::GetClosestEnemyToBase(combat_zone& zone) {
 	Vector2 baseCenter = { zone.m_baseBounds.x + zone.m_baseBounds.width / 2,
 						   zone.m_baseBounds.y + zone.m_baseBounds.height / 2 };
@@ -236,10 +256,23 @@ NightMinigame::Enemy* NightMinigame::Defense::GetClosestEnemyToBase(combat_zone&
 	return closestEnemy;
 }
 
+void NightMinigame::Defense::TickEnergy(float dt) {
+	timeUp += dt;
+
+	if (dt >= energyTickTime) {
+		timeUp = 0;
+		
+		Event tickEvent{ Events::Energy::ENERGY_DOWN };
+		tickEvent.SetParam(Events::Energy::ENERGY_TICK, ENERGY_TICK_AMT);
+		gCoordinator.SendEvent(tickEvent);
+	}
+}
+
 void NightMinigame::DamageTower::update(float dt, combat_zone& zone) {
-	// TODO
 	if (!enabled)
 		return;
+
+	TickEnergy(dt);
 
 	m_cooldownTimer -= dt;
 	if (m_cooldownTimer <= 0) {
@@ -268,6 +301,8 @@ void NightMinigame::LightTower::update(float dt, combat_zone& zone) {
 	if (!enabled)
 		return;
 
+	TickEnergy(dt);
+
 	for (Enemy& e : zone.m_enemiesInZone) {
 		if (e.state.tower.isFleeing)
 			continue;
@@ -289,34 +324,88 @@ void NightMinigame::LightTower::update(float dt, combat_zone& zone) {
 	}
 }
 
-void NightMinigame::draw() {
-	if (!m_isVisible)
-		return;
+void NightMinigame::draw() const {
+	/*if (!m_isVisible)
+		return;*/
 
-	// TODO: basic shapes
-	// TODO: create + draw ui to switch cams :)
+	BeginMode2D(m_zoneCam);
+	
+	DrawBase();
+	m_zones[m_curCam - 1].draw();
+	
+	EndMode2D();
 
-	for (auto& zone : m_zones) {
-		zone.draw();
+	DrawUI();
+}
+
+void NightMinigame::DrawBase() const {
+	static constexpr float INNER_SCALE = 0.8f;
+
+	auto baseDimsOut = Rectangle{ .x = -m_base.width / 2.f, .y = -m_base.height / 2.f,
+							   .width = float(m_base.width), .height = float(m_base.height) };
+	auto baseDimsIn = Rectangle{ baseDimsOut.x * INNER_SCALE, baseDimsOut.y * INNER_SCALE,
+								 baseDimsOut.width * INNER_SCALE, baseDimsOut.height * INNER_SCALE };
+	DrawRectangleRounded(baseDimsOut, 1.f, 6, DARKGRAY); // dark gray
+	DrawRectangleRounded(baseDimsIn, 1.f, 6, GRAY); // gray
+}
+
+void NightMinigame::DrawUI() const {
+	static constexpr Vector2 CAM_RECT_DIMS = { 90, 90 };
+	static constexpr int CAM_RECT_SPACING = 10;
+	static constexpr int FONT_SIZE = 24;
+	static constexpr Color FONT_COLOR = RAYWHITE;
+
+	const float height = float(GetScreenHeight());
+
+	char camText[] = "Camera X";
+	camText[7] = static_cast<char>('0' + m_curCam);
+
+	DrawText(camText, 0, 0, FONT_SIZE, FONT_COLOR);
+
+	for (int i = 0; i < 4; ++i) {
+		Vector2 pos = { CAM_RECT_SPACING * 2 + CAM_RECT_DIMS.x * i + CAM_RECT_SPACING * (i - 1),
+						height - CAM_RECT_DIMS.y - 5 };
+		
+		DrawRectangleV(pos, CAM_RECT_DIMS, FONT_COLOR);
+		
+		char num[2] = { char('0' + i), '\0' };
+		DrawText(num,
+				 int(pos.x + CAM_RECT_DIMS.x / 2) - FONT_SIZE / 4,
+				 int(pos.y + CAM_RECT_DIMS.y / 2) - FONT_SIZE / 2,
+				 FONT_SIZE, BLACK);
 	}
 }
 
-void NightMinigame::combat_zone::draw() {
-	// TODO: basic shapes
+void NightMinigame::combat_zone::draw() const {
+	for (auto& e : m_enemiesInZone) {
+		e.draw();
+	}
+
+	for (auto& defense : m_defenses) {
+		defense->draw();
+	}
 }
 
-void NightMinigame::Enemy::draw() {
-	// TODO: basic shapes
+void NightMinigame::Enemy::draw() const {
+	DrawCircleV(t2d.pos, 3.f, Color{ 145, 10, 10, 255 }); // dark red
+	DrawCircleV(t2d.pos, 1.5f, RED); // light red
 }
 
-void NightMinigame::DamageTower::draw() {
-	// TODO: basic shapes
+void NightMinigame::DamageTower::draw() const {
+	static constexpr float TRI_SCALE = 3.f;
+
+	Vector2 v1 = t2d.pos + Vector2{ 0, -TRI_SCALE / 2 };
+	Vector2 v2 = t2d.pos + Vector2{ -TRI_SCALE / 2, TRI_SCALE / 2 };
+	Vector2 v3 = t2d.pos + Vector2{ TRI_SCALE / 2, TRI_SCALE / 2 };
+	DrawTriangle(v1, v2, v3, SKYBLUE);
 }
 
-void NightMinigame::LightTower::draw() {
-	// TODO: basic shapes
+void NightMinigame::LightTower::draw() const {
+	//DrawCircleLines(t2d.pos,  MAGENTA);
+	DrawRingLines(t2d.pos, 5, 10, 0, 360, 1, MAGENTA);
 }
 
-void NightMinigame::Barricade::draw() {
+void NightMinigame::Barricade::draw() const {
 	// TODO: basic shapes
+	//DrawLineV() // light orange
 }

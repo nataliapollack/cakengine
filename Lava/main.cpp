@@ -83,7 +83,7 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(OUTSIDE); // <-- I changed this from "INSIDE" for testing -- Evan
+    screen_mngr.SetScreen(CAMERAS); // <-- I changed this from "INSIDE" for testing -- Evan
     while (!WindowShouldClose())
     {
         // update
@@ -162,6 +162,7 @@ int main()
     }
 
     render_sys->shutdown();
+    AssetManager::get().unload_all();
 
     CloseWindow();
 }
