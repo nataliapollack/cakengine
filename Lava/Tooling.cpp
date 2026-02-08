@@ -58,7 +58,7 @@ void Tooling::place_objs()
     Entity en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
         en,
-        render_box{ Vector2{100.0f, 100.0f },  WHITE }
+        render_box{ Vector2{50.0f, 50.0f },  WHITE }
     );
 
     gCoordinator.AddComponent(
@@ -68,12 +68,16 @@ void Tooling::place_objs()
 
     gCoordinator.AddComponent(
         en,
-        status{ true, true, OUTSIDE, PLAYER }
+        status{ true, true, INSIDE, PLAYER }
     );
 
     gCoordinator.AddComponent(
         en,
         player{ Vector2{30.0f, 30.0f} }
+    );
+    gCoordinator.AddComponent(
+        en,
+        collidble{50, 50, 200, 200}
     );
 
     // 3D ENTITY BILLBOARD TEST
@@ -107,10 +111,12 @@ void Tooling::place_objs()
         render_box{ { 200, 200 }, WHITE }
     );
 
+
+
     en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
         en,
-        render_box{ Vector2{100.0f, 100.0f },  BLUE }
+        render_box{ Vector2{50.0f, 50.0f },  BLUE }
     );
 
     gCoordinator.AddComponent(
@@ -124,14 +130,14 @@ void Tooling::place_objs()
     );
     gCoordinator.AddComponent(
         en,
-        collidble{ 50, 400, 100, 100 }
+        collidble{ 50, 400, 50, 50 }
     );
 
 
     en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
         en,
-        render_box{ Vector2{100.0f, 100.0f },  YELLOW }
+        render_box{ Vector2{50.0f, 50.0f },  YELLOW }
     );
 
     gCoordinator.AddComponent(
@@ -145,7 +151,7 @@ void Tooling::place_objs()
     );
     gCoordinator.AddComponent(
         en,
-        collidble{ 100, 150, 100, 100 }
+        collidble{ 100, 150, 50, 50 }
     );
 
 }

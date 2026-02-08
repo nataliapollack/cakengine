@@ -82,7 +82,7 @@ int main()
 
 
     //**************  HEY! SET YOUR SCREEN HERE IF NEEDED ****************
-    screen_mngr.SetScreen(CAMERAS);
+    screen_mngr.SetScreen(INSIDE);
     while (!WindowShouldClose())
     {
         // update
@@ -104,12 +104,23 @@ int main()
 
             BeginDrawing();
 
+            Vector2 mouse_pos = GetMousePosition();
+
             // things that are 2D
             BeginMode2D(gCamera);
+
+            mouse_pos = GetScreenToWorld2D(mouse_pos, gCamera);
+
             {
                 if (screen_mngr.GetScreen() == INSIDE)
                 {
                     ClearBackground(GRAY);
+
+                    render_sys->draw();
+
+                    enery_mngr.DrawEnergyLevels();
+
+                    cycle_mngr.draw();
                 }
                 if (screen_mngr.GetScreen() == OUTSIDE)
                 {
@@ -124,6 +135,8 @@ int main()
                 }
             }
             EndMode2D();
+
+            DrawText(TextFormat("Debug world mouse pos x: %f, y: %f", mouse_pos.x, mouse_pos.y), 300, 100, 20, YELLOW);
 
             if (screen_mngr.GetScreen() == SOLAR_TILE)
             {
