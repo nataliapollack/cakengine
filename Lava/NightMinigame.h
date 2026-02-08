@@ -37,10 +37,6 @@ public:
 	// TODO
 	inline bool active() const { return true; }//m_isNight; }
 	
-	// this turns on the drawing bool which determines whether
-	// or not we're actively drawing this minigame on screen
-	void ToggleStatus(Event& e);
-	
 	// this turns on the night bool which determines whether or not we're actively
 	// updating this minigame, it should always be updating if it's night
 	void StartMinigame(Event& e);
@@ -48,6 +44,8 @@ public:
 	// this is to track which day we are on in the event we read in where / how
 	// many enemies are appearing based on the day
 	void StartNewDay(Event& e);
+
+	void NoEnergy(Event& e);
 
 // ----- Funcs -----
 private:

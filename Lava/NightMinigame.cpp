@@ -6,6 +6,7 @@
 #include <cfloat>
 
 #include "Coordinator.hpp"
+#include "ScreenManager.h"
 
 extern Coordinator gCoordinator;
 
@@ -34,6 +35,14 @@ void NightMinigame::init() {
 	// <random> header bloats code by a lot, assuming we want it low for web builds
 	// so using c random
 	std::srand(static_cast<unsigned>(std::time(NULL)));
+
+	gCoordinator.AddEventListener(
+		METHOD_LISTENER(Events::Collision::HIT_CAMS, NightMinigame::StartMinigame)
+	);
+
+	gCoordinator.AddEventListener(
+		METHOD_LISTENER(Events::Energy::NO_ENERGY, NightMinigame::NoEnergy)
+	);
 
 	const Vector2 screenDims = { GetScreenWidth(), GetScreenHeight() };
 
@@ -166,16 +175,35 @@ void NightMinigame::StartMinigame(Event& e) {
 	//m_isNight = true;
 }
 
-// this turns on the drawing bool which determines whether
-// or not we're actively drawing this minigame on screen
-void NightMinigame::ToggleStatus(Event& e) {
-	//m_isVisible = !m_isVisible;
-}
-
 // this is to trakc which day we are on in the event we read in where / how
 // many enemies are appearing based on the day
 void NightMinigame::StartNewDay(Event& e) {
+	static constexpr std::array ENEMY_SPAWNS_DAY = {
+		15, // day 1
+		22, // day 2
+		35, // day 3
+	};
+
 	++m_currentDay;
+
+	for (auto& zone : m_zones) {
+		if (m_currentDay <= 3)
+			zone.m_enemiesToSpawn = ENEMY_SPAWNS_DAY[m_currentDay];
+		else
+			zone.m_enemiesToSpawn = 0; // debug
+	}
+
+	Event scrChange{ Events::Game::SCREEN_CHANGE };
+	scrChange.SetParam(Events::Game::SCREEN_ID, CAMERAS);
+	gCoordinator.SendEvent(scrChange);
+}
+
+void NightMinigame::NoEnergy(Event& e) {
+	for (auto& zone : m_zones) {
+		for (auto& defense : zone.m_defenses) {
+			defense->enabled = false;
+		}
+	}
 }
 
 void NightMinigame::combat_zone::init(const std::array<Vector2, 2>& enemySpawns) {
@@ -188,6 +216,7 @@ void NightMinigame::combat_zone::init(const std::array<Vector2, 2>& enemySpawns)
 
 void NightMinigame::combat_zone::shutdown() {
 	m_defenses.clear();
+	m_enemiesInZone.clear(); // just in case
 }
 
 void NightMinigame::combat_zone::update(float dt) {
@@ -283,6 +312,7 @@ void NightMinigame::combat_zone::TryDamageBase() {
 
 	// TODO: send event? HEALTH_DMG?
 	m_pBase->hurtTimer = m_pBase->hurtCooldown;
+	gCoordinator.SendEvent(Events::Health::HEALTH_DMG);
 
 	// TODO: base hit fx
 }
