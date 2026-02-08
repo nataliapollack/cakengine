@@ -21,6 +21,9 @@ public:
 
 private:
     bool ChargingPanels;
+    bool out_of_energy;
+    bool sent_energy;
+
     int TotalEnergyLeft;
     int TotalHealthLeft;
 

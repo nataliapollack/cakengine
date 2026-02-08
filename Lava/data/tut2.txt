@@ -1,2 +1,3 @@
 Hold the buttons to adjust the frequency to match!
 Give it a bit to hold on the proper frequency to ensure you're on it.
+Hit backspace to exit!

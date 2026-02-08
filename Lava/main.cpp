@@ -21,16 +21,19 @@
 #include "EnergyManager.h"
 #include "ScreenManager.h"
 #include "CycleManager.h"
+#include "DialogueManager.h"
 #include "AssetManager.hpp"
 
 // minigames
 #include "SolarPanels.h"
 #include "NightMinigame.h"
 #include "MazeBuilder.h"
-
+#include "AudioFreq.h"
 
 Coordinator gCoordinator;
 Camera2D gCamera;
+
+int gCurrentDay;
 
 int main()
 {
@@ -53,11 +56,13 @@ int main()
     EnergyManager enery_mngr;
     ScreenManager screen_mngr;
     CycleManager cycle_mngr;
+    Dialogue dialogue_mngr;
 
     // minigames
     SolarPanel solar_game;
     NightMinigame night_game;
     MazeBuilder maze_game;
+    AudioFreq audio_game;
 
     tools.set_system_signatures();
 
@@ -71,9 +76,11 @@ int main()
     enery_mngr.init();
     screen_mngr.init();
     cycle_mngr.init();
+    dialogue_mngr.init();
 
     solar_game.init();
     night_game.init();
+    audio_game.init();
     maze_game.Init();
 
     // camera Things
@@ -87,15 +94,33 @@ int main()
     {
         // update
         float deltaTime = 1.0f / 60.0f;
-        cycle_mngr.UpdateTimer(deltaTime);
-        if (screen_mngr.GetScreen() == OUTSIDE || screen_mngr.GetScreen() == INSIDE)
+        if (!dialogue_mngr.GetStatus())
         {
-            player_movement_sys->move_player(deltaTime);
-            collision_sys->CheckCollisions();
+            cycle_mngr.UpdateTimer(deltaTime);
+            if (screen_mngr.GetScreen() == OUTSIDE || screen_mngr.GetScreen() == INSIDE)
+            {
+                player_movement_sys->move_player(deltaTime);
+                collision_sys->CheckCollisions();
+            }
+            if (screen_mngr.GetScreen() == CAMERAS)
+            {
+                night_game.update(deltaTime);
+            }
+            if (screen_mngr.GetScreen() == MAZE)
+            {
+                maze_game.UpdateMaze(deltaTime);
+            }
+            if (screen_mngr.GetScreen() == AUDIO_FREQ)
+            {
+                audio_game.update();
+            }
+            if (screen_mngr.GetScreen() == SOLAR_TILE)
+            {
+                solar_game.update();
+            }
         }
-        else if (screen_mngr.GetScreen() == CAMERAS) {
-            night_game.update(deltaTime);
-        }
+
+        dialogue_mngr.update();
 
         //draw
         {
@@ -104,8 +129,7 @@ int main()
 
             BeginDrawing();
 
-            Vector2 mouse_pos = GetMousePosition();
-
+            Vector2 mouse_pos = GetMousePosition();\
             // things that are 2D
             BeginMode2D(gCamera);
 
@@ -157,7 +181,8 @@ int main()
             }
             if (screen_mngr.GetScreen() == AUDIO_FREQ)
             {
-                ClearBackground(RED);
+                ClearBackground(BLACK);
+                audio_game.draw();
             }
             if (screen_mngr.GetScreen() == CAMERAS)
             {
@@ -169,6 +194,9 @@ int main()
             {
                 screen_mngr.UpdateFadeTransition(deltaTime);
             }
+
+
+            dialogue_mngr.draw();
             EndDrawing();
         }
     }

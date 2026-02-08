@@ -1,8 +1,10 @@
 #include "DialogueManager.h"
 #include "Lava.h"
 #include <string>
-
+#include "Coordinator.hpp"
 #include "raylib.h"
+
+extern Coordinator gCoordinator;
 
 static void DrawTextBoxedSelectable(Font font, const char* text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint, int selectStart, int selectLength, Color selectTint, Color selectBackTint)
 {
@@ -137,16 +139,33 @@ void Dialogue::init()
 {
     in_dialogue = false;
     displaying_text = false;
+
+    for (int i = 0; i < 5; i++)
+    {
+        tutorials[i] = false;
+    }
+
+
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Dialogue::AUDIO_FIXED, Dialogue::TriggerDialgue));
+    gCoordinator.AddEventListener(
+        METHOD_LISTENER(Events::Dialogue::TUTORIAL, Dialogue::TriggerTutorial));
 }
 
 void Dialogue::TriggerTutorial(Event& event)
 {
-    in_dialogue = true;
 
     int id = event.GetParam<int>(Events::Dialogue::ID);
 
+    if (tutorials[id])
+    {
+        return;
+    }
 
-    std::string file_name = "data/tut_" + std::to_string(id)  + ".txt";
+    in_dialogue = true;
+    tutorials[id] = true;
+
+    std::string file_name = "data/tut" + std::to_string(id)  + ".txt";
     current_file.open(file_name.c_str());
     std::getline(current_file, current_line);
 }
@@ -185,7 +204,7 @@ void Dialogue::draw()
     {
         displaying_text = true;
 
-        Rectangle box = Rectangle{ 50, GetScreenHeight() - 150.0f, GetScreenWidth() - 100.0f, 200 };
+        Rectangle box = Rectangle{ 50, GetScreenHeight() - 100.0f, GetScreenWidth() - 200.0f, 200 };
 
         DrawTextBoxedSelectable(GetFontDefault(), current_line.c_str(), box, 30.0f, 1.0f, true, WHITE, 0, current_line.size(), WHITE, ColorAlpha(BLACK, 0.75));
     }

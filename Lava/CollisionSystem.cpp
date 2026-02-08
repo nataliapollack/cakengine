@@ -54,42 +54,43 @@ void CollisionSystem::CheckCollisions()
 
                     if (stats_j.type == RADIO_OBJ)
                     {
-                        Rectangle collision_box = GetCollisionRec(
-                            collision_i.box, collision_j.box);
 
-                        Event wall(Events::Collision::HIT_AUDIO);
+                        if (IsKeyPressed(KEY_ENTER))
+                        {
+                            Event wall(Events::Collision::HIT_AUDIO);
 
-                        gCoordinator.SendEvent(wall);
+                            gCoordinator.SendEvent(wall);
+                        }
                     }
 
                     if (stats_j.type == MAZE_OBJ)
                     {
-                        Rectangle collision_box = GetCollisionRec(
-                            collision_i.box, collision_j.box);
+                        if (IsKeyPressed(KEY_ENTER))
+                        {
+                            Event wall(Events::Collision::HIT_MAZE);
 
-                        Event wall(Events::Collision::HIT_MAZE);
-
-                        gCoordinator.SendEvent(wall);
+                            gCoordinator.SendEvent(wall);
+                        }
                     }
 
                     if (stats_j.type == CAM_OBJ)
                     {
-                        Rectangle collision_box = GetCollisionRec(
-                            collision_i.box, collision_j.box);
+                        if (IsKeyPressed(KEY_ENTER))
+                        {
+                            Event wall(Events::Collision::HIT_CAMS);
 
-                        Event wall(Events::Collision::HIT_CAMS);
-
-                        gCoordinator.SendEvent(wall);
+                            gCoordinator.SendEvent(wall);
+                        }
                     }
 
                     if (stats_j.type == SOLAR_OBJ)
                     {
-                        Rectangle collision_box = GetCollisionRec(
-                            collision_i.box, collision_j.box);
+                        if (IsKeyPressed(KEY_ENTER))
+                        {
+                            Event wall(Events::Collision::HIT_SOLAR);
 
-                        Event wall(Events::Collision::HIT_SOLAR);
-
-                        gCoordinator.SendEvent(wall);
+                            gCoordinator.SendEvent(wall);
+                        }
                     }
                 }
             }

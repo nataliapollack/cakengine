@@ -1,0 +1,8 @@
+You have three defenses at night: the lasers, the light and the barricade.
+Each consume their own amount of energy.
+The lasers will destroy enemies.
+The light will scare away enemies after a certain period of time.
+The barricade will block you from taking health damage.
+Run out of energy, you might still last the night!
+Run out of health, and it's game over.
+Good luck, Agnus.

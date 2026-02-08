@@ -135,24 +135,24 @@ void Tooling::place_objs()
     );
 
 
-    en = gCoordinator.CreateEntity();
-    gCoordinator.AddComponent(
-        en,
-        render_box{ Vector2{50.0f, 50.0f },  YELLOW }
-    );
+    //en = gCoordinator.CreateEntity();
+    //gCoordinator.AddComponent(
+    //    en,
+    //    render_box{ Vector2{50.0f, 50.0f },  YELLOW }
+    //);
 
-    gCoordinator.AddComponent(
-        en,
-        transform2D{ Vector2 {100.0f, 400.0f } }
-    );
+    //gCoordinator.AddComponent(
+    //    en,
+    //    transform2D{ Vector2 {100.0f, 400.0f } }
+    //);
 
-    gCoordinator.AddComponent(
-        en,
-        status{ true, true, OUTSIDE, MAZE_OBJ }
-    );
-    gCoordinator.AddComponent(
-        en,
-        collidble{ 100, 150, 50, 50 }
-    );
+    //gCoordinator.AddComponent(
+    //    en,
+    //    status{ true, true, OUTSIDE, MAZE_OBJ }
+    //);
+    //gCoordinator.AddComponent(
+    //    en,
+    //    collidble{ 100, 150, 50, 50 }
+    //);
 
 }

@@ -7,6 +7,7 @@
 #include "Coordinator.hpp"
 
 extern  Coordinator gCoordinator;
+extern int gCurrentDay;
 
 void CycleManager::init()
 {
@@ -31,6 +32,7 @@ void CycleManager::UpdateTimer(float dt)
 
             Event hints(Events::Time::DAY_BEGIN);
             gCoordinator.SendEvent(hints);
+            gCurrentDay++;
         }
         else
         {
@@ -38,6 +40,12 @@ void CycleManager::UpdateTimer(float dt)
             gCoordinator.SendEvent(hints);
         }
 
+    }
+
+    if (gCurrentDay >= 3)
+    {
+        Event hints(Events::Game::WIN);
+        gCoordinator.SendEvent(hints);
     }
 }
 

@@ -39,6 +39,7 @@ namespace Events::Health {
 namespace Events::Game {
     const inline EventId START = "Events::Game::START"_hash;
     const inline EventId END = "Events::Game::END"_hash;
+    const inline EventId WIN = "Events::Game::WIN"_hash;
     const inline EventId SCREEN_CHANGE = "Events::Game::SCREEN_CHANGE"_hash;
     const inline ParamId SCREEN_ID = "Events::Game::SCREEN_ID"_hash;
 }

@@ -7,6 +7,7 @@
 
 extern Coordinator gCoordinator;
 
+extern int gCurrentDay;
 
 void AudioFreq::init()
 {
@@ -37,6 +38,7 @@ void AudioFreq::init()
 
      knobs_pos[0] = Vector2{ screen_width - 200, 500 };
      knobs_pos[1] = Vector2{ 200, 500 };
+     completed = false;
 
      radius = 50.0f;
 
@@ -45,13 +47,14 @@ void AudioFreq::init()
 
      gCoordinator.AddEventListener(
          METHOD_LISTENER(Events::Collision::HIT_AUDIO, AudioFreq::StartMinigame));
+
+
+     gCoordinator.AddEventListener(
+         METHOD_LISTENER(Events::Time::DAY_BEGIN, AudioFreq::StartNewDay));
 }
 
 void AudioFreq::update()
 {
-    if (completed)
-        return;
-
     Vector2 mouse_pos = GetMousePosition();
     begin_timer = false;
 
@@ -107,6 +110,10 @@ void AudioFreq::update()
 
             Event hints(Events::Hints::HINT_RECEIVED);
             gCoordinator.SendEvent(hints);
+
+            Event screen(Events::Dialogue::AUDIO_FIXED);
+            screen.SetParam(Events::Dialogue::ID, gCurrentDay);
+            gCoordinator.SendEvent(screen);
         }
     }
 
@@ -126,19 +133,31 @@ void AudioFreq::draw()
     DrawSplineLinear(Correct_sinePoints, WAVE_POINTS, 2.0f, GREEN);
     DrawSplineLinear(Current_sinePoints, WAVE_POINTS, 2.0f, ColorAlpha(RED, 0.75));
 
-    DrawCircle(knobs_pos[0].x, knobs_pos[0].y, radius, BLACK);
-    DrawCircle(knobs_pos[1].x, knobs_pos[1].y, radius, BLACK);
+    DrawCircle(knobs_pos[0].x, knobs_pos[0].y, radius, LIGHTGRAY);
+    DrawCircle(knobs_pos[1].x, knobs_pos[1].y, radius, LIGHTGRAY);
 
 }
 
 void AudioFreq::StartMinigame(Event& event)
 {
+    if (completed)
+    {
+        Event screen1(Events::Dialogue::TUTORIAL);
+        screen1.SetParam(Events::Dialogue::ID, -1);
+        gCoordinator.SendEvent(screen1);
+        return;
+    }
+
     toggle = true;
 
     Event screen(Events::Game::SCREEN_CHANGE);
     screen.SetParam(Events::Game::SCREEN_ID, AUDIO_FREQ);
 
     gCoordinator.SendEvent(screen);
+
+    Event screen1(Events::Dialogue::TUTORIAL);
+    screen1.SetParam(Events::Dialogue::ID, 2);
+    gCoordinator.SendEvent(screen1);
 }
 
 void AudioFreq::StartNewDay(Event& event)
