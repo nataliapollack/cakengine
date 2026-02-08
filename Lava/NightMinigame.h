@@ -72,7 +72,7 @@ private:
 		int width = 100;
 		int height = 75;
 
-		float dmgRadius = 10.0f; // TODO: tweak me for design purposes :)
+		float dmgRadius = 40.0f; // TODO: tweak me for design purposes :)
 		//float attackCooldown = 1.0f; // TODO: tweak me for design purposes :)
 
 		float hurtTimer = 0;
@@ -88,7 +88,7 @@ private:
 		};
 
 		transform2D t2d;
-		health hp = { 5 }; // TODO: tweak me for design purposes :)
+		health hp = { 3 }; // TODO: tweak me for design purposes :)
 		enemy_state state{ .speed = 12, .tower { .fleeSpeedMult = 1.75f } }; // TODO: tweak just the listed vars for design purposes :)
 	
 		// false = died / issue
@@ -185,7 +185,7 @@ private:
 		Vector2 m_center{};
 
 		float m_enemySpawnRadius = 30; // TODO: tweak me for design purposes :)
-		int m_enemiesToSpawn = 50; // TODO: tweak me for design purposes :)
+		int m_enemiesToSpawn = 20; // TODO: tweak me for design purposes :)
 
 		void init(const std::array<Vector2, 2>& enemySpawns);
 		void update(float dt);
