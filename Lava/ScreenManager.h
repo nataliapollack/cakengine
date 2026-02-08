@@ -1,6 +1,7 @@
 #pragma once
 #include "Events.hpp"
 
+
 enum SCREENS
 {
     MENU,
@@ -11,6 +12,8 @@ enum SCREENS
     SOLAR_TILE,
     CAMERAS,
     CREDITS,
+    WIN,
+    LOSE
 };
 
 class ScreenManager
@@ -30,9 +33,22 @@ public:
     bool GetIsFading();
     void StartFade(); 
 
+
+
+    void UpdateWinLoseScreen(float dt);
+    bool GetWindowClosed(); 
+
 private:
     SCREENS current_screen;
     float fadeTimerDefault = 1.0f;
     float fadeTimerRemaining = fadeTimerDefault;
     bool IsFading = true;
-};
+
+
+    float timeToClose = 3.0f; 
+    bool EndScreenComplete = false; 
+
+    bool WinScreen = false;
+  
+
+    };
