@@ -1,0 +1,4 @@
+Click a square to place a solar panel.
+Click it again to pick it back up.
+You're only allowed to place five panels at a time.
+Careful, not all squares are going to give power!

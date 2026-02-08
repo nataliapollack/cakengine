@@ -51,4 +51,5 @@ namespace Events::Hints {
 namespace Events::Dialogue {
     const inline EventId TUTORIAL = "Events::Dialogue::TUTORIAL"_hash;
     const inline EventId AUDIO_FIXED = "Events::Dialogue::AUDIO_FIXED"_hash;
+    const inline ParamId ID = "Events::Dialogue::TUTORIAL_ID"_hash;
 }
