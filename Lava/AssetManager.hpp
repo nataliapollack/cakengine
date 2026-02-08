@@ -36,6 +36,7 @@ concept IsAnyOf = (std::same_as<T, ValidTypes> || ...);
 struct ModelAnimationInfo {
 	ModelAnimation* pData = nullptr;
 	int count = 0;
+	int curFrame = 0;
 };
 
 struct MaterialInfo {

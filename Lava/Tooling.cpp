@@ -33,6 +33,7 @@ void Tooling::register_components()
     gCoordinator.RegisterComponent<viewport3D>();
     // TODO: temp? replace with asset manager ref?
     gCoordinator.RegisterComponent<model_view>();
+    gCoordinator.RegisterComponent<ModelAnimationInfo>();
 }
 
 void Tooling::set_system_signatures()
