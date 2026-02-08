@@ -33,13 +33,6 @@ void RenderSystem::shutdown() {
 
 static bool SortByDepth(uint32_t const& L, uint32_t const& R)
 {
-    if (gCoordinator.HasComponent<player>(L)) {
-        return true;
-    }
-    else if (gCoordinator.HasComponent<player>(R)) {
-        return false;
-    }
-
     auto const& transformL = gCoordinator.GetComponent<transform2D>(L);
     auto const& transformR = gCoordinator.GetComponent<transform2D>(R);
 
