@@ -24,13 +24,17 @@ void NightMinigame::init() {
 	std::srand(static_cast<unsigned>(std::time(NULL)));
 
 	Vector2 screenDims = { GetScreenWidth(), GetScreenHeight() };
-	static constexpr int SPAWN_OFFSET = 50;
+	static constexpr int SPAWN_OFFSET = 222;
 
 	auto enemySpawnCenters = std::to_array<std::array<Vector2, 2>, 4>({
-		{ Vector2{  }, Vector2{  } }, // cam 1
-		{ Vector2{}, Vector2{} }, // cam 2
-		{ Vector2{}, Vector2{} }, // cam 3
-		{ Vector2{}, Vector2{} }  // cam 4
+		 // cam 1
+		{ Vector2{ -SPAWN_OFFSET, -SPAWN_OFFSET / 2 }, Vector2{ -SPAWN_OFFSET / 2, -SPAWN_OFFSET } },
+		// cam 2
+		{ Vector2{  SPAWN_OFFSET, -SPAWN_OFFSET / 2 }, Vector2{  SPAWN_OFFSET / 2, -SPAWN_OFFSET } },
+		// cam 3
+		{ Vector2{ -SPAWN_OFFSET,  SPAWN_OFFSET / 2 }, Vector2{ -SPAWN_OFFSET / 2,  SPAWN_OFFSET } },
+		// cam 4
+		{ Vector2{  SPAWN_OFFSET,  SPAWN_OFFSET / 2 }, Vector2{  SPAWN_OFFSET / 2,  SPAWN_OFFSET } }
 	});
 
 	for (int i = 0; i < 4; ++i) {
@@ -38,8 +42,9 @@ void NightMinigame::init() {
 		m_zones[i].init(enemySpawnCenters[i]);
 	}
 
+	m_zoneCam.offset = screenDims / 2;
 	m_zoneCam.target = Vector2Zeros;
-	m_zoneCam.zoom = 1;
+	m_zoneCam.zoom = 2;
 	m_curCam = 1;
 }
 

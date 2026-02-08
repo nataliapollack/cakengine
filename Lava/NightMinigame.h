@@ -182,7 +182,7 @@ private:
 	std::array<combat_zone, MAX_ZONES> m_zones;
 	Base m_base{};
 
-	Camera2D m_zoneCam{};
+	Camera2D m_zoneCam{ 0 };
 	int m_curCam = 1;
 
 	int m_currentDay = 0;
