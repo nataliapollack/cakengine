@@ -154,7 +154,7 @@ void Tooling::place_objs()
         en,
         collidble{50, 50, 50, 50}
     );
-    gCoordinator.AddComponent(
+    /*gCoordinator.AddComponent(
         en,
         model_view{ .model = &assetMngr.get<Model>("agnus") }
     );
@@ -174,7 +174,7 @@ void Tooling::place_objs()
             },
             .framebuffer = LoadRenderTexture(200, 200)
         }
-    );
+    );*/
 
     // 3D ENTITY BILLBOARD TEST
     // Doubt we want this test thing so commenting out - Braedan 

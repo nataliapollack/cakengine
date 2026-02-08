@@ -54,7 +54,7 @@ void PlayerMovementSystem::move_player(float dt)
             moved = true;
         }
 
-        auto& model = gCoordinator.GetComponent<model_view>(entity);
+        /*auto& model = gCoordinator.GetComponent<model_view>(entity);
         auto& modelAnim = gCoordinator.GetComponent<ModelAnimationInfo>(entity);
 
         if (moved) {
@@ -63,7 +63,7 @@ void PlayerMovementSystem::move_player(float dt)
                 modelAnim.curFrame = 0;
 
             UpdateModelAnimation(*model.model, modelAnim.pData[0], modelAnim.curFrame);
-        }
+        }*/
     }
 }
 
