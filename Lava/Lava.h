@@ -29,6 +29,7 @@ namespace Events::Energy {
     const inline EventId ENERGY_DOWN = "Events::Energy::ENERGY_DOWN"_hash;
     const inline EventId ENERGY_UP = "Events::Energy::ENERGY_UP"_hash;
     const inline ParamId ENERGY_TICK = "Events::Energy::ENERGY_TICK"_hash;
+    const inline EventId NO_ENERGY = "Events::Energy::NO_ENERGY"_hash;
 }
 
 namespace Events::Health {
