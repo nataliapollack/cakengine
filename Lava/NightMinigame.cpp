@@ -13,7 +13,7 @@ extern Coordinator gCoordinator;
 namespace UI {
 static constexpr Vector2 CAM_RECT_DIMS = { 70, 70 };
 static constexpr int CAM_RECT_SPACING = 10;
-static constexpr int FONT_SIZE = 24;
+static constexpr int FONT_SIZE = 30;
 static constexpr Color CAM_RECT_COLOR = Color{ 245, 245, 245, 155 }; // RAYWHITE but lower opacity
 
 static inline Vector2 GetCamRectPos(int i) {
@@ -49,7 +49,8 @@ void NightMinigame::init() {
 	// TODO: tweak me for design purposes :)
 	// adjust these (> = farther, < = closer) to adjust where enemies spawn
 	static constexpr int ZONE_CENTER = 111;
-	static constexpr int SPAWN_OFFSET = 310;
+	static constexpr int SPAWN_OFFSET = 330;
+	static constexpr int SPAWN_OFFSET_FIX = 330;
 	static constexpr int CAM_OFFSET_X = 60;
 	static constexpr Vector2 DMG_TOWER_POS = { ZONE_CENTER + 150, ZONE_CENTER - 20 };
 	static constexpr Vector2 LIGHT_TOWER_POS = { ZONE_CENTER - 35, ZONE_CENTER - 35 };
@@ -482,13 +483,22 @@ void NightMinigame::DrawUI() const {
 		// camera switch ui boxe
 		Vector2 pos = UI::GetCamRectPos(i);
 		DrawRectangleV(pos, UI::CAM_RECT_DIMS, UI::CAM_RECT_COLOR);
+		Vector2 outlinePos = {UI::CAM_RECT_DIMS.x -10, UI::CAM_RECT_DIMS.y -10};
+		Vector2 outlineOffset = {  - 5,  - 5 };
+		DrawRectangleV( pos - outlineOffset, outlinePos, GRAY);
+
 		
 		// number inside said boxes
 		char num[2] = { char('0' + i + 1), '\0' };
 		DrawText(num,
+				 int(pos.x + UI::CAM_RECT_DIMS.x / 2) - UI::FONT_SIZE / 5.5f,
+				 int(pos.y + UI::CAM_RECT_DIMS.y / 2) - UI::FONT_SIZE / 2.5f,
+				 UI::FONT_SIZE, DARKGRAY);
+		DrawText(num,
 				 int(pos.x + UI::CAM_RECT_DIMS.x / 2) - UI::FONT_SIZE / 4,
 				 int(pos.y + UI::CAM_RECT_DIMS.y / 2) - UI::FONT_SIZE / 2,
 				 UI::FONT_SIZE, BLACK);
+		
 	}
 }
 
@@ -504,8 +514,10 @@ void NightMinigame::combat_zone::draw() const {
 
 void NightMinigame::Enemy::draw() const {
 	DrawCircleV(t2d.pos, 3.f, Color{ 145, 10, 10, 255 }); // dark red
-	//DrawCircleV(t2d.pos, 1.5f, RED); // light red
-	DrawCircleGradient(t2d.pos.x, t2d.pos.y, 1.5f, Color{ 255, 10, 10, 255 }, Color{ 255, 10, 10, 0 }); // light red gradient
+	DrawCircleV(t2d.pos, 2.f, RED); // light red
+	DrawCircleV(t2d.pos, 0.5f, PINK); // light red
+
+	//DrawCircleGradient(t2d.pos.x, t2d.pos.y, 1.9f, Color{ 255, 10, 10, 255 }, Color{ 255, 10, 10, 0 }); // light red gradient
 }
 
 static constexpr float DEFENSE_DRAW_SCALE = 5.f;

@@ -170,7 +170,7 @@ private:
 		
 		Vector2 m_center{};
 
-		float m_enemySpawnRadius = 25; // TODO: tweak me for design purposes :)
+		float m_enemySpawnRadius = 30; // TODO: tweak me for design purposes :)
 		int m_enemiesToSpawn = 50; // TODO: tweak me for design purposes :)
 
 		void init(const std::array<Vector2, 2>& enemySpawns);
