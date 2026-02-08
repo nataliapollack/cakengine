@@ -72,14 +72,6 @@ void MazePlayer::UpdatePlayer(float dt)
 		vel.y -= dt;
 	}
 
-
-	if (IsKeyPressed(KEY_BACKSPACE))
-	{
-		Event screen(Events::Game::SCREEN_CHANGE);
-		screen.SetParam(Events::Game::SCREEN_ID, OUTSIDE);
-
-		gCoordinator.SendEvent(screen);
-	}
 }
 
 void MazePlayer::DrawPlayer()
