@@ -177,6 +177,12 @@ void NightMinigame::HandleInput() {
 	if (key == KEY_ONE || key == KEY_TWO || key == KEY_THREE || key == KEY_FOUR) {
 		m_curCam = key - KEY_ZERO;
 	}
+
+	for (auto& zone : m_zones) {
+		for (auto& defense : zone.m_defenses) {
+			defense->CheckClicked(m_zoneCam);
+		}
+	}
 }
 
 void NightMinigame::update(float dt) {
@@ -553,29 +559,68 @@ void NightMinigame::Enemy::draw() {
 static constexpr float DEFENSE_DRAW_SCALE = 5.f;
 static constexpr Color DEFENSE_DISABLED_COLOR = LIGHTGRAY;
 
-bool NightMinigame::DamageTower::CheckClicked() {
+static constexpr float TRI_SCALE = 6.f * DEFENSE_DRAW_SCALE;
 
-}
-
-void NightMinigame::DamageTower::draw() {
-	static constexpr float TRI_SCALE = 6.f * DEFENSE_DRAW_SCALE;
-
+bool NightMinigame::DamageTower::CheckClicked(const Camera2D& cam) {
 	Vector2 v1 = t2d.pos + Vector2{ 0, -TRI_SCALE / 2 };
 	Vector2 v2 = t2d.pos + Vector2{ -TRI_SCALE / 2, TRI_SCALE / 2 };
 	Vector2 v3 = t2d.pos + Vector2{ TRI_SCALE / 2, TRI_SCALE / 2 };
-	DrawTriangle(v1, v2, v3, SKYBLUE);
-	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.8f * DEFENSE_DRAW_SCALE, BLUE);
-	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.5f * DEFENSE_DRAW_SCALE, DARKBLUE);
+
+	auto mouse = GetScreenToWorld2D(GetMousePosition(), cam);
+
+	if (CheckCollisionPointTriangle(mouse, v1, v2, v3) &&
+		IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	{
+		enabled = !enabled;
+		return true;
+	}
+
+	return false;
+}
+
+void NightMinigame::DamageTower::draw() {
+	Vector2 v1 = t2d.pos + Vector2{ 0, -TRI_SCALE / 2 };
+	Vector2 v2 = t2d.pos + Vector2{ -TRI_SCALE / 2, TRI_SCALE / 2 };
+	Vector2 v3 = t2d.pos + Vector2{ TRI_SCALE / 2, TRI_SCALE / 2 };
+	DrawTriangle(v1, v2, v3, enabled ? SKYBLUE : DEFENSE_DISABLED_COLOR);
+	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.8f * DEFENSE_DRAW_SCALE, enabled ? BLUE : DEFENSE_DISABLED_COLOR);
+	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.5f * DEFENSE_DRAW_SCALE, enabled ? DARKBLUE : DEFENSE_DISABLED_COLOR);
+}
+
+bool NightMinigame::LightTower::CheckClicked(const Camera2D& cam) {
+	auto mouse = GetScreenToWorld2D(GetMousePosition(), cam);
+	Vector2 v1 = { t2d.pos.x + 0, t2d.pos.y + 20 };
+
+	if (CheckCollisionPointCircle(mouse, v1, 20 * DEFENSE_DRAW_SCALE) &&
+		IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	{
+		enabled = !enabled;
+		return true;
+	}
+
+	return false;
 }
 
 void NightMinigame::LightTower::draw()
 {
-	Color FirstColor = Color{ 255, 255, 0, 150 }; // yellow
-	Color SecondColor = Color{ 255, 255, 150, 10 }; // light yellow
+	Color FirstColor = enabled ? Color{ 255, 255, 0, 150 } : BLANK; // yellow
+	Color SecondColor = enabled ? Color{ 255, 255, 150, 10 } : BLANK; // light yellow
 	//DrawCircleLines(t2d.pos,  MAGENTA);
 	Vector2 v1 = {t2d.pos.x + 0, t2d.pos.y + 20};
-	DrawRing(v1, 19.8f * DEFENSE_DRAW_SCALE, 20 * DEFENSE_DRAW_SCALE, 0, 360, 32, GOLD);
+	DrawRing(v1, 19.8f * DEFENSE_DRAW_SCALE, 20 * DEFENSE_DRAW_SCALE, 0, 360, 32, enabled ? GOLD : DEFENSE_DISABLED_COLOR);
 	DrawCircleGradient(t2d.pos.x, t2d.pos.y + 20, 20 * DEFENSE_DRAW_SCALE, FirstColor, SecondColor);
+}
+
+bool NightMinigame::Barricade::CheckClicked(const Camera2D& cam) {
+	auto mouse = GetScreenToWorld2D(GetMousePosition(), cam);
+	if (CheckCollisionPointLine(mouse, t2d.pos, endPos, 10) &&
+		IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+	{
+		enabled = !enabled;
+		return true;
+	}
+
+	return false;
 }
 
 void NightMinigame::Barricade::draw() {

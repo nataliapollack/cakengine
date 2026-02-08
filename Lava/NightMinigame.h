@@ -121,7 +121,7 @@ private:
 		virtual void update(float dt, combat_zone&);
 		virtual void draw() = 0;
 
-		virtual bool CheckClicked() = 0;
+		virtual bool CheckClicked(const Camera2D& cam) = 0;
 
 		virtual ~Defense() = default;
 
@@ -142,7 +142,7 @@ private:
 		void update(float dt, combat_zone& zone) override;
 		void draw() override;
 
-		bool CheckClicked() override;
+		bool CheckClicked(const Camera2D& cam) override;
 
 	private:
 		float m_cooldownTimer = 0;
@@ -157,7 +157,7 @@ private:
 		void update(float dt, combat_zone& zone) override;
 		void draw() override;
 
-		bool CheckClicked() override;
+		bool CheckClicked(const Camera2D& cam) override;
 	};
 
 	struct Barricade final : Defense {
@@ -166,7 +166,7 @@ private:
 		inline void init() override { range = 5; energyTick = 3; }
 		void draw() override;
 
-		bool CheckClicked() override;
+		bool CheckClicked(const Camera2D& cam) override;
 	};
 #pragma endregion Defenses
 
