@@ -56,7 +56,80 @@ void Tooling::set_system_signatures()
 
 void Tooling::place_objs()
 {
-    Entity en = gCoordinator.CreateEntity();
+    auto& assetMngr = AssetManager::get();
+    Entity en;
+
+    /////////////////////// Environment Inside stuff /////////////////////////////////
+    Texture2D baseTex = assetMngr.get<Texture2D>("base");
+    baseTex.width = GetScreenWidth();
+    baseTex.height = GetScreenHeight();
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{1, 1 },  YELLOW }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {0, 0 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, ENVIRONMENT_OBJ }
+    );
+    gCoordinator.AddComponent(
+        en,
+        render_texture(baseTex)
+    );
+
+    Texture2D baseOverlayTex = assetMngr.get<Texture2D>("baseoverlay");
+    baseOverlayTex.width = GetScreenWidth();
+    baseOverlayTex.height = GetScreenHeight();
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{1, 1 },  YELLOW }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {0, 0 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, ENVIRONMENT_OBJ }
+    );
+    gCoordinator.AddComponent(
+        en,
+        render_texture(baseOverlayTex)
+    );
+
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{1, 1 },  YELLOW }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {360, 500 } }
+    );
+
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, INSIDE, ENVIRONMENT_OBJ }
+    );
+    gCoordinator.AddComponent(
+        en,
+        render_texture(assetMngr.get<Texture2D>("door"))
+    );
+ 
+    ////////////////////////////////////////////////////////////////
+
+     
+    en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
         en,
         render_box{ Vector2{50.0f, 50.0f },  WHITE }
@@ -82,47 +155,43 @@ void Tooling::place_objs()
     );
 
     // 3D ENTITY BILLBOARD TEST
-    Entity teapot = gCoordinator.CreateEntity();
-
-    auto& assetMngr = AssetManager::get();
-
-    gCoordinator.AddComponent(
-        teapot,
-        model_view{ .model = &assetMngr.get<Model>("agnus") }
-    );
-    gCoordinator.AddComponent(
-        teapot,
-        viewport3D{
-            .view = {
-                .position = { 0, 1, 15 },
-                .target = { 0 },
-                .up = { 0, 1, 0 },
-                .fovy = { 10 },
-                .projection = { CAMERA_PERSPECTIVE }
-            },
-            .framebuffer = LoadRenderTexture(200, 200)
-        }
-    );
-    gCoordinator.AddComponent(
-        teapot,
-        transform2D{ { 450, 150 } }
-    );
-    gCoordinator.AddComponent(
-        teapot,
-        render_box{ { 200, 200 }, WHITE }
-    );
-
-
+    // Doubt we want this test thing so commenting out - Braedan 
+    //Entity teapot = gCoordinator.CreateEntity();
+    //gCoordinator.AddComponent(
+    //    teapot,
+    //    model_view{ .model = &assetMngr.get<Model>("agnus") }
+    //);
+    //gCoordinator.AddComponent(
+    //    teapot,
+    //    viewport3D{
+    //        .view = {
+    //            .position = { 0, 1, 15 },
+    //            .target = { 0 },
+    //            .up = { 0, 1, 0 },
+    //            .fovy = { 10 },
+    //            .projection = { CAMERA_PERSPECTIVE }
+    //        },
+    //        .framebuffer = LoadRenderTexture(200, 200)
+    //    }
+    //);
+    //gCoordinator.AddComponent(
+    //    teapot,
+    //    transform2D{ { 450, 150 } }
+    //);
+    //gCoordinator.AddComponent(
+    //    teapot,
+    //    render_box{ { 200, 200 }, WHITE }
+    //);
 
     en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
         en,
-        render_box{ Vector2{50.0f, 50.0f },  BLUE }
+        render_box{ Vector2{50.0f, 100.0f },  BLUE }
     );
 
     gCoordinator.AddComponent(
         en,
-        transform2D{ Vector2 {50.0f, 400.0f } }
+        transform2D{ Vector2 {650.0f, 190.0f } }
     );
 
     gCoordinator.AddComponent(
@@ -131,28 +200,27 @@ void Tooling::place_objs()
     );
     gCoordinator.AddComponent(
         en,
-        collidble{ 50, 400, 50, 50 }
+        collidble{ 650.0f, 190.0f, 50, 100 }
     );
 
+    en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en,
+        render_box{ Vector2{170.0f, 50.0f },  YELLOW }
+    );
 
-    //en = gCoordinator.CreateEntity();
-    //gCoordinator.AddComponent(
-    //    en,
-    //    render_box{ Vector2{50.0f, 50.0f },  YELLOW }
-    //);
+    gCoordinator.AddComponent(
+        en,
+        transform2D{ Vector2 {365, 500 } }
+    );
 
-    //gCoordinator.AddComponent(
-    //    en,
-    //    transform2D{ Vector2 {100.0f, 400.0f } }
-    //);
-
-    //gCoordinator.AddComponent(
-    //    en,
-    //    status{ true, true, OUTSIDE, MAZE_OBJ }
-    //);
-    //gCoordinator.AddComponent(
-    //    en,
-    //    collidble{ 100, 150, 50, 50 }
-    //);
+    gCoordinator.AddComponent(
+        en,
+        status{ true, true, OUTSIDE, MAZE_OBJ }
+    );
+    gCoordinator.AddComponent(
+        en,
+        collidble{ 365, 500, 170.0f, 50 }
+    );
 
 }
