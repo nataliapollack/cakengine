@@ -58,3 +58,9 @@ namespace Events::Dialogue {
     const inline EventId AUDIO_FIXED = "Events::Dialogue::AUDIO_FIXED"_hash;
     const inline ParamId ID = "Events::Dialogue::TUTORIAL_ID"_hash;
 }
+
+namespace Events::Audio {
+    const inline EventId PLAY_SOUND = "Events::Audio::PLAY_SOUND"_hash;
+    const inline EventId PLAY_MUSIC = "Events::Audio::PLAY_MUSIC"_hash;
+    const inline ParamId ASSET = "Events::Audio::ASSET"_hash;
+}

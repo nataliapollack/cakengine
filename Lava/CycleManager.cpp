@@ -33,11 +33,19 @@ void CycleManager::UpdateTimer(float dt)
             Event hints(Events::Time::DAY_BEGIN);
             gCoordinator.SendEvent(hints);
             gCurrentDay++;
+
+            Event audio(Events::Audio::PLAY_MUSIC);
+            audio.SetParam(Events::Audio::ASSET, 0);
+            gCoordinator.SendEvent(audio);
         }
         else
         {
             Event hints(Events::Time::NIGHT_BEGIN);
             gCoordinator.SendEvent(hints);
+
+            Event audio(Events::Audio::PLAY_MUSIC);
+            audio.SetParam(Events::Audio::ASSET, 1);
+            gCoordinator.SendEvent(audio);
         }
 
     }

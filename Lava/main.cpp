@@ -22,6 +22,7 @@
 #include "ScreenManager.h"
 #include "CycleManager.h"
 #include "DialogueManager.h"
+#include "AudioManager.h"
 #include "AssetManager.hpp"
 
 // minigames
@@ -57,6 +58,7 @@ int main()
     ScreenManager screen_mngr;
     CycleManager cycle_mngr;
     Dialogue dialogue_mngr;
+    Audio audio_mngr;
 
     // minigames
     SolarPanel solar_game;
@@ -69,6 +71,8 @@ int main()
     AssetManager::get().load_all("art");
     tools.place_objs();
 
+    audio_mngr.load();
+
     // inits
     render_sys->init();
     player_movement_sys->init();
@@ -77,6 +81,7 @@ int main()
     screen_mngr.init();
     cycle_mngr.init();
     dialogue_mngr.init();
+    audio_mngr.init();
 
     solar_game.init();
     night_game.init();
@@ -94,6 +99,8 @@ int main()
     {
         // update
         float deltaTime = 1.0f / 60.0f;
+        audio_mngr.update();
+
         if (!dialogue_mngr.GetStatus())
         {
             cycle_mngr.UpdateTimer(deltaTime);
@@ -129,14 +136,14 @@ int main()
 
             BeginDrawing();
 
-            Vector2 mouse_pos = GetMousePosition();
+            Vector2 mouse_pos = GetMousePosition();\
             // things that are 2D
             BeginMode2D(gCamera);
 
             mouse_pos = GetScreenToWorld2D(mouse_pos, gCamera);
 
             {
-                if (screen_mngr.GetScreen() == INSIDE || screen_mngr.GetScreen() == OUTSIDE)
+                if (screen_mngr.GetScreen() == INSIDE)
                 {
                     ClearBackground(GRAY);
 
@@ -145,18 +152,9 @@ int main()
                     enery_mngr.DrawEnergyLevels();
 
                     cycle_mngr.draw();
+
+                    collision_sys->DebugDrawBoxes();
                 }
-               /*if (screen_mngr.GetScreen() == OUTSIDE)
-                {
-                    ClearBackground(DARKGRAY);
-
-                    render_sys->draw();
-
-                    enery_mngr.DrawEnergyLevels();
-
-                    cycle_mngr.draw();
-
-                }*/
             }
             EndMode2D();
 
@@ -201,6 +199,8 @@ int main()
         }
     }
 
+    
+    audio_mngr.unload();
     render_sys->shutdown();
     AssetManager::get().unload_all();
 

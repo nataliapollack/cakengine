@@ -4,6 +4,7 @@
 #include "Lava.h"
 
 #include "ScreenManager.h"
+#include "AudioMAnager.h"
 
 extern Coordinator gCoordinator;
 
@@ -58,6 +59,13 @@ void AudioFreq::update()
     Vector2 mouse_pos = GetMousePosition();
     begin_timer = false;
 
+    if (!completed)
+    {
+        Event audio(Events::Audio::PLAY_SOUND);
+        audio.SetParam(Events::Audio::ASSET, RADIO_SOUND);
+        gCoordinator.SendEvent(audio);
+    }
+
     if (CheckCollisionPointCircle(mouse_pos, knobs_pos[1], radius))
     {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -73,6 +81,10 @@ void AudioFreq::update()
                 Current_sinePoints[i].y = start.y + start.height / 2.0f - sinf(currentAngle2) * (start.height / 2.0f);
             }
         }
+
+        Event audio(Events::Audio::PLAY_SOUND);
+        audio.SetParam(Events::Audio::ASSET, GetRandomValue(7, 12));
+        gCoordinator.SendEvent(audio);
     }
 
     if (CheckCollisionPointCircle(mouse_pos, knobs_pos[0], radius))
@@ -89,6 +101,10 @@ void AudioFreq::update()
                 Current_sinePoints[i].x = (start.x + t * start.width) + (stride * i);
                 Current_sinePoints[i].y = start.y + start.height / 2.0f - sinf(currentAngle2) * (start.height / 2.0f);
             }
+
+            Event audio(Events::Audio::PLAY_SOUND);
+            audio.SetParam(Events::Audio::ASSET, GetRandomValue(7, 12));
+            gCoordinator.SendEvent(audio);
         }
     }
 
@@ -114,6 +130,10 @@ void AudioFreq::update()
             Event screen(Events::Dialogue::AUDIO_FIXED);
             screen.SetParam(Events::Dialogue::ID, gCurrentDay);
             gCoordinator.SendEvent(screen);
+
+            Event audio(Events::Audio::PLAY_SOUND);
+            audio.SetParam(Events::Audio::ASSET, FAX);
+            gCoordinator.SendEvent(audio);
         }
     }
 
@@ -123,6 +143,10 @@ void AudioFreq::update()
         screen.SetParam(Events::Game::SCREEN_ID, INSIDE);
 
         gCoordinator.SendEvent(screen);
+
+        Event audio(Events::Audio::PLAY_SOUND);
+        audio.SetParam(Events::Audio::ASSET, RADUIO_STOP);
+        gCoordinator.SendEvent(audio);
     }
 
 }
@@ -158,6 +182,11 @@ void AudioFreq::StartMinigame(Event& event)
     Event screen1(Events::Dialogue::TUTORIAL);
     screen1.SetParam(Events::Dialogue::ID, 2);
     gCoordinator.SendEvent(screen1);
+
+
+    Event audio(Events::Audio::PLAY_SOUND);
+    audio.SetParam(Events::Audio::ASSET, MINI_SFX);
+    gCoordinator.SendEvent(audio);
 }
 
 void AudioFreq::StartNewDay(Event& event)
