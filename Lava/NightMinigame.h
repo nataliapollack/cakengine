@@ -67,11 +67,11 @@ private:
 #pragma region Base Info
 	struct Base {
 		transform2D t2d;
-		int width = 25;
-		int height = 25;
+		int width = 100;
+		int height = 75;
 
 		float dmgRadius = 10.0f; // TODO: tweak me for design purposes :)
-		float attackCooldown = 1.0f; // TODO: tweak me for design purposes :)
+		//float attackCooldown = 1.0f; // TODO: tweak me for design purposes :)
 
 		float hurtTimer = 0;
 		float hurtCooldown = 1.f; // TODO: tweak me for design purposes :)
@@ -87,7 +87,7 @@ private:
 
 		transform2D t2d;
 		health hp = { 5 }; // TODO: tweak me for design purposes :)
-		enemy_state state{ .speed = 10, .tower { .fleeSpeedMult = 1.25f } }; // TODO: tweak just the listed vars for design purposes :)
+		enemy_state state{ .speed = 12, .tower { .fleeSpeedMult = 1.75f } }; // TODO: tweak just the listed vars for design purposes :)
 	
 		// false = died / issue
 		LivingState update(float dt, const Rectangle& baseBounds);
@@ -99,7 +99,7 @@ private:
 
 	class enemy_spawner {
 	public:
-		void init(std::array<Vector2, 2> enemySpawnCenterPoints, float spawnDelay = 2.f);
+		void init(std::array<Vector2, 2> enemySpawnCenterPoints, float spawnDelay = 0.1f);// TODO: tweak me for design purposes :)
 		std::optional<Enemy> attempt_spawn(float dt, float spawnRadius);
 
 	private:
@@ -145,7 +145,7 @@ private:
 	};
 
 	struct LightTower final : Defense {
-		float enemyFearTime = 6.5f; // TODO: tweak me for design purposes :)
+		float enemyFearTime = 17.5f; // TODO: tweak me for design purposes :)
 
 		inline void init() override { range = 500; } // just keep range large so it affects all enemies in zone
 		void update(float dt, combat_zone& zone) override;
@@ -170,8 +170,8 @@ private:
 		
 		Vector2 m_center{};
 
-		float m_enemySpawnRadius = 10; // TODO: tweak me for design purposes :)
-		int m_enemiesToSpawn = 15; // TODO: tweak me for design purposes :)
+		float m_enemySpawnRadius = 25; // TODO: tweak me for design purposes :)
+		int m_enemiesToSpawn = 50; // TODO: tweak me for design purposes :)
 
 		void init(const std::array<Vector2, 2>& enemySpawns);
 		void update(float dt);

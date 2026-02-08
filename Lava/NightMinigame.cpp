@@ -49,10 +49,10 @@ void NightMinigame::init() {
 	// TODO: tweak me for design purposes :)
 	// adjust these (> = farther, < = closer) to adjust where enemies spawn
 	static constexpr int ZONE_CENTER = 111;
-	static constexpr int SPAWN_OFFSET = 285;
+	static constexpr int SPAWN_OFFSET = 310;
 	static constexpr int CAM_OFFSET_X = 60;
-	static constexpr Vector2 DMG_TOWER_POS = { ZONE_CENTER + 50, ZONE_CENTER + 30 };
-	static constexpr Vector2 LIGHT_TOWER_POS = { ZONE_CENTER - 30, ZONE_CENTER - 30 };
+	static constexpr Vector2 DMG_TOWER_POS = { ZONE_CENTER + 150, ZONE_CENTER - 20 };
+	static constexpr Vector2 LIGHT_TOWER_POS = { ZONE_CENTER - 35, ZONE_CENTER - 35 };
 
 	// enemies can spawn in a radius around two points for each camera. these are the points
 	auto enemySpawnCenters = std::to_array<std::array<Vector2, 2>, 4>({
@@ -504,23 +504,31 @@ void NightMinigame::combat_zone::draw() const {
 
 void NightMinigame::Enemy::draw() const {
 	DrawCircleV(t2d.pos, 3.f, Color{ 145, 10, 10, 255 }); // dark red
-	DrawCircleV(t2d.pos, 1.5f, RED); // light red
+	//DrawCircleV(t2d.pos, 1.5f, RED); // light red
+	DrawCircleGradient(t2d.pos.x, t2d.pos.y, 1.5f, Color{ 255, 10, 10, 255 }, Color{ 255, 10, 10, 0 }); // light red gradient
 }
 
 static constexpr float DEFENSE_DRAW_SCALE = 5.f;
 
 void NightMinigame::DamageTower::draw() const {
-	static constexpr float TRI_SCALE = 3.f * DEFENSE_DRAW_SCALE;
+	static constexpr float TRI_SCALE = 6.f * DEFENSE_DRAW_SCALE;
 
 	Vector2 v1 = t2d.pos + Vector2{ 0, -TRI_SCALE / 2 };
 	Vector2 v2 = t2d.pos + Vector2{ -TRI_SCALE / 2, TRI_SCALE / 2 };
 	Vector2 v3 = t2d.pos + Vector2{ TRI_SCALE / 2, TRI_SCALE / 2 };
 	DrawTriangle(v1, v2, v3, SKYBLUE);
+	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.8f * DEFENSE_DRAW_SCALE, BLUE);
+	DrawCircle(t2d.pos.x, t2d.pos.y - 15, 0.5f * DEFENSE_DRAW_SCALE, DARKBLUE);
 }
 
-void NightMinigame::LightTower::draw() const {
+void NightMinigame::LightTower::draw() const
+{
+	Color FirstColor = Color{ 255, 255, 0, 150 }; // yellow
+	Color SecondColor = Color{ 255, 255, 150, 10 }; // light yellow
 	//DrawCircleLines(t2d.pos,  MAGENTA);
-	DrawRingLines(t2d.pos, 5 * DEFENSE_DRAW_SCALE, 10 * DEFENSE_DRAW_SCALE, 0, 360, 1, MAGENTA);
+	Vector2 v1 = {t2d.pos.x + 0, t2d.pos.y + 20};
+	DrawRing(v1, 19.8f * DEFENSE_DRAW_SCALE, 20 * DEFENSE_DRAW_SCALE, 0, 360, 32, GOLD);
+	DrawCircleGradient(t2d.pos.x, t2d.pos.y + 20, 20 * DEFENSE_DRAW_SCALE, FirstColor, SecondColor);
 }
 
 void NightMinigame::Barricade::draw() const {
