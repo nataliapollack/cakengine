@@ -134,6 +134,7 @@
     <ClCompile Include="AssetManager.cpp" />
     <ClInclude Include="AssetManager.cxx" />
     <ClCompile Include="AudioFreq.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="CycleManager.cpp" />
     <ClCompile Include="DialogueManager.cpp" />
@@ -153,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="AssetManager.hpp" />
     <ClInclude Include="AudioFreq.h" />
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="CycleManager.h" />
     <ClInclude Include="DialogueManager.h" />

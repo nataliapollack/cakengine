@@ -87,6 +87,9 @@
     <ClCompile Include="DialogueManager.cpp">
       <Filter>Source Files\managers</Filter>
     </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>Source Files\managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingSystem.h">
@@ -156,6 +159,9 @@
       <Filter>Header Files\minigames</Filter>
     </ClInclude>
     <ClInclude Include="DialogueManager.h">
+      <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.h">
       <Filter>Header Files\managers</Filter>
     </ClInclude>
   </ItemGroup>
