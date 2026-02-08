@@ -625,7 +625,7 @@ void NightMinigame::LightTower::draw()
 
 bool NightMinigame::Barricade::CheckClicked(const Camera2D& cam) {
 	auto mouse = GetScreenToWorld2D(GetMousePosition(), cam);
-	if (CheckCollisionPointLine(mouse, t2d.pos, endPos, 10) &&
+	if (CheckCollisionPointLine(mouse, t2d.pos, endPos, 5) &&
 		IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 	{
 		enabled = !enabled;
