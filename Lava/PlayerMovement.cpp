@@ -29,41 +29,57 @@ void PlayerMovementSystem::move_player(float dt)
         auto& playuh = gCoordinator.GetComponent<player>(entity);
         auto& stats = gCoordinator.GetComponent<status>(entity);
 
+        auto& viewport = gCoordinator.GetComponent<viewport3D>(entity);
+        auto& model = gCoordinator.GetComponent<model_view>(entity);
+        auto& modelAnim = gCoordinator.GetComponent<ModelAnimationInfo>(entity);
+
         bool moved = false;
 
         if (IsKeyDown(KEY_LEFT))
         {
             transform.pos.x -= (playuh.speed.x * dt);
+
             moved = true;
+            viewport.curView = 3; // left profile
         }
         if (IsKeyDown(KEY_RIGHT))
         {
             transform.pos.x += (playuh.speed.x * dt);
+
             moved = true;
+            viewport.curView = 2; // right profile
         }
         if (IsKeyDown(KEY_DOWN))
         {
             transform.pos.y += (playuh.speed.y * dt);
             stats.dirty = true;
+            
             moved = true;
+            viewport.curView = 0; // front
         }
         if (IsKeyDown(KEY_UP))
         {
             transform.pos.y -= (playuh.speed.y * dt);
             stats.dirty = true;
+
             moved = true;
+            viewport.curView = 1; // back
         }
 
-        /*auto& model = gCoordinator.GetComponent<model_view>(entity);
-        auto& modelAnim = gCoordinator.GetComponent<ModelAnimationInfo>(entity);
-
+        // update anim frame
         if (moved) {
-            modelAnim.curFrame++;
-            if (modelAnim.curFrame >= modelAnim.pData[0].frameCount)
-                modelAnim.curFrame = 0;
+            modelAnim.curFrameTime += dt * modelAnim.speedMult;
 
-            UpdateModelAnimation(*model.model, modelAnim.pData[0], modelAnim.curFrame);
-        }*/
+            while (modelAnim.curFrameTime >= modelAnim.fps) {
+                modelAnim.curFrameTime -= modelAnim.fps;
+                modelAnim.curFrame++;
+
+                if (modelAnim.curFrame >= modelAnim.pData[0].frameCount)
+                    modelAnim.curFrame = 0;
+            }
+        }
+
+        UpdateModelAnimation(*model.model, modelAnim.pData[0], modelAnim.curFrame);
     }
 }
 

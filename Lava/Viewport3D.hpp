@@ -1,12 +1,16 @@
 #pragma once
 
+#include <vector>
+
 #include "raylib.h"
 
 struct viewport3D {
-	// camera view
-	Camera3D view;
+	// camera positions / modes
+	std::vector<Camera3D> views = {};
 
-	RenderTexture2D framebuffer;
+	RenderTexture2D framebuffer = {};
+
+	int curView = 0;
 };
 
 // TODO: TEMP!

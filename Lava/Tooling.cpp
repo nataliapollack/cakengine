@@ -129,81 +129,75 @@ void Tooling::place_objs()
  
     ////////////////////////////////////////////////////////////////
     // PLAYER
-     
-    en = gCoordinator.CreateEntity();
-    gCoordinator.AddComponent(
-        en,
-        render_box{ Vector2{50.0f, 50.0f },  WHITE }
-    );
+    {
+        static constexpr Vector2 PLAYER_SIZE = { 17, 25 };
+        static constexpr float PLAYER_SCALE = 4.5f;
+        static constexpr Vector2 PLAYER_DIMS = { PLAYER_SIZE.x * PLAYER_SCALE,
+                                                 PLAYER_SIZE.y * PLAYER_SCALE };
 
-    gCoordinator.AddComponent(
-        en,
-        transform2D{ Vector2 {200.0f, 200.0f } }
-    );
+        en = gCoordinator.CreateEntity();
 
-    gCoordinator.AddComponent(
-        en,
-        status{ true, true, INSIDE, PLAYER }
-    );
+        gCoordinator.AddComponent(
+            en,
+            transform2D{ Vector2 { 200.0f, 200.0f } }
+        );
 
-    gCoordinator.AddComponent(
-        en,
-        player{ Vector2{30.0f, 30.0f} }
-    );
-    gCoordinator.AddComponent(
-        en,
-        collidble{50, 50, 50, 50}
-    );
-    /*gCoordinator.AddComponent(
-        en,
-        model_view{ .model = &assetMngr.get<Model>("agnus") }
-    );
-    gCoordinator.AddComponent(
-        en,
-        assetMngr.get<ModelAnimationInfo>("agnus")
-    );
-    gCoordinator.AddComponent(
-        en,
-        viewport3D{
-            .view = {
-                .position = { 0, 1, 15 },
-                .target = { 0 },
+        gCoordinator.AddComponent(
+            en,
+            status{ true, true, INSIDE, PLAYER }
+        );
+
+        gCoordinator.AddComponent(
+            en,
+            player{ Vector2{30.0f, 30.0f} }
+        );
+        gCoordinator.AddComponent(
+            en,
+            collidble{ 0, 0, PLAYER_DIMS.x, PLAYER_DIMS.y }
+        );
+        gCoordinator.AddComponent(
+            en,
+            model_view{ .model = &assetMngr.get<Model>("agnus") }
+        );
+        gCoordinator.AddComponent(
+            en,
+            assetMngr.get<ModelAnimationInfo>("agnus")
+        );
+
+        static constexpr Vector3 CAM_TARGET = { 0, 0.5f, 0 };
+        static constexpr float CAM_HEIGHT = 4.5f;
+        static constexpr float CAM_DISTANCE = 5.5f;
+
+        viewport3D viewPort = { .views = std::vector<Camera3D>(8,
+            {
+                .position = {},
+                .target = CAM_TARGET,
                 .up = { 0, 1, 0 },
-                .fovy = { 30 },
-                .projection = { CAMERA_PERSPECTIVE }
-            },
-            .framebuffer = LoadRenderTexture(200, 200)
-        }
-    );*/
+                .fovy = { 10 },
+                .projection = CAMERA_PERSPECTIVE
+            }),
+            .framebuffer = LoadRenderTexture(PLAYER_DIMS.x, PLAYER_DIMS.y)
+        };
 
-    // 3D ENTITY BILLBOARD TEST
-    // Doubt we want this test thing so commenting out - Braedan 
-    //Entity teapot = gCoordinator.CreateEntity();
-    //gCoordinator.AddComponent(
-    //    teapot,
-    //    model_view{ .model = &assetMngr.get<Model>("agnus") }
-    //);
-    //gCoordinator.AddComponent(
-    //    teapot,
-    //    viewport3D{
-    //        .view = {
-    //            .position = { 0, 1, 15 },
-    //            .target = { 0 },
-    //            .up = { 0, 1, 0 },
-    //            .fovy = { 10 },
-    //            .projection = { CAMERA_PERSPECTIVE }
-    //        },
-    //        .framebuffer = LoadRenderTexture(200, 200)
-    //    }
-    //);
-    //gCoordinator.AddComponent(
-    //    teapot,
-    //    transform2D{ { 450, 150 } }
-    //);
-    //gCoordinator.AddComponent(
-    //    teapot,
-    //    render_box{ { 200, 200 }, WHITE }
-    //);
+        viewPort.views[0].position = { 0, CAM_HEIGHT, -CAM_DISTANCE }; // front
+        viewPort.views[1].position = { 0, CAM_HEIGHT,  CAM_DISTANCE }; // back
+        viewPort.views[2].position = {  CAM_DISTANCE, CAM_HEIGHT, 0 }; // right profile
+        viewPort.views[3].position = { -CAM_DISTANCE, CAM_HEIGHT, 0 }; // left profile
+        //viewPort.views[4].position = ; // up-left
+        //viewPort.views[5].position = ; // up-right
+        //viewPort.views[6].position = ; // down-left
+        //viewPort.views[7].position = ; // down-right
+
+        gCoordinator.AddComponent(
+            en,
+            viewport3D{ std::move(viewPort) }
+        );
+        gCoordinator.AddComponent(
+            en,
+            render_box{ { PLAYER_DIMS.x, PLAYER_DIMS.y }, WHITE }
+        );
+    }
+
 
     en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(

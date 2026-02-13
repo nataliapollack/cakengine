@@ -50,9 +50,10 @@ void RenderSystem::render_viewports() {
         auto& model = gCoordinator.GetComponent<model_view>(en);
         
         BeginTextureMode(viewport.framebuffer);
+        
         ClearBackground(BLANK);
 
-        BeginMode3D(viewport.view);
+        BeginMode3D(viewport.views[viewport.curView]);
         DrawModel(*model.model, model.offset, model.scale, model.color);
         EndMode3D();
 
@@ -69,15 +70,12 @@ void RenderSystem::draw()
         auto const& rend = gCoordinator.GetComponent<render_box>(draw_order[i]);
 
         if (gCoordinator.HasComponent<viewport3D>(draw_order[i])) {
-            auto const& transform = gCoordinator.GetComponent<transform2D>(draw_order[i]);
-
-            auto const& rend = gCoordinator.GetComponent<render_box>(draw_order[i]);
-            auto& viewport = gCoordinator.GetComponent<viewport3D>(draw_order[i]);
+            auto const& viewport = gCoordinator.GetComponent<viewport3D>(draw_order[i]);
+            
             DrawTextureRec(viewport.framebuffer.texture,
                            Rectangle{ 0, 0, rend.size.x, -rend.size.y },
                            Vector2{ transform.pos.x, transform.pos.y },
                            rend.col);
-            DrawRectangleLines(transform.pos.x, transform.pos.y, rend.size.x, rend.size.y, RED);
         }
         else if (gCoordinator.HasComponent<render_texture>(draw_order[i]))
         {
